@@ -1,20 +1,20 @@
 package com.lpdm.msuser.services.admin.impl;
 
 import com.lpdm.msuser.exception.EurekaInstanceNotFound;
+import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.model.auth.UserRole;
 import com.lpdm.msuser.model.location.Address;
 import com.lpdm.msuser.model.location.City;
+import com.lpdm.msuser.model.product.Product;
+import com.lpdm.msuser.model.product.Stock;
 import com.lpdm.msuser.model.storage.Storage;
 import com.lpdm.msuser.model.store.Store;
 import com.lpdm.msuser.model.admin.OrderStats;
 import com.lpdm.msuser.model.admin.SearchDates;
 import com.lpdm.msuser.model.admin.StorageUser;
-import com.lpdm.msuser.msauthentication.AppRoleBean;
-import com.lpdm.msuser.msauthentication.AppUserBean;
-import com.lpdm.msuser.msorder.*;
-import com.lpdm.msuser.msproduct.CategoryBean;
-import com.lpdm.msuser.msproduct.ProductBean;
-import com.lpdm.msuser.msproduct.StockBean;
-import com.lpdm.msuser.proxies.*;
+import com.lpdm.msuser.model.order.*;
+import com.lpdm.msuser.model.product.Category;
+import com.lpdm.msuser.proxy.*;
 import com.lpdm.msuser.services.admin.AdminService;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
@@ -34,23 +34,23 @@ public class AdminServiceImpl implements AdminService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final MsStorageProxy storageProxy;
-    private final MsOrderProxy orderProxy;
-    private final MsProductProxy productProxy;
-    private final MsStoreProxy storeProxy;
+    private final StorageProxy storageProxy;
+    private final OrderProxy orderProxy;
+    private final ProductProxy productProxy;
+    private final StoreProxy storeProxy;
     private final EurekaClient discoveryClient;
-    private final MsStockProxy stockProxy;
-    private final MsAuthProxy authProxy;
-    private final MsLocationProxy locationProxy;
+    private final StockProxy stockProxy;
+    private final AuthProxy authProxy;
+    private final LocationProxy locationProxy;
 
     @Autowired
-    public AdminServiceImpl(MsOrderProxy orderProxy,
-                            MsProductProxy productProxy,
-                            MsStoreProxy storeProxy,
-                            MsStorageProxy storageProxy,
-                            MsStockProxy stockProxy,
-                            MsAuthProxy authProxy,
-                            MsLocationProxy locationProxy,
+    public AdminServiceImpl(OrderProxy orderProxy,
+                            ProductProxy productProxy,
+                            StoreProxy storeProxy,
+                            StorageProxy storageProxy,
+                            StockProxy stockProxy,
+                            AuthProxy authProxy,
+                            LocationProxy locationProxy,
                             @Qualifier("eurekaClient") EurekaClient discoveryClient) {
 
         this.orderProxy = orderProxy;
@@ -63,13 +63,13 @@ public class AdminServiceImpl implements AdminService {
         this.locationProxy = locationProxy;
     }
 
-    private List<String> calculateSubTotal(OrderBean order){
+    private List<String> calculateSubTotal(Order order){
 
         double subTotal = 0;
         double subTax = 0;
 
         List<String> resultList = new ArrayList<>();
-        for(OrderedProductBean orderedProduct : order.getOrderedProducts()){
+        for(OrderedProduct orderedProduct : order.getOrderedProducts()){
 
             double productTotal = orderedProduct.getPrice() * orderedProduct.getQuantity();
             double taxTotal = productTotal * (orderedProduct.getTax() / 100);
@@ -97,64 +97,64 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Map<OrderBean, List<String>> findOrderById(int id) throws FeignException {
+    public Map<Order, List<String>> findOrderById(int id) throws FeignException {
 
-        Map<OrderBean, List<String>> resultMap = new HashMap<>();
+        Map<Order, List<String>> resultMap = new HashMap<>();
 
-        OrderBean order = orderProxy.getOrderById(id);
+        Order order = orderProxy.getOrderById(id);
         resultMap.put(order, calculateSubTotal(order));
 
         return resultMap;
     }
 
     @Override
-    public Map<OrderBean, List<String>> findAllOrdersByUserId(int id) {
+    public Map<Order, List<String>> findAllOrdersByUserId(int id) {
 
-        List<OrderBean> orderList = orderProxy.findAllByUserId(id);
-        Map<OrderBean, List<String>> resultMap = new HashMap<>();
+        List<Order> orderList = orderProxy.findAllByUserId(id);
+        Map<Order, List<String>> resultMap = new HashMap<>();
 
-        for(OrderBean order : orderList)
+        for(Order order : orderList)
             resultMap.put(order, calculateSubTotal(order));
 
         return resultMap;
     }
 
     @Override
-    public Map<OrderBean, List<String>> findAllOrdersByUserEmail(String email) {
+    public Map<Order, List<String>> findAllOrdersByUserEmail(String email) {
 
-        List<OrderBean> orderList = orderProxy.findAllByUserEmail(email);
-        Map<OrderBean, List<String>> resultMap = new HashMap<>();
+        List<Order> orderList = orderProxy.findAllByUserEmail(email);
+        Map<Order, List<String>> resultMap = new HashMap<>();
 
-        for(OrderBean order : orderList)
+        for(Order order : orderList)
             resultMap.put(order, calculateSubTotal(order));
 
         return resultMap;
     }
 
     @Override
-    public Map<OrderBean, List<String>> findAllOrdersByUserLastName(String lastName) {
+    public Map<Order, List<String>> findAllOrdersByUserLastName(String lastName) {
 
-        List<OrderBean> orderList = orderProxy.findAllByUserLastName(lastName);
-        Map<OrderBean, List<String>> resultMap = new HashMap<>();
+        List<Order> orderList = orderProxy.findAllByUserLastName(lastName);
+        Map<Order, List<String>> resultMap = new HashMap<>();
 
-        for(OrderBean order : orderList)
+        for(Order order : orderList)
             resultMap.put(order, calculateSubTotal(order));
 
         return resultMap;
     }
 
     @Override
-    public Map<OrderBean, List<String>> findOrderByInvoiceReference(String ref) {
+    public Map<Order, List<String>> findOrderByInvoiceReference(String ref) {
 
-        OrderBean order = orderProxy.findByInvoiceReference(ref);
-        Map<OrderBean, List<String>> resultMap = new HashMap<>();
+        Order order = orderProxy.findByInvoiceReference(ref);
+        Map<Order, List<String>> resultMap = new HashMap<>();
         resultMap.put(order, calculateSubTotal(order));
 
         return resultMap;
     }
 
     @Override
-    public List<PaymentBean> findAllPayment() {
+    public List<Payment> findAllPayment() {
         return orderProxy.getPaymentList();
     }
 
@@ -180,35 +180,35 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<OrderBean> findAllOrdersBetweenTwoDates(SearchDates dates) {
+    public List<Order> findAllOrdersBetweenTwoDates(SearchDates dates) {
         log.info("Search dates : " + dates);
         return orderProxy.findAllOrdersBetweenDates(dates);
     }
 
     @Override
-    public ProductBean findProductById(int id) {
+    public Product findProductById(int id) {
         return productProxy.findProduct(id);
     }
 
     @Override
-    public List<CategoryBean> findAllCategories() {
+    public List<Category> findAllCategories() {
 
         return productProxy.listCategories();
     }
 
     @Override
-    public List<ProductBean> findProductsByName(String name) {
+    public List<Product> findProductsByName(String name) {
         return productProxy.listProductByName(name);
     }
 
     @Override
-    public List<ProductBean> findProductsByProducerId(int id) {
+    public List<Product> findProductsByProducerId(int id) {
 
-        List<ProductBean> productList = productProxy.listProductByProducerId(id);
+        List<Product> productList = productProxy.listProductByProducerId(id);
 
-        for(ProductBean product : productList){
+        for(Product product : productList){
 
-            AppUserBean producer = product.getProducer();
+            User producer = product.getProducer();
 
             if (producer.getAddress() == null){
                 Address address = locationProxy.findAddressById(producer.getAddressId());
@@ -238,9 +238,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updateProduct(ProductBean product) {
+    public void updateProduct(Product product) {
 
-        ProductBean oldProduct = productProxy.findProduct(product.getId());
+        Product oldProduct = productProxy.findProduct(product.getId());
 
         if(product.getPicture() == null)
             product.setPicture(oldProduct.getPicture());
@@ -253,7 +253,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ProductBean addNewProduct(ProductBean product) {
+    public Product addNewProduct(Product product) {
 
         return productProxy.addProduct(product);
     }
@@ -405,26 +405,26 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<ProductBean> findStockById(int id) throws FeignException {
+    public List<Product> findStockById(int id) throws FeignException {
 
-        StockBean stock = stockProxy.findStockById(id);
-        ProductBean product = productProxy.findProduct(stock.getProductId());
-        List<ProductBean> productList = new ArrayList<>();
+        Stock stock = stockProxy.findStockById(id);
+        Product product = productProxy.findProduct(stock.getProductId());
+        List<Product> productList = new ArrayList<>();
         productList.add(product);
 
         return productList;
     }
 
     @Override
-    public List<ProductBean> findStockByProductId(int id) {
-        ProductBean product = productProxy.findProduct(id);
-        List<ProductBean> productList = new ArrayList<>();
+    public List<Product> findStockByProductId(int id) {
+        Product product = productProxy.findProduct(id);
+        List<Product> productList = new ArrayList<>();
         productList.add(product);
         return productList;
     }
 
     @Override
-    public List<ProductBean> findStockByProductName(String name) {
+    public List<Product> findStockByProductName(String name) {
 
         return productProxy.listProductByName(name);
     }
@@ -436,44 +436,44 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public StockBean updateStock(StockBean stock) {
+    public Stock updateStock(Stock stock) {
         return stockProxy.updateStock(stock);
     }
 
     @Override
-    public StockBean addNewStock(StockBean stock) {
+    public Stock addNewStock(Stock stock) {
         return stockProxy.addNewStock(stock);
     }
 
     @Override
-    public List<AppUserBean> findUserById(int id) {
+    public List<User> findUserById(int id) {
 
-        AppUserBean user = authProxy.findById(id);
-        List<AppUserBean> userList = new ArrayList<>();
+        User user = authProxy.findById(id);
+        List<User> userList = new ArrayList<>();
         userList.add(user);
 
         return userList;
     }
 
     @Override
-    public List<AppUserBean> findUserByLastName(String lastName) {
+    public List<User> findUserByLastName(String lastName) {
         return authProxy.findByLastName(lastName);
     }
 
     @Override
-    public List<AppRoleBean> findAllUserRoles() {
+    public List<UserRole> findAllUserRoles() {
         return authProxy.findAllRoles();
     }
 
     @Override
-    public AppUserBean addNewUser(AppUserBean user) {
+    public User addNewUser(User user) {
         return authProxy.addNewUser(user);
     }
 
     @Override
-    public List<AppUserBean> findUserByEmail(String email) {
+    public List<User> findUserByEmail(String email) {
 
-        List<AppUserBean> userList = new ArrayList<>();
+        List<User> userList = new ArrayList<>();
         userList.add(authProxy.findByEmail(email));
         return userList;
     }
@@ -481,8 +481,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Integer getProducerRoleId() {
 
-        List<AppRoleBean> roleList = authProxy.findAllRoles();
-        for(AppRoleBean role : roleList){
+        List<UserRole> roleList = authProxy.findAllRoles();
+        for(UserRole role : roleList){
             if(role.getRoleName().toLowerCase().equals("producer")){
                 return role.getId();
             }
@@ -492,16 +492,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<AppUserBean> findUserByIdAndRole(int userId, int roleId) {
+    public List<User> findUserByIdAndRole(int userId, int roleId) {
 
-        AppUserBean user = authProxy.findUserByIdAndRole(userId, roleId);
-        List<AppUserBean> userList = new ArrayList<>();
+        User user = authProxy.findUserByIdAndRole(userId, roleId);
+        List<User> userList = new ArrayList<>();
         if(user != null) userList.add(user);
         return userList;
     }
 
     @Override
-    public AppUserBean updateUser(AppUserBean user) {
+    public User updateUser(User user) {
         return authProxy.updateUser(user);
     }
 
@@ -520,7 +520,7 @@ public class AdminServiceImpl implements AdminService {
 
         address = locationProxy.saveNewAddress(address);
 
-        AppUserBean user = authProxy.findById(userId);
+        User user = authProxy.findById(userId);
         user.setAddressId(address.getId());
 
         authProxy.updateUser(user);

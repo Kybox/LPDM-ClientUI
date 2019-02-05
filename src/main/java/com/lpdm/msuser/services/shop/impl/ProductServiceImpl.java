@@ -1,8 +1,8 @@
 package com.lpdm.msuser.services.shop.impl;
 
-import com.lpdm.msuser.msproduct.CategoryBean;
-import com.lpdm.msuser.msproduct.ProductBean;
-import com.lpdm.msuser.proxies.MsProductProxy;
+import com.lpdm.msuser.model.product.Category;
+import com.lpdm.msuser.model.product.Product;
+import com.lpdm.msuser.proxy.ProductProxy;
 import com.lpdm.msuser.services.shop.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,20 +12,20 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final MsProductProxy productProxy;
+    private final ProductProxy productProxy;
 
     @Autowired
-    public ProductServiceImpl(MsProductProxy productProxy) {
+    public ProductServiceImpl(ProductProxy productProxy) {
         this.productProxy = productProxy;
     }
 
     @Override
-    public List<ProductBean> findAllProducts() {
+    public List<Product> findAllProducts() {
         return productProxy.listProduct();
     }
 
     @Override
-    public List<CategoryBean> findAllProductCategories() {
+    public List<Category> findAllProductCategories() {
         return productProxy.listCategories();
     }
 }

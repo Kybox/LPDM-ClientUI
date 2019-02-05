@@ -1,7 +1,7 @@
 package com.lpdm.msuser.controllers.admin;
 
 import com.lpdm.msuser.model.admin.SearchForm;
-import com.lpdm.msuser.msproduct.StockBean;
+import com.lpdm.msuser.model.product.Stock;
 import com.lpdm.msuser.services.admin.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class StockAdminController {
     }
 
     @PostMapping(value = {"/update", "/update/"})
-    public StockBean updateStock(@RequestBody StockBean stock){
+    public Stock updateStock(@RequestBody Stock stock){
 
         log.info("Stock Json = " + stock);
 
@@ -134,7 +134,7 @@ public class StockAdminController {
     }
 
     @PostMapping(value = {"/add", "/add/"})
-    public StockBean addNewStock(@Valid @RequestBody StockBean stock){
+    public Stock addNewStock(@Valid @RequestBody Stock stock){
 
         log.info("Stock : " + stock.toString());
         return adminService.addNewStock(stock);

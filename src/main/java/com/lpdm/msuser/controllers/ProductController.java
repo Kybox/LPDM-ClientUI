@@ -1,7 +1,7 @@
 package com.lpdm.msuser.controllers;
 
-import com.lpdm.msuser.msproduct.ProductBean;
-import com.lpdm.msuser.proxies.MsProductProxy;
+import com.lpdm.msuser.model.product.Product;
+import com.lpdm.msuser.proxy.ProductProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    private MsProductProxy msProductProxy;
+    private ProductProxy msProductProxy;
 
 
     @Autowired
@@ -36,7 +36,7 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     public String productDescription(@PathVariable("id") int id, Model model, HttpSession session) {
-        ProductBean product = msProductProxy.findProduct(id);
+        Product product = msProductProxy.findProduct(id);
         model.addAttribute("product", product);
         sessionController.addSessionAttributes(session, model);
         return "shop/fragments/products/description.html";
@@ -50,7 +50,7 @@ public class ProductController {
      * @return
      */
     @PostMapping(value = "/")
-    public String addProduct(@ModelAttribute ProductBean product, Model model, HttpSession session) {
+    public String addProduct(@ModelAttribute Product product, Model model, HttpSession session) {
 
         msProductProxy.addProduct(product);
         sessionController.addSessionAttributes(session, model);
@@ -66,9 +66,9 @@ public class ProductController {
      */
     @GetMapping("/list/{category}")
     public String listProduct(Model model, HttpSession session) {
-        List<ProductBean> products = msProductProxy.listProduct();
+        List<Product> products = msProductProxy.listProduct();
         model.addAttribute("products", products);
-        List<ProductBean> cats = msProductProxy.listProduct();
+        List<Product> cats = msProductProxy.listProduct();
         model.addAttribute("cats", cats);
         sessionController.addSessionAttributes(session, model);
         return "products/list";
@@ -99,7 +99,7 @@ public class ProductController {
 
         logger.info("cat: " + category);
         logger.info("producer: " + producer);
-        List<ProductBean> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
 
         if(!category.equals("0") && !producer.equals("0")) {
             products = msProductProxy.listProductByProducerId(Integer.parseInt(producer));
@@ -121,10 +121,10 @@ public class ProductController {
         return "shop/fragments/home";
     }
 
-    public static List<ProductBean> productFilter(int typeId, List<ProductBean> productBeanList){
-        List<ProductBean> toBeDisplayed = new ArrayList<>();
+    public static List<Product> productFilter(int typeId, List<Product> productBeanList){
+        List<Product> toBeDisplayed = new ArrayList<>();
 
-        for (ProductBean p : productBeanList) {
+        for (Product p : productBeanList) {
             if (p.getId() == typeId)
                 toBeDisplayed.add(p);
         }

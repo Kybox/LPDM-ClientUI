@@ -1,12 +1,12 @@
 package com.lpdm.msuser.services.shop;
 
-import com.lpdm.msuser.msproduct.CategoryBean;
-import com.lpdm.msuser.msproduct.ProductBean;
+import com.lpdm.msuser.model.product.Category;
+import com.lpdm.msuser.model.product.Product;
 
 import java.util.List;
 
 public interface ProductService {
 
-    List<ProductBean> findAllProducts();
-    List<CategoryBean> findAllProductCategories();
+    List<Product> findAllProducts();
+    List<Category> findAllProductCategories();
 }

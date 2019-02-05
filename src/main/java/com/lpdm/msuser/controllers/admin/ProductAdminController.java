@@ -1,10 +1,10 @@
 package com.lpdm.msuser.controllers.admin;
 
+import com.lpdm.msuser.model.product.Product;
 import com.lpdm.msuser.model.storage.Storage;
 import com.lpdm.msuser.model.admin.OrderStats;
 import com.lpdm.msuser.model.admin.SearchForm;
 import com.lpdm.msuser.model.admin.StorageUser;
-import com.lpdm.msuser.msproduct.ProductBean;
 import com.lpdm.msuser.services.admin.AdminService;
 import feign.FeignException;
 import org.slf4j.Logger;
@@ -62,8 +62,8 @@ public class ProductAdminController {
     @GetMapping(value = {"/search/{id}", "/search/{id}/"})
     public ModelAndView searchProductById(@PathVariable int id){
 
-        ProductBean product = adminService.findProductById(id);
-        List<ProductBean> result = new ArrayList<>();
+        Product product = adminService.findProductById(id);
+        List<Product> result = new ArrayList<>();
         result.add(product);
 
         return new ModelAndView(PRODUCT_FRAGMENT_PATH)
@@ -93,7 +93,7 @@ public class ProductAdminController {
             switch (searchForm.getSearchValue()){
                 case SEARCH_PRODUCT_BY_ID:
                     if(Pattern.compile("^\\d+$").matcher(keyword).matches()) {
-                        result = new ArrayList<ProductBean>();
+                        result = new ArrayList<Product>();
                         ((ArrayList) result).add(adminService.findProductById(Integer.valueOf(keyword)));
                     }
                     else result = 500;
@@ -103,7 +103,7 @@ public class ProductAdminController {
                     break;
                 case SEARCH_PRODUCT_BY_PRODUCER_ID :
                     if(Pattern.compile("^\\d+$").matcher(keyword).matches()) {
-                        result = new ArrayList<ProductBean>();
+                        result = new ArrayList<Product>();
                         ((ArrayList) result).addAll(adminService.findProductsByProducerId(Integer.valueOf(keyword)));
                         if(((ArrayList) result).isEmpty()) {
                             result = 204;
@@ -145,7 +145,7 @@ public class ProductAdminController {
     }
 
     @PostMapping(value = {"/update", "update/"})
-    public ProductBean updateProduct(@RequestBody ProductBean productBean){
+    public Product updateProduct(@RequestBody Product productBean){
 
         log.info("Product update : " + productBean.toString());
         adminService.updateProduct(productBean);
@@ -161,7 +161,7 @@ public class ProductAdminController {
     }
 
     @PostMapping(value = {"/add", "/add/"})
-    public ProductBean addNewProduct(@Valid @RequestBody ProductBean product){
+    public Product addNewProduct(@Valid @RequestBody Product product){
 
         log.info("Product : " + product);
         return adminService.addNewProduct(product);
@@ -204,6 +204,6 @@ public class ProductAdminController {
                 .addObject(HTML_RESULT_OBJECT, result)
                 .addObject(HTML_PAGE_SEARCH_FORM, new SearchForm())
                 .addObject("categories", adminService.findAllCategories())
-                .addObject("product", new ProductBean());
+                .addObject("product", new Product());
     }
 }

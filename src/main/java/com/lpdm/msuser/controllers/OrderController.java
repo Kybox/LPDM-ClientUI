@@ -1,11 +1,11 @@
 package com.lpdm.msuser.controllers;
 
-import com.lpdm.msuser.msauthentication.AppUserBean;
-import com.lpdm.msuser.msorder.*;
-import com.lpdm.msuser.msorder.enumeration.StatusEnum;
-import com.lpdm.msuser.msproduct.ProductBean;
-import com.lpdm.msuser.proxies.MsOrderProxy;
-import com.lpdm.msuser.proxies.MsProductProxy;
+import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.model.order.*;
+import com.lpdm.msuser.model.order.Status;
+import com.lpdm.msuser.model.product.Product;
+import com.lpdm.msuser.proxy.OrderProxy;
+import com.lpdm.msuser.proxy.ProductProxy;
 import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +26,10 @@ public class OrderController {
     private static final Logger log = Logger.getLogger(OrderController.class);
 
     @Autowired
-    MsOrderProxy orderProxy;
+    OrderProxy orderProxy;
 
     @Autowired
-    MsProductProxy msProductProxy;
+    ProductProxy msProductProxy;
 
     @Autowired
     SessionController sessionController;
@@ -53,10 +52,10 @@ public class OrderController {
 
         log.info("Demande de description du produit, appel duproxy des commandes pour obtenir la commande par l'id demandé dans le path");
 
-        OrderBean order = orderProxy.getOrderById(id);
+        Order order = orderProxy.getOrderById(id);
         model.addAttribute("order", order);
 
-        List<OrderedProductBean> orderedProducts = order.getOrderedProducts();
+        List<OrderedProduct> orderedProducts = order.getOrderedProducts();
         model.addAttribute("products", orderedProducts);
 
         log.info("Transfert des données de la commande vers la vue");
@@ -73,7 +72,7 @@ public class OrderController {
      */
     @RequestMapping("/payments")
     public String getAllPayments(Model model, HttpSession session) {
-        List<PaymentBean> allPayments = orderProxy.getPaymentList();
+        List<Payment> allPayments = orderProxy.getPaymentList();
         model.addAttribute("payments", allPayments);
         sessionController.addSessionAttributes(session, model);
         return "orders/payments";
@@ -88,11 +87,11 @@ public class OrderController {
     @GetMapping("/save")
     public String saveOrder(Model model, HttpSession session){
 
-        OrderBean order = new OrderBean();
-        PaymentBean payment = orderProxy.getPaymentList().get(1);
+        Order order = new Order();
+        Payment payment = orderProxy.getPaymentList().get(1);
 
         try {
-            AppUserBean user = (AppUserBean) session.getAttribute("user");
+            User user = (User) session.getAttribute("user");
             order.setCustomer(user);
             order.setCustomerId(user.getId());
         }catch (NullPointerException e){
@@ -103,11 +102,11 @@ public class OrderController {
 
         order.setTotal(sessionController.cartTotal);
         order.setOrderedProducts(sessionController.cart);
-        order.setStatus(StatusEnum.PROCESSED);
+        order.setStatus(Status.PROCESSED);
         order.setOrderDate(LocalDateTime.now());
         order.setPayment(payment);
 
-        OrderBean orderConfirmation = orderProxy.saveOrder(order);
+        Order orderConfirmation = orderProxy.saveOrder(order);
 
         model.addAttribute("order", orderConfirmation);
         model.addAttribute("products", orderConfirmation.getOrderedProducts());
@@ -128,13 +127,13 @@ public class OrderController {
 
         logger.info("Entrée dans addItem pour produit : " + productId);
 
-        OrderedProductBean orderedProduct = null;
+        OrderedProduct orderedProduct = null;
 
-        ProductBean product = msProductProxy.findProduct(productId);
+        Product product = msProductProxy.findProduct(productId);
 
         // check stock quantity available
 
-        for (OrderedProductBean item: sessionController.cart) {
+        for (OrderedProduct item: sessionController.cart) {
             if (item.getProduct().getId() == productId) {
                 orderedProduct = item;
                 orderedProduct.setQuantity(orderedProduct.getQuantity() + 1);
@@ -142,7 +141,7 @@ public class OrderController {
             }
         }
         if (orderedProduct == null){
-            orderedProduct = new OrderedProductBean();
+            orderedProduct = new OrderedProduct();
             orderedProduct.setProduct(product);
             orderedProduct.setQuantity(1);
             sessionController.cart.add(orderedProduct);
@@ -172,14 +171,14 @@ public class OrderController {
 
         logger.info("Entrée dans addItem pour produit : " + productId);
 
-        OrderedProductBean orderedProduct = null;
-        ProductBean product = null;
+        OrderedProduct orderedProduct = null;
+        Product product = null;
 
         product = msProductProxy.findProduct(productId);
 
         logger.info("product: " + product);
 
-        for (OrderedProductBean item : sessionController.cart) {
+        for (OrderedProduct item : sessionController.cart) {
             if (item.getProduct().getId() == productId) {
                 orderedProduct = item;
                 orderedProduct.setQuantity(orderedProduct.getQuantity() >= 1 ? orderedProduct.getQuantity() - 1 : 0);
@@ -231,7 +230,7 @@ public class OrderController {
     @GetMapping("/description/{id}")
     public String orderDescription(@PathVariable ("id") int id, HttpSession session, Model model){
 
-        OrderBean order = orderProxy.getOrderById(id);
+        Order order = orderProxy.getOrderById(id);
         model.addAttribute("order", order);
         sessionController.addSessionAttributes(session, model);
         return "shop/fragments/cart/view.html";

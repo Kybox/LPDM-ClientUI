@@ -3,10 +3,9 @@ package com.lpdm.msuser.controllers.admin;
 import com.lpdm.msuser.model.admin.OrderStats;
 import com.lpdm.msuser.model.admin.SearchDates;
 import com.lpdm.msuser.model.admin.SearchForm;
-import com.lpdm.msuser.msorder.Coupon;
-import com.lpdm.msuser.msorder.Delivery;
-import com.lpdm.msuser.msorder.OrderBean;
-import com.lpdm.msuser.msorder.enumeration.StatusEnum;
+import com.lpdm.msuser.model.order.Coupon;
+import com.lpdm.msuser.model.order.Delivery;
+import com.lpdm.msuser.model.order.Status;
 import com.lpdm.msuser.services.admin.AdminService;
 import feign.FeignException;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.lpdm.msuser.utils.admin.ValueType.*;
@@ -59,7 +57,7 @@ public class OrderAdminController {
                 .addObject(HTML_PAGE_SEARCH_FORM, new SearchForm())
                 .addObject("payments", adminService.findAllPayment())
                 .addObject("selectedTab", "order_id")
-                .addObject("statusList", StatusEnum.values());
+                .addObject("statusList", Status.values());
     }
 
     @PostMapping(value = DEFAULT_SEARCH_PATH)
@@ -130,7 +128,7 @@ public class OrderAdminController {
                 .addObject(HTML_PAGE_SEARCH_FORM, new SearchForm())
                 .addObject("payments", adminService.findAllPayment())
                 .addObject("selectedTab", selectedTab)
-                .addObject("statusList", StatusEnum.values());
+                .addObject("statusList", Status.values());
     }
 
     @GetMapping(value = {"/payments", "/payments/"})

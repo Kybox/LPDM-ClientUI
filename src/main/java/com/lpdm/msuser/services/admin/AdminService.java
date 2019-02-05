@@ -1,21 +1,21 @@
 package com.lpdm.msuser.services.admin;
 
+import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.location.Address;
 import com.lpdm.msuser.model.location.City;
+import com.lpdm.msuser.model.order.Order;
+import com.lpdm.msuser.model.product.Product;
+import com.lpdm.msuser.model.product.Stock;
 import com.lpdm.msuser.model.storage.Storage;
 import com.lpdm.msuser.model.store.Store;
 import com.lpdm.msuser.model.admin.OrderStats;
 import com.lpdm.msuser.model.admin.SearchDates;
 import com.lpdm.msuser.model.admin.StorageUser;
-import com.lpdm.msuser.msauthentication.AppRoleBean;
-import com.lpdm.msuser.msauthentication.AppUserBean;
-import com.lpdm.msuser.msorder.Coupon;
-import com.lpdm.msuser.msorder.Delivery;
-import com.lpdm.msuser.msorder.OrderBean;
-import com.lpdm.msuser.msorder.PaymentBean;
-import com.lpdm.msuser.msproduct.CategoryBean;
-import com.lpdm.msuser.msproduct.ProductBean;
-import com.lpdm.msuser.msproduct.StockBean;
+import com.lpdm.msuser.model.auth.UserRole;
+import com.lpdm.msuser.model.order.Coupon;
+import com.lpdm.msuser.model.order.Delivery;
+import com.lpdm.msuser.model.order.Payment;
+import com.lpdm.msuser.model.product.Category;
 import com.netflix.discovery.shared.Application;
 import feign.FeignException;
 
@@ -27,28 +27,28 @@ public interface AdminService {
     /**
      * Order
      */
-    Map<OrderBean, List<String>> findOrderById(int id) throws FeignException;
-    Map<OrderBean, List<String>> findAllOrdersByUserId(int id);
-    Map<OrderBean, List<String>> findAllOrdersByUserEmail(String email);
-    Map<OrderBean, List<String>> findAllOrdersByUserLastName(String lastName);
-    Map<OrderBean, List<String>> findOrderByInvoiceReference(String ref);
-    List<PaymentBean> findAllPayment();
+    Map<Order, List<String>> findOrderById(int id) throws FeignException;
+    Map<Order, List<String>> findAllOrdersByUserId(int id);
+    Map<Order, List<String>> findAllOrdersByUserEmail(String email);
+    Map<Order, List<String>> findAllOrdersByUserLastName(String lastName);
+    Map<Order, List<String>> findOrderByInvoiceReference(String ref);
+    List<Payment> findAllPayment();
     OrderStats findOrderStatsByYear(Integer year);
     OrderStats getAverageStats(OrderStats stats1, OrderStats stats2);
-    List<OrderBean> findAllOrdersBetweenTwoDates(SearchDates dates);
+    List<Order> findAllOrdersBetweenTwoDates(SearchDates dates);
 
     /**
      * Product
      */
-    ProductBean findProductById(int id);
-    List<CategoryBean> findAllCategories();
-    List<ProductBean> findProductsByName(String name);
-    List<ProductBean> findProductsByProducerId(int id);
+    Product findProductById(int id);
+    List<Category> findAllCategories();
+    List<Product> findProductsByName(String name);
+    List<Product> findProductsByProducerId(int id);
     OrderStats findOrderedProductsStatsByYear(int year);
     OrderStats findOrderedProductsStatsByYearAndCategory(int year);
     String getUploadPictureForm(StorageUser user);
-    void updateProduct(ProductBean product);
-    ProductBean addNewProduct(ProductBean product);
+    void updateProduct(Product product);
+    Product addNewProduct(Product product);
 
     /**
      * Coupon
@@ -88,24 +88,24 @@ public interface AdminService {
     /**
      * Stock
      */
-    List<ProductBean> findStockById(int id);
-    List<ProductBean> findStockByProductId(int id);
-    List<ProductBean> findStockByProductName(String name);
+    List<Product> findStockById(int id);
+    List<Product> findStockByProductId(int id);
+    List<Product> findStockByProductName(String name);
     void deleteStockById(int id);
-    StockBean updateStock(StockBean stock);
-    StockBean addNewStock(StockBean stock);
+    Stock updateStock(Stock stock);
+    Stock addNewStock(Stock stock);
 
     /**
      * Auth
      */
-    List<AppUserBean> findUserById(int id);
-    List<AppUserBean> findUserByLastName(String lastName);
-    List<AppRoleBean> findAllUserRoles();
-    AppUserBean addNewUser(AppUserBean user);
-    List<AppUserBean> findUserByEmail(String email);
+    List<User> findUserById(int id);
+    List<User> findUserByLastName(String lastName);
+    List<UserRole> findAllUserRoles();
+    User addNewUser(User user);
+    List<User> findUserByEmail(String email);
     Integer getProducerRoleId();
-    List<AppUserBean> findUserByIdAndRole(int userId, int roleId);
-    AppUserBean updateUser(AppUserBean user);
+    List<User> findUserByIdAndRole(int userId, int roleId);
+    User updateUser(User user);
 
     /**
      * Location

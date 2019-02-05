@@ -1,9 +1,8 @@
 package com.lpdm.msuser.controllers;
 
-import com.lpdm.msuser.model.location.Address;
-import com.lpdm.msuser.msauthentication.AppUserBean;
-import com.lpdm.msuser.proxies.MsLocationProxy;
-import com.lpdm.msuser.proxies.MsUserProxy;
+import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.proxy.LocationProxy;
+import com.lpdm.msuser.proxy.MsUserProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +22,7 @@ public class UserController {
     SessionController sessionController;
 
     @Autowired
-    MsLocationProxy msLocationProxy;
+    LocationProxy msLocationProxy;
 
     /**
      * lists all users and their data
@@ -33,7 +32,7 @@ public class UserController {
      */
     @GetMapping("/list")
     public String allUsers(Model model, HttpSession session){
-        List<AppUserBean> appUsers = msUserProxy.getAllUsers();
+        List<User> appUsers = msUserProxy.getAllUsers();
         model.addAttribute("users", appUsers);
         sessionController.addSessionAttributes(session, model);
         return "users/list";
@@ -48,7 +47,7 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public String userDescription(@PathVariable ("id") int id, Model model, HttpSession session){
-        AppUserBean user = msUserProxy.getUserById(id);
+        User user = msUserProxy.getUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("address", msLocationProxy.findAddressById(user.getId()));
         sessionController.addSessionAttributes(session, model);
@@ -63,7 +62,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/")
-    public String addUser(@ModelAttribute AppUserBean user, Model model, HttpSession session){
+    public String addUser(@ModelAttribute User user, Model model, HttpSession session){
         msUserProxy.addUser(user);
         sessionController.addSessionAttributes(session, model);
         return "users/list";

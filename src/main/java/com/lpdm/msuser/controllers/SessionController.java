@@ -1,10 +1,10 @@
 package com.lpdm.msuser.controllers;
 
-import com.lpdm.msuser.msauthentication.AppUserBean;
-import com.lpdm.msuser.msorder.OrderedProductBean;
-import com.lpdm.msuser.proxies.MsAuthProxy;
-import com.lpdm.msuser.proxies.MsProductProxy;
-import com.lpdm.msuser.proxies.MsUserProxy;
+import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.model.order.OrderedProduct;
+import com.lpdm.msuser.proxy.AuthProxy;
+import com.lpdm.msuser.proxy.ProductProxy;
+import com.lpdm.msuser.proxy.MsUserProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +22,15 @@ public class SessionController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    MsProductProxy msProductProxy;
+    ProductProxy msProductProxy;
 
     @Autowired
-    MsAuthProxy msAuthProxy;
+    AuthProxy msAuthProxy;
 
     @Autowired
     MsUserProxy msUserProxy;
 
-    public List<OrderedProductBean> cart = new ArrayList<>();
+    public List<OrderedProduct> cart = new ArrayList<>();
 
     public double cartTotal;
 
@@ -48,7 +48,7 @@ public class SessionController {
     public void addSessionAttributes(HttpSession session, Model model){
 
         try {
-            AppUserBean user = (AppUserBean) session.getAttribute("user");
+            User user = (User) session.getAttribute("user");
             model.addAttribute("user", user);
         }catch (NullPointerException e){
             logger.info("Pas d'utilisateur identifié");

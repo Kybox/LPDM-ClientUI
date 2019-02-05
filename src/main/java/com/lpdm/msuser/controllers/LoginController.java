@@ -1,8 +1,8 @@
 package com.lpdm.msuser.controllers;
 
-import com.lpdm.msuser.msauthentication.AppUserBean;
-import com.lpdm.msuser.proxies.MsProductProxy;
-import com.lpdm.msuser.proxies.MsUserProxy;
+import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.proxy.ProductProxy;
+import com.lpdm.msuser.proxy.MsUserProxy;
 import com.lpdm.msuser.security.cookie.CookieAppender;
 import com.lpdm.msuser.security.jwt.auth.JwtGenerator;
 import com.lpdm.msuser.security.jwt.auth.JwtUserBuilder;
@@ -18,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -36,7 +35,7 @@ public class LoginController {
     //private SessionController sessionController;
 
     @Autowired
-    MsProductProxy msProductProxy;
+    ProductProxy msProductProxy;
 
     private final JwtAuthConfig jwtAuthConfig;
     private final JwtGenerator jwtGenerator;
@@ -60,7 +59,7 @@ public class LoginController {
         //sessionController.addSessionAttributes(session, model);
         //return "identification/login";
         if(page != null) model.addAttribute("redirect", new JwtRedirect(page));
-        model.addAttribute("appUser", new AppUserBean());
+        model.addAttribute("appUser", new User());
         return "shop/fragments/account/login";
     }
 
@@ -85,7 +84,7 @@ public class LoginController {
      * @return home template if correct credentials
      */
     @PostMapping("/login")
-    public String login(@ModelAttribute AppUserBean user,
+    public String login(@ModelAttribute User user,
                         @ModelAttribute JwtRedirect redirect,
                         Model model, HttpServletResponse response) {
 
@@ -93,7 +92,7 @@ public class LoginController {
         logger.info("appUser : " + user.toString());
         logger.info("Essai de login");
 
-        AppUserBean appUser = null;
+        User appUser = null;
 
         try{ appUser = msUserProxy.login(user); }
         catch (FeignException e){
@@ -135,7 +134,7 @@ public class LoginController {
      * @return home template
      */
     @PostMapping("/registration")
-    public String registration(@ModelAttribute AppUserBean user, @RequestParam String password2, Model model, HttpSession session, BindingResult bindingResult){
+    public String registration(@ModelAttribute User user, @RequestParam String password2, Model model, HttpSession session, BindingResult bindingResult){
 
         logger.info("Essai de registration");
         logger.info("Utilisateur: " + user.getFirstName() + " " + user.getName() + " " + user.getEmail() + " " + user.getPassword());

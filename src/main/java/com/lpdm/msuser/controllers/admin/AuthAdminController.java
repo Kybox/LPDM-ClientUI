@@ -1,9 +1,9 @@
 package com.lpdm.msuser.controllers.admin;
 
 import com.lpdm.msuser.model.admin.SearchForm;
+import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.location.Address;
 import com.lpdm.msuser.model.location.City;
-import com.lpdm.msuser.msauthentication.AppUserBean;
 import com.lpdm.msuser.services.admin.AdminService;
 import feign.FeignException;
 import org.slf4j.Logger;
@@ -87,7 +87,7 @@ public class AuthAdminController {
     }
 
     @PostMapping(value = {"/update/user", "/update/user/"})
-    public AppUserBean updateUser(@Valid @RequestBody AppUserBean user){
+    public User updateUser(@Valid @RequestBody User user){
 
         if(user.getRegistrationDate() == null) user.setRegistrationDate(LocalDateTime.now());
         log.info("User : " + user);
@@ -103,7 +103,7 @@ public class AuthAdminController {
     }
 
     @PostMapping(value = {"/add", "/add/"})
-    public AppUserBean addNewUser(@Valid @RequestBody AppUserBean user){
+    public User addNewUser(@Valid @RequestBody User user){
 
         user.setRegistrationDate(LocalDateTime.now());
         log.info("User : " + user);
@@ -146,12 +146,12 @@ public class AuthAdminController {
             result = e.status();
         }
 
-        List<AppUserBean> userList = new ArrayList<>((List<AppUserBean>) result);
+        List<User> userList = new ArrayList<>((List<User>) result);
         List<Address> addressList = null;
         if(result instanceof ArrayList) {
             addressList = new ArrayList<>();
 
-            for(AppUserBean user : userList){
+            for(User user : userList){
 
                 try{
                     addressList.add(adminService.findAddressById(user.getAddressId()));

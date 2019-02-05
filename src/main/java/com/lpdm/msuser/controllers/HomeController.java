@@ -1,10 +1,9 @@
 package com.lpdm.msuser.controllers;
 
-import com.lpdm.msuser.proxies.MsProductProxy;
-import com.lpdm.msuser.proxies.MsUserProxy;
+import com.lpdm.msuser.proxy.ProductProxy;
+import com.lpdm.msuser.proxy.MsUserProxy;
 import com.lpdm.msuser.security.cookie.CookieDecoder;
 import com.lpdm.msuser.security.jwt.auth.JwtValidator;
-import com.lpdm.msuser.security.jwt.config.JwtAuthConfig;
 import com.lpdm.msuser.security.jwt.model.JwtUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Arrays;
 
 @Controller
 public class HomeController {
@@ -24,7 +20,7 @@ public class HomeController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    MsProductProxy productProxy;
+    ProductProxy productProxy;
 
     @Autowired
     MsUserProxy userProxy;
