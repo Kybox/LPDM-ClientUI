@@ -1,20 +1,22 @@
 package com.lpdm.msuser.controllers;
 
-import com.lpdm.msuser.msproduct.ProductBean;
 import com.lpdm.msuser.proxies.MsProductProxy;
 import com.lpdm.msuser.proxies.MsUserProxy;
+import com.lpdm.msuser.security.cookie.CookieDecoder;
+import com.lpdm.msuser.security.jwt.auth.JwtValidator;
+import com.lpdm.msuser.security.jwt.config.JwtAuthConfig;
+import com.lpdm.msuser.security.jwt.model.JwtUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 @Controller
 public class HomeController {
@@ -27,59 +29,34 @@ public class HomeController {
     @Autowired
     MsUserProxy userProxy;
 
+    private final JwtValidator jwtValidator;
+
     @Autowired
-    SessionController sessionController;
+    public HomeController(JwtValidator jwtValidator) {
+        this.jwtValidator = jwtValidator;
+    }
+
+    //@Autowired
+    //SessionController sessionController;
 
     /**
      * displays home page
-     * @param session
      * @param model
      * @return
      */
     @GetMapping("/")
-    public String home(HttpSession session, Model model){
+    public String home(Model model, HttpServletRequest request){
         logger.info("Entrée dans la méthode 'home'");
 
-        //model.addAttribute("categories", productProxy.listCategories());
-        //model.addAttribute("producers", userProxy.getUsersByRole(3));
-        //model.addAttribute( "products", productToBeDisplayed(productProxy.listProduct(), 1 , 3));
-        sessionController.addSessionAttributes(session,model);
+        JwtUser user = CookieDecoder.getJwtUser(request);
+        if(user != null) model.addAttribute("userData", user);
 
-        return "shop/fragments/home";//"home";
-    }
+        else logger.info("No valide user in cookie");
 
-    /**
-     * loads the message to be sent by the email
-     * @param email
-     * @param text
-     * @return confirmation page
-     */
-    @PostMapping("/message")
-    public String message(@RequestParam String email, @RequestParam String text){
-        logger.info(text + " de " + email);
+        //sessionController.addSessionAttributes(session,model);
+        model.addAttribute("categories", productProxy.listCategories());
+        model.addAttribute("producers", userProxy.getUsersByRole(3));
         return "home";
     }
-
-    /**
-     * selects the products to be displayed at requested page and according to number of products per page
-     * @param productList
-     * @param page
-     * @param prodPerPage
-     * @return list of products to be displayed
-     */
-    public List<ProductBean> productToBeDisplayed(List<ProductBean> productList, int page, int prodPerPage){
-        List<ProductBean> toBeDisplayed = new ArrayList<>();
-        int startIndex = page * prodPerPage;
-
-        for(int i = startIndex; i < startIndex + prodPerPage; i++)
-            toBeDisplayed.add(productList.get(i));
-
-        logger.info(toBeDisplayed.toString());
-
-        return toBeDisplayed;
-
-    }
-
-
 
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <div data-th-fragment="overview">
     <div class="row">
         <div class="col-sm-12">
@@ -19,8 +19,8 @@
                     <div class="panel-heading">
                         <div class="panel-title">
                             <a data-toggle="collapse" data-th-href="'#collapse' + ${status.index}">
-                                <span data-th-text="${ms.name}"></span>
-                                <span class="badge" data-th-text="${#lists.size(ms.getInstances())}" style="position: absolute;margin:0px 7px;"></span>
+                                <span data-th-text="${ms.userName}"></span>
+                                <span class="badge" data-th-text="${#lists.size(ms.getInstances())}" style="position: absolute;margin:0 7px;"></span>
                             </a>
                         </div>
                     </div>
@@ -43,14 +43,14 @@
                                     <tr><th>Hostname</th><td data-th-text="${inst.getHostName()}"></td></tr>
                                     <tr><th>App Name</th><td data-th-text="${inst.getAppName()}"></td></tr>
                                     <tr><th>IP Address</th><td data-th-text="${inst.getIPAddr()}"></td></tr>
-                                    <tr><th>Status</th><td data-th-text="${inst.getStatus().name()}"></td></tr>
+                                    <tr><th>Status</th><td data-th-text="${inst.getStatus().userName()}"></td></tr>
                                     <tr><th>Port</th><td data-th-text="${inst.getPort()}"></td></tr>
                                     <tr><th>Secure port</th><td data-th-text="${inst.getSecurePort()}"></td></tr>
                                     <tr><th>Data center info</th><td data-th-text="${inst.getDataCenterInfo().getName()}"></td></tr>
                                     <tr><th>Registration</th><td data-th-text="${#dates.format(inst.getLeaseInfo().getRegistrationTimestamp(), 'dd / MM / yyyy à HH:mm:ss')}"></td></tr>
                                     <tr><th>Last renewal</th><td data-th-text="${#dates.format(inst.getLeaseInfo().getRenewalTimestamp(), 'dd / MM / yyyy à HH:mm:ss')}"></td></tr>
                                     <tr><th>Last updated</th><td data-th-text="${#dates.format(inst.getLastUpdatedTimestamp(), 'dd / MM / yyyy à HH:mm:ss')}"></td></tr>
-                                    <tr><th>Action type</th><td data-th-text="${inst.getActionType().name()}"></td></tr>
+                                    <tr><th>Action type</th><td data-th-text="${inst.getActionType().userName()}"></td></tr>
                                     </tbody>
                                 </table>
 

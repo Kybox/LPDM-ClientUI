@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
-<div data-th-fragment="products">
+<html lang="fr">
+<div data-th-fragment="products(order, total)">
     <div class="panel-group">
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" href="#collapse1">Produits commandés</a>
-                    <span class="badge" data-th-text="${#lists.size(order.key.orderedProducts)}"></span>
+                    <span class="badge" data-th-text="${#lists.size(order.orderedProducts)}"></span>
                 </h4>
             </div>
             <div id="collapse1" class="panel-collapse collapse in" aria-expanded="true">
@@ -20,23 +20,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr data-th-each="orderedProduct,loop : ${order.key.orderedProducts}">
-                        <td data-th-text="${orderedProduct.product.name}"></td>
-                        <td data-th-text="${orderedProduct.price}" class="text-center"></td>
+                    <tr data-th-each="orderedProduct : ${order.orderedProducts}">
+                        <td data-th-text="${orderedProduct.product.userName}"></td>
+                        <td data-th-text="${orderedProduct.product.price}" class="text-center"></td>
                         <td data-th-text="${orderedProduct.quantity}" class="text-center"></td>
-                        <td data-th-text="${orderedProduct.tax}+' %'" class="text-center"> <span> %</span></td>
+                        <td data-th-text="${orderedProduct.product.tva}+' %'" class="text-center"> <span> %</span></td>
                     </tr>
                     </tbody>
                 </table>
-                <hr>
-                <div class="text-right" style="margin-right: 15px;">
-                    Sous total : <span data-th-text="${order.value[0]}"></span> euros TTC<br>
-                    T.V.A. : <span data-th-text="${order.value[1]}"></span> euros TTC<br>
-                    Code promo : <span data-th-text="${order.value[2]}"></span> euros TTC
-                </div>
                 <div class="panel-footer text-right">
-
-                    <div>Total de la commande : <span data-th-text="${order.value[3]}"></span> euros TTC</div>
+                    Total de la commande : <span data-th-text="${total}"></span> euros TTC
                 </div>
             </div>
         </div>

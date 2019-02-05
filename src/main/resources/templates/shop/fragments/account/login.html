@@ -6,8 +6,6 @@
 <body>
 <div data-layout-fragment="content" style="padding-top: 10px;">
     <div class="row">
-
-        <!-- Left Panel-->
         <div class="col-sm-6 no-float">
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -17,34 +15,23 @@
                     <p>L'ensemble du processus ne vous prendra pas plus d'une minute !</p>
                     <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter</a></h6>
                     <div class="row">
-                        <form action="/identification/registration" method="post">
                         <ul class="list-group">
 
                             <!-- User last name -->
-                            <!-- <div th:text="${error}"/>
 
-                            <form th:action="@{/identification/login}" method="post">
-                                <div><label> User Name : <input type="email" name="email"/> </label></div>
-                                <div><label> Password: <input type="password" name="password"/> </label></div>
-                                <div><input type="submit" value="Sign In"/></div>
-                            </form>
-
-                            <a href="/identification/registration">Nouvel enregistrement</a>
-                            -->
                             <li class="list-group-item" style="height: 56px; border: none;">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <label data-th-for="name_reg" class="input-group-addon" style="width: 150px;">
+                                        <label data-th-for="user_name" class="input-group-addon" style="width: 150px;">
                                             Nom
                                         </label>
                                         <input type="text"
                                                class="form-control"
-                                               id="name_reg"
-                                               required
-                                               name="name_reg">
+                                               id="user_lastName"
+                                               required>
                                         <div class="input-group-btn">
                                             <button class="btn btn-danger"
-                                                    id="check_name_reg"
+                                                    id="check_name"
                                                     type="button"
                                                     tabindex="-1"
                                                     data-toggle="tooltip"
@@ -52,36 +39,7 @@
                                                     title="Saisir le nom de famille"
                                                     style="cursor: default;"
                                                     disabled>
-                                                <span class="glyphicon glyphicon-check" aria-hidden="true"
-                                                      style="padding-left: 6px;"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item" style="height: 56px; border: none;">
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <label data-th-for="firstName_reg" class="input-group-addon" style="width: 150px;">
-                                            Prénom
-                                        </label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="firstName_reg"
-                                               required
-                                               name="firstName_reg">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-danger"
-                                                    id="check_firstName_reg"
-                                                    type="button"
-                                                    tabindex="-1"
-                                                    data-toggle="tooltip"
-                                                    data-placement="left"
-                                                    title="Saisir le nom de famille"
-                                                    style="cursor: default;"
-                                                    disabled>
-                                                <span class="glyphicon glyphicon-check" aria-hidden="true"
-                                                      style="padding-left: 6px;"></span>
+                                                <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
                                             </button>
                                         </div>
                                     </div>
@@ -93,17 +51,16 @@
                             <li class="list-group-item" style="height: 56px; border: none;">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <label for="user_email_reg" class="input-group-addon" style="width: 150px;">
+                                        <label for="user_email" class="input-group-addon" style="width: 150px;">
                                             E-mail
                                         </label>
                                         <input type="email"
-                                               name="email_reg"
                                                class="form-control"
-                                               id="user_email_reg"
+                                               id="user_email"
                                                required>
                                         <div class="input-group-btn">
                                             <button class="btn btn-danger"
-                                                    id="check_email_reg"
+                                                    id="check_email"
                                                     type="button"
                                                     tabindex="-1"
                                                     data-toggle="tooltip"
@@ -111,8 +68,7 @@
                                                     title="Saisir une adresse e-mail"
                                                     style="cursor: default;"
                                                     disabled>
-                                                <span class="glyphicon glyphicon-check" aria-hidden="true"
-                                                      style="padding-left: 6px;"></span>
+                                                <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
                                             </button>
                                         </div>
                                     </div>
@@ -124,17 +80,16 @@
                             <li class="list-group-item" style="height: 56px; border: none;">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <label for="user_password_reg_1" class="input-group-addon" style="width: 150px;">
+                                        <label for="user_password" class="input-group-addon" style="width: 150px;">
                                             Mot de passe
                                         </label>
                                         <input type="password"
-                                               name="password_reg"
                                                class="form-control"
-                                               id="user_password_reg_1"
+                                               id="user_password"
                                                required>
                                         <div class="input-group-btn">
                                             <button class="btn btn-danger"
-                                                    id="check_password_reg_1"
+                                                    id="check_password"
                                                     type="button"
                                                     tabindex="-1"
                                                     data-toggle="tooltip"
@@ -142,57 +97,24 @@
                                                     title="Saisir un mot de passe"
                                                     style="cursor: default;"
                                                     disabled>
-                                                <span class="glyphicon glyphicon-check" aria-hidden="true"
-                                                      style="padding-left: 6px;"></span>
+                                                <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item" style="height: 56px; border: none;">
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <label for="user_password_reg_2" class="input-group-addon" style="width: 150px;">
-                                            Confirmer mot de passe
-                                        </label>
-                                        <input type="password"
-                                               name="password_reg_2"
-                                               class="form-control"
-                                               id="user_password_reg_2"
-                                               required>
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-danger"
-                                                    id="check_password_reg_2"
-                                                    type="button"
-                                                    tabindex="-1"
-                                                    data-toggle="tooltip"
-                                                    data-placement="left"
-                                                    title="Saisir un mot de passe"
-                                                    style="cursor: default;"
-                                                    disabled>
-                                                <span class="glyphicon glyphicon-check" aria-hidden="true"
-                                                      style="padding-left: 6px;"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="alert alert-default text-center">
-                                    <button type="submit" class="btn btn-success" id="btn_register">
-                                        Créer mon compte
-                                    </button>
                                 </div>
                             </li>
                         </ul>
+                    </div>
+                    <div class="alert alert-default text-center">
+                        <form action="/shop/account">
+                            <button type="submit" class="btn btn-success" id="btn_register">
+                                Créer mon compte
+                            </button>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>
-
-        <!-- Right panel-->
         <div class="col-sm-6 no-float">
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -202,8 +124,10 @@
                     <p>Connectez-vous en un instant à votre compte !</p>
                     <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter</a></h6>
                     <br>
-                    <div class="row">
-                        <form action="/identification/login" method="post">
+                    <form method="post" data-th-action="@{/identification/login}">
+                        <input data-th-if="${redirect != null}" type="hidden" data-th-field="${redirect.path}">
+                        <div class="row">
+
                             <ul class="list-group">
 
                                 <!-- User email -->
@@ -211,13 +135,13 @@
                                 <li class="list-group-item" style="height: 56px; border: none;">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <label for="user_email" class="input-group-addon" style="width: 150px;">
+                                            <label for="login_email" class="input-group-addon" style="width: 150px;">
                                                 E-mail
                                             </label>
                                             <input type="email"
                                                    class="form-control"
-                                                   id="user_email"
-                                                   name="email"
+                                                   id="login_email"
+                                                   data-th-field="${appUser.email}"
                                                    required>
                                             <div class="input-group-btn">
                                                 <button class="btn btn-danger"
@@ -229,23 +153,25 @@
                                                         title="Saisir une adresse e-mail"
                                                         style="cursor: default;"
                                                         disabled>
-                                                <span class="glyphicon glyphicon-check" aria-hidden="true"
-                                                      style="padding-left: 6px;"></span>
+                                                    <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
+
+                                <!-- User password -->
+
                                 <li class="list-group-item" style="height: 56px; border: none;">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <label for="user_password" class="input-group-addon" style="width: 150px;">
-                                                Password
+                                            <label for="login_password" class="input-group-addon" style="width: 150px;">
+                                                Mot de passe
                                             </label>
                                             <input type="password"
                                                    class="form-control"
                                                    id="login_password"
-                                                   name="password"
+                                                   data-th-field="${appUser.password}"
                                                    required>
                                             <div class="input-group-btn">
                                                 <button class="btn btn-danger"
@@ -257,40 +183,52 @@
                                                         title="Saisir un mot de passe"
                                                         style="cursor: default;"
                                                         disabled>
-                                                <span class="glyphicon glyphicon-check" aria-hidden="true"
-                                                      style="padding-left: 6px;"></span>
+                                                    <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
-
-
-                                <!-- User password -->
-
-                                <li class="list-group-item" style="height: 56px; border: none;">
-                                    <div class="form-group">
-                                        <div class="alert alert-default text-center">
-
-                                        <button type="submit" class="btn btn-success" id="btn_login">
-                                                Connexion à mon compte
-                                            </button>
-                                            <p th:unless="!${error}" th:text="${error}"/>
-                                        </div>
-
-
-                                    </div>
-
-                                </li>
                             </ul>
-                        </form>
-                    </div>
-                    <br>
+                        </div>
+                        <br>
+                        <div class="alert alert-default text-center">
+                            <form action="/shop/account">
+                                <button type="submit" class="btn btn-success" id="btn_login">
+                                    Connexion à mon compte
+                                </button>
+                            </form>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    <div data-th-if="${param.error != null}">
+        <!-- Modal -->
+        <div id="errorModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"><b><i>Erreur</i></b></h4>
+                    </div>
+                    <div class="modal-body alert-danger">
+                        <p><span data-th-text="${param.error[0]}"></span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <script data-th-inline="javascript">
+            $('.modal').modal('show');
+        </script>
+    </div>
 </div>
 </body>
 </html>

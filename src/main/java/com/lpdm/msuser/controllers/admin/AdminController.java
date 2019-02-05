@@ -10,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import org.slf4j.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.regex.Pattern;
 
@@ -27,8 +28,12 @@ public class AdminController {
     }
 
     @GetMapping(value = {"", "/", "/login", "/login/"})
-    public ModelAndView adminHome(){
+    public ModelAndView adminHome(HttpServletRequest request){
+
         log.info("URL : /admin/");
+        log.info("Authorization = " + request.getHeader("Authorization"));
+
+
         return new ModelAndView("admin/fragments/login")
                 .addObject("pageTitle", "Admin home");
     }

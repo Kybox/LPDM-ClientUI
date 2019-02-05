@@ -1,9 +1,14 @@
 package com.lpdm.msuser.controllers;
 
-import com.lpdm.msuser.msauthentication.AppRoleBean;
 import com.lpdm.msuser.msauthentication.AppUserBean;
-import com.lpdm.msuser.msorder.OrderBean;
-import com.lpdm.msuser.proxies.*;
+import com.lpdm.msuser.proxies.MsProductProxy;
+import com.lpdm.msuser.proxies.MsUserProxy;
+import com.lpdm.msuser.security.cookie.CookieAppender;
+import com.lpdm.msuser.security.jwt.auth.JwtGenerator;
+import com.lpdm.msuser.security.jwt.auth.JwtUserBuilder;
+import com.lpdm.msuser.security.jwt.config.JwtAuthConfig;
+import com.lpdm.msuser.security.jwt.model.JwtRedirect;
+import com.lpdm.msuser.security.jwt.model.JwtUser;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,33 +18,34 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/identification")
 public class LoginController {
+
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private MsUserProxy msUserProxy;
 
-    @Autowired
-    private MsAuthProxy msAuthProxy;
-
-    @Autowired
-    private SessionController sessionController;
+    //@Autowired
+    //private SessionController sessionController;
 
     @Autowired
     MsProductProxy msProductProxy;
 
-    @Autowired
-    MsLocationProxy msLocationProxy;
+    private final JwtAuthConfig jwtAuthConfig;
+    private final JwtGenerator jwtGenerator;
 
     @Autowired
-    MsOrderProxy msOrderProxy;
+    public LoginController(JwtGenerator jwtGenerator, JwtAuthConfig jwtAuthConfig) {
+        this.jwtGenerator = jwtGenerator;
+        this.jwtAuthConfig = jwtAuthConfig;
+    }
 
     /**
      * displays the login form
@@ -48,108 +54,111 @@ public class LoginController {
      * @return template
      */
     @GetMapping("/login")
-    public String loginForm(HttpSession session, Model model){
+    public String loginForm(@RequestParam(required = false) String page, Model model){
         logger.info("Affichage du formulaire de login");
-        sessionController.addSessionAttributes(session, model);
+        logger.info("-> Path = " + page);
+        //sessionController.addSessionAttributes(session, model);
+        //return "identification/login";
+        if(page != null) model.addAttribute("redirect", new JwtRedirect(page));
+        model.addAttribute("appUser", new AppUserBean());
         return "shop/fragments/account/login";
     }
 
     /**
      * displays the registration form
-     * @param session
      * @param model
      * @return template
      */
     @GetMapping("/registration")
-    public String registrationForm(HttpSession session, Model model){
+    public String registrationForm(Model model){
         logger.info("Affichage du formulaire d'enregistrement");
-        return "shop/fragments/account/login";
+
+
+        return "identification/registration";
     }
 
     /**
      * requests ms-auth to identify a user and retrieve their information if password matches. save records in the session
      * @param user
      * @param model
-     * @param session
+
      * @return home template if correct credentials
      */
     @PostMapping("/login")
-    public String login(@ModelAttribute AppUserBean user, Model model, HttpSession session){
+    public String login(@ModelAttribute AppUserBean user,
+                        @ModelAttribute JwtRedirect redirect,
+                        Model model, HttpServletResponse response) {
+
+        logger.info("Redirect value = " + redirect.getPath());
+        logger.info("appUser : " + user.toString());
+        logger.info("Essai de login");
 
         AppUserBean appUser = null;
-        logger.info("appUser : " + user.toString());
 
-        logger.info("trying to login");
-        try {
-            appUser = msUserProxy.login(user);
-        }catch (FeignException e){
-            model.addAttribute("error", "Nom d'utiisateur ou mot de passe invalide");
-            sessionController.addSessionAttributes(session, model);
-            return "shop/fragments/account/login";
+        try{ appUser = msUserProxy.login(user); }
+        catch (FeignException e){
+
+            logger.warn(e.getMessage());
+            model.addAttribute("error", "Cet utilisateur n'est pas enregistré");
+            return "identification/login";
         }
 
+        logger.info("appUser : " + appUser.toString());
 
         if (appUser.getId() == 0){
-            logger.info("No user found");
-            model.addAttribute("error", " Cet utilisateur n'est pas enregistré");
-            sessionController.addSessionAttributes(session, model);
-            return "shop/fragments/account/login";
+            logger.info("Pas d'utilisateur trouvé");
+
+            return "identification/login";
 
         } else {
             logger.info("appUser : " + appUser.toString());
-            logger.info("Entering user in session");
-            session.setAttribute("user", appUser);
-            sessionController.addSessionAttributes(session, model);
-            return "shop/fragments/home";
+            logger.info("Entrée de l'utilisateur dans la session");
+            //session.setAttribute("user", appUser);
+            //sessionController.addSessionAttributes(session, model);
+
+            /* USER FOUND, NOW GENERATE THE JWT USER AND INJECT IT TO A COOKIE*/
+            JwtUser jwtUser = JwtUserBuilder.build(appUser);
+            CookieAppender.addToken(jwtGenerator.generate(jwtUser), response);
+
+            if(redirect.getPath() != null) return "redirect:/" + redirect.getPath();
+            else return "redirect:/";
         }
     }
 
     /**
      * sends information to ms-auth to persist a new user and open an account after password confirmation. Save records in the session
-     * @param name_reg
-     * @param email_reg
-     * @param password_reg
-     * @param password_reg_2
+     * @param user
+     * @param password2
      * @param model
      * @param session
-    // * @param bindingResult
-     * @return home template with user authenticated
+     * @param bindingResult
+     * @return home template
      */
     @PostMapping("/registration")
-    public String registration(@RequestParam String name_reg,
-                               @RequestParam String firstName_reg,
-                               @RequestParam String email_reg,
-                               @RequestParam String password_reg,
-                               @RequestParam String password_reg_2,
-                               Model model,
-                               HttpSession session)
-    {
-        AppUserBean user = new AppUserBean();
-        user.setName(name_reg);
-
-        user.setFirstName(firstName_reg);
-        user.setEmail(email_reg);
-        user.setPassword(password_reg);
-        user.setAppRole(new ArrayList<>());
-        user.getAppRole().add(msUserProxy.getRoleById(4));
+    public String registration(@ModelAttribute AppUserBean user, @RequestParam String password2, Model model, HttpSession session, BindingResult bindingResult){
 
         logger.info("Essai de registration");
         logger.info("Utilisateur: " + user.getFirstName() + " " + user.getName() + " " + user.getEmail() + " " + user.getPassword());
 
-        if (!user.getPassword().equals(password_reg_2)){
-            model.addAttribute("error", "Les mots de passe sont différents");
-        } else if (msUserProxy.getUserByEmail(user.getEmail()) != null) {
-            model.addAttribute("error","L'utilisateur existe déjà");
-        }else if(user.getPassword().equals(password_reg_2)){
-            logger.info("Passwords match!");
-            msAuthProxy.addNewUser(user);
-            session.setAttribute("user", user);
-            sessionController.addSessionAttributes(session, model);
-            return "shop/fragments/home";
+        if (bindingResult.hasErrors()) {
+            return "/identification/registration";
         }
-        sessionController.addSessionAttributes(session, model);
+        if (!user.getPassword().equals(password2)){
+            logger.info("erreur de mdp: " + password2);
+            model.addAttribute("error", "Les mots de passe saisis sont différents");
+        } else if (msUserProxy.getUserByEmail(user.getEmail()) != null) {
+            logger.info("L'utilisateur existe déjà");
+            model.addAttribute("error","L'utilisateur existe déjà");
+        }else if(user.getPassword().equals(password2)){
+            logger.info("Mot de passe similaires");
+            msUserProxy.addUser(user);
+            session.setAttribute("user", user);
+            //sessionController.addSessionAttributes(session, model);
+            return "home";
+        }
+        //sessionController.addSessionAttributes(session, model);
 
-        return "shop/fragments/account/login";
+        return "/identification/registration";
     }
 
     /**
@@ -158,58 +167,9 @@ public class LoginController {
      * @return home page template
      */
     @GetMapping("/logout")
-    public String logout(HttpSession session, Model model){
-        sessionController.addSessionAttributes(session, model);
-        logger.info(sessionController.cart.toString());
-        sessionController.logout(session);
-        return "shop/fragments/home";
-    }
-
-    @GetMapping("/{id}")
-    public String profile(@PathVariable ("id") int id, Model model, HttpSession session){
-        logger.info("entering profile");
-        AppUserBean user = msUserProxy.getUserById(id);
-        model.addAttribute("user", user);
-        logger.info("user:" +  user.toString());
-        model.addAttribute("orders", msOrderProxy.findAllByUserId(id));
-        session.setAttribute("user", user);
-        sessionController.addSessionAttributes(session, model);
-        return "shop/fragments/account/account";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String editProfileForm(@PathVariable("id") int id, Model model, HttpSession session){
-        logger.info("entering profile");
-        AppUserBean user = msUserProxy.getUserById(id);
-        model.addAttribute("user", user);
-        sessionController.addSessionAttributes(session, model);
-        return "shop/fragments/account/account.html";
-    }
-
-
-    @PostMapping(value = "/edit")
-    public String changeProfile(@ModelAttribute AppUserBean userToUpdate, Model model, HttpSession session){
-        logger.info("changeProfile userToUpdate: " + userToUpdate.toString());
-        AppUserBean sessionUser = (AppUserBean)session.getAttribute("user");
-        userToUpdate.setId(sessionUser.getId());
-        AppUserBean appUser = msUserProxy.updateAppUser(userToUpdate);
-        model.addAttribute("user", appUser);
-        sessionController.addSessionAttributes(session, model);
-        return "shop/fragments/account/account.html";
-    }
-
-    @PostMapping(value = "/editroles")
-    public String changeRoles(@RequestParam List<String> appRole, Model model, HttpSession session){
-        AppUserBean sessionUser = (AppUserBean)session.getAttribute("user");
-
-        sessionUser.getAppRole().clear();
-
-        for(String role: appRole)
-            sessionUser.getAppRole().add(msUserProxy.getRoleById(Integer.parseInt(role)));
-        msUserProxy.updateAppUser(sessionUser);
-        session.setAttribute("user", sessionUser);
-        sessionController.addSessionAttributes(session, model);
-        return "shop/fragments/account/account.html";
+    public String logout(HttpSession session){
+        //sessionController.logout(session);
+        return "home";
     }
 
 }

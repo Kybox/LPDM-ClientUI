@@ -25,3 +25,7 @@ spring:
       ddl-auto: validate
   thymeleaf:
     cache: false
+server:
+  servlet:
+    session:
+      tracking-modes: cookie

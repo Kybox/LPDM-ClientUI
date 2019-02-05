@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <div data-th-fragment="unsubscribe">
     <script data-th-src="@{/js/admin/eureka/unsubscribe.js}" charset="UTF-8"></script>
     <div class="row">
@@ -16,7 +16,7 @@
         <!-- LOOP MICROSERVICE -->
         <div data-th-each="ms,status : ${data}">
             <div class="input-group">
-                <label class="input-group-addon" data-th-for="${ms.name}">Microservice</label>
+                <label class="input-group-addon" data-th-for="${ms.userName}">Microservice</label>
                 <span data-th-id="${ms.name}" class="form-control" data-th-text="${ms.name}"></span>
             </div>
             <ul class="list-group">

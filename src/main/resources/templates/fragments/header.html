@@ -1,17 +1,9 @@
-<div th:fragment="header">
+<div data-th-fragment="header">
      <header>
 
 
 
-         <div class="navbar-header">
-             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
-                 <span class="sr-only">Toggle navigation</span>
-                 <span class="icon-bar"></span>
-                 <span class="icon-bar"></span>
-                 <span class="icon-bar"></span>
-             </button>
-             <a class="navbar-brand" href="#">Un slogan</a>
-         </div>
+
 
         <!-- col 1  -->
         <div class="row">
@@ -25,11 +17,15 @@
             </div>
             <!-- col 3  -->
             <div class="col-md-2">
-                <a th:unless="${user}" href="/identification/login">Identification</a>
-                <div th:inline="text "><p th:unless="!${user}" th:text="'Bienvenue, ' + ${user.getFirstName()} " /><a th:unless="!${user}" href="/identification/logout">Déconnexion</a></div>
-
-
-                <!-- <a th:unless="!${username}" th:href="@{'/'+ ${user.getId()}}">Profil utilisateur</a> -->
+                <div data-th-if="${userData != null}">
+                    <h3>Bonjour <span data-th-text="${userData.userName}"></span></h3>
+                </div>
+                <a data-th-if="${userData == null}" href="/identification/login">Identification</a>
+                <!--
+                <a th:unless="${username}" href="/identification/login">Identification</a>
+                <h3 th:unless="!${username}" th:text="'Bienvenue, ' + ${username}"/>
+                <a th:unless="!${username}" href="/identification/logout">Déconnexion</a>
+                -->
             </div>
         </div>
 
