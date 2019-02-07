@@ -14,6 +14,7 @@ public class CookieAppender {
 
     @Autowired
     public CookieAppender(JwtAuthConfig jwtAuthConfig) {
+
         CookieAppender.jwtAuthConfig = jwtAuthConfig;
     }
 

@@ -124,8 +124,7 @@
                     <p>Connectez-vous en un instant à votre compte !</p>
                     <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter</a></h6>
                     <br>
-                    <form method="post" data-th-action="@{/identification/login}">
-                        <input data-th-if="${redirect != null}" type="hidden" data-th-field="${redirect.path}">
+                    <form method="post" data-th-action="@{/shop/account/login}" data-th-object="${loginForm}">
                         <div class="row">
 
                             <ul class="list-group">
@@ -141,7 +140,7 @@
                                             <input type="email"
                                                    class="form-control"
                                                    id="login_email"
-                                                   data-th-field="${appUser.email}"
+                                                   data-th-field="*{email}"
                                                    required>
                                             <div class="input-group-btn">
                                                 <button class="btn btn-danger"
@@ -171,7 +170,7 @@
                                             <input type="password"
                                                    class="form-control"
                                                    id="login_password"
-                                                   data-th-field="${appUser.password}"
+                                                   data-th-field="*{password}"
                                                    required>
                                             <div class="input-group-btn">
                                                 <button class="btn btn-danger"
@@ -193,13 +192,14 @@
                         </div>
                         <br>
                         <div class="alert alert-default text-center">
-                            <form action="/shop/account">
-                                <button type="submit" class="btn btn-success" id="btn_login">
-                                    Connexion à mon compte
-                                </button>
-                            </form>
+                            <button type="submit" class="btn btn-success" id="btn_login">
+                                Connexion à mon compte
+                            </button>
                         </div>
                     </form>
+                    <div data-th-if="${loginError != null}" class="alert alert-danger text-center">
+                        La connexion à votre compte utilisteur a échouée
+                    </div>
                 </div>
             </div>
         </div>

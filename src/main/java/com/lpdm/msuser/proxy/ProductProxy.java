@@ -2,6 +2,7 @@ package com.lpdm.msuser.proxy;
 
 import com.lpdm.msuser.model.product.Category;
 import com.lpdm.msuser.model.product.Product;
+import com.lpdm.msuser.model.shop.ProductsPageable;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -14,6 +15,26 @@ import java.util.List;
 @FeignClient(name = "zuul-server", url = "https://zuul.lpdm.kybox.fr")
 @RibbonClient(name = "ms-product")
 public interface ProductProxy {
+
+    // Pageable products
+    @GetMapping(value = "${lpdm.product.name}/listPageable",
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ProductsPageable getProductPageable(@RequestParam("page") int page, @RequestParam("size") int size);
+
+    // All cateogries
+    @GetMapping(value = "${lpdm.product.name}/categories",
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    List<Category> findAllCategories();
+
+    // Product by category
+    @GetMapping(value = "${lpdm.product.name}/products/category/{id}",
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    List<Product> findProductsByCategory(@PathVariable int id);
+
+    @GetMapping(value = "${lpdm.product.name}/products/{id}",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Product findProductById(@PathVariable int id);
+
 
     // Test OK
     @GetMapping(value = "/ms-product/products", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -34,9 +55,6 @@ public interface ProductProxy {
     @PutMapping(value = "ms-product/products", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     void updateProduct(@RequestBody Product product);
 
-    @GetMapping(value = "ms-product/products/category/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    List<Product> listProductByCategory(@PathVariable int id);
-
     @PostMapping(value = "ms-product/products/category", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     List<Product> listProductByCategory2(@RequestBody Category category);
 
@@ -46,8 +64,7 @@ public interface ProductProxy {
     @GetMapping(value = "ms-product/products/name/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     List<Product> listProductByName(@PathVariable String name);
 
-    @GetMapping(value = "ms-product/categories", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    List<Category> listCategories();
+
 
     @GetMapping(value = "ms-product/categories/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Category category(@PathVariable int id);

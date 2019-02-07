@@ -6,18 +6,17 @@ import com.lpdm.msuser.model.product.Product;
 public class OrderedProduct {
 
     private int id;
-
     private Order order;
-
     private int productId;
-
     private Product product;
-
     private int quantity;
-
     private double price;
-
     private double tax;
+    private double totalAmount;
+    private double priceWithTax;
+
+    public OrderedProduct() {
+    }
 
     public int getId() {
         return id;
@@ -75,6 +74,22 @@ public class OrderedProduct {
         this.tax = tax;
     }
 
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public double getPriceWithTax() {
+        return priceWithTax;
+    }
+
+    public void setPriceWithTax(double priceWithTax) {
+        this.priceWithTax = priceWithTax;
+    }
+
     @Override
     public String toString() {
         return "OrderedProduct{" +
@@ -84,6 +99,9 @@ public class OrderedProduct {
                 ", product=" + product +
                 ", quantity=" + quantity +
                 ", price=" + price +
+                ", tax=" + tax +
+                ", totalAmount=" + totalAmount +
+                ", priceWithTax=" + priceWithTax +
                 '}';
     }
 }

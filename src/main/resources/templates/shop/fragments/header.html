@@ -32,34 +32,29 @@
                     <li><a href="#">Contact</a></li>
                     <li><a href="/shop/login">Mon compte</a></li>
                     <li>
-                        <ul class="nav navbar-nav navbar-right">
+                        <ul class="nav navbar-nav navbar-right" id="cart_menu">
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <a href="#"
+                                   id="cart_label"
+                                   class="dropdown-toggle"
+                                   data-toggle="dropdown"
+                                   role="button" aria-expanded="false">
                                     <span class="glyphicon glyphicon-shopping-cart"></span>
-                                    2 - Articles
-                                    <span class="caret"></span></a>
-                                <ul class="dropdown-menu dropdown-cart" role="menu">
-                                    <li>
+                                    <span data-th-if="${cookieOrder == null}"> 0 - Articles </span>
+                                    <span data-th-if="${cookieOrder != null}" data-th-text="' ' + ${totalProducts} + ' - Articles '"></span>
+                                    <span class="caret"></span>
+                                </a>
+                                <ul id="cart_list"
+                                    class="dropdown-menu dropdown-cart"
+                                    role="menu">
+                                    <li data-th-each="orderedProduct : ${cookieOrder?.orderedProducts}">
                                         <span class="item">
                                             <span class="item-left">
-                                                <img src="http://lorempixel.com/50/50/" alt="" />
+                                                <img data-th-src="${orderedProduct.product.picture}"
+                                                     alt="" style="width: 50px; height: 50px;"/>
                                                 <span class="item-info">
-                                                    <span>Item userName</span>
-                                                    <span>23$</span>
-                                                </span>
-                                            </span>
-                                            <span class="item-right">
-                                                <button class="btn btn-xs btn-danger pull-right">x</button>
-                                            </span>
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <span class="item">
-                                            <span class="item-left">
-                                                <img src="http://lorempixel.com/50/50/" alt="" />
-                                                <span class="item-info">
-                                                    <span>Item userName</span>
-                                                    <span>23$</span>
+                                                    <span data-th-text="${orderedProduct.product.name}"></span>
+                                                    <span data-th-text="${orderedProduct.quantity}"></span>
                                                 </span>
                                             </span>
                                             <span class="item-right">
@@ -68,7 +63,7 @@
                                         </span>
                                     </li>
                                     <li class="divider"></li>
-                                    <li><a class="text-center" href="/shop/cart">Mon panier</a></li>
+                                    <li><a class="text-center" data-th-href="'/shop/account'">Mon panier</a></li>
                                 </ul>
                             </li>
                         </ul>

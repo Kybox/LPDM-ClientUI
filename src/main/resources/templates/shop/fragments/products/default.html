@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<div data-th-fragment="default">
+    <h4>Sélectionner une catégorie</h4>
+    <hr>
+    <br>
+    <div class="text-center">
+        <h4><i><b>Actuellement en promotion</b></i></h4>
+    </div>
+    <br>
+    <div data-th-each="product,loop : ${promotions.content}">
+        <div class="col-sm-4 shadow-box product">
+            <div class="col-sm-4 pull-right">
+                <p class="pull-right" data-th-text="${product.price} + ' €'"></p>
+            </div>
+            <p data-th-text="${product.name}"></p>
+            <img data-th-src="${product.picture}"
+                 class="img-thumbnail"
+                 alt="Image" style="height: 220px; width: 100%; overflow: auto">
+        </div>
+    </div>
+</div>
+</html>

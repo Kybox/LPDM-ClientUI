@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<div data-th-fragment="product_list">
+    <h4 data-th-text="'Catégorie ' + ${selectedCategory}"></h4>
+    <hr>
+    <br>
+    <div data-th-each="product,loop : ${productList}">
+        <div class="col-sm-4 shadow-box" style="margin-bottom: 50px">
+            <div class="col-sm-4 pull-right">
+                <span class="pull-right" style="font-size: 16px;">
+                    <b data-th-text="${product.price} + ' €'"></b>
+                </span>
+            </div>
+            <div style="height: 40px; font-size: 14px;">
+                <i data-th-text="${product.name}"></i>
+            </div>
+            <a data-th-href="'/shop/products/cat/' + ${product.category.id} + '/' + ${product.id}">
+            <img data-th-src="${product.picture}"
+                 class="img-thumbnail"
+                 alt="Image" style="height: 220px; width: 100%; overflow: auto">
+            </a>
+        </div>
+    </div>
+</div>
+</html>

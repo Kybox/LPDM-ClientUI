@@ -2,81 +2,39 @@
 <html data-layout-decorate="~{shop/layout}" lang="fr">
 <head>
     <title>LPDM - Produits</title>
-    <link rel="stylesheet" href="/css/shop/products/sidebar.css" type="text/css" media="all">
+    <link rel="stylesheet"
+          data-th-href="@{/css/shop/products/sidebar.css}"
+          type="text/css" media="all">
 </head>
 <body>
 <div data-layout-fragment="content" style="padding-top: 10px;">
     <div class="row affix-row">
-        <div class="col-sm-3 col-md-2 affix-sidebar shadow-box-8 product">
-            <div class="sidebar-nav">
-                <div class="navbar navbar-default" role="navigation">
-                    <div class="navbar-header">
-                        <button type="button"
-                                class="navbar-toggle"
-                                data-toggle="collapse"
-                                data-target=".sidebar-navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <span class="visible-xs navbar-brand">Sidebar menu</span>
-                    </div>
-                    <div class="navbar-collapse collapse sidebar-navbar-collapse">
-                        <ul class="nav navbar-nav" id="sidenav01">
-                            <li class="active">
-                                <a href="#" data-parent="#sidenav01" class="collapsed">
-                                    <h4>Nos produits</h4>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" data-toggle="collapse" data-target="#toggleDemo" data-parent="#sidenav01" class="collapsed">
-                                    <span class="glyphicon glyphicon-chevron-right"></span>
-                                    Catégories
-                                    <span class="caret pull-right"></span>
-                                </a>
-                                <div class="collapse" id="toggleDemo" style="height: 0px;">
-                                    <ul class="nav nav-list">
-                                        <li data-th-each="category,loop : ${productCategories}">
-                                            <a href="#" data-th-text="${category.userName}"></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li>
-                                <a href="#" data-toggle="collapse" data-target="#toggleDemo2" data-parent="#sidenav01" class="collapsed">
-                                    <span class="glyphicon glyphicon-inbox"></span> Submenu 2 <span class="caret pull-right"></span>
-                                </a>
-                                <div class="collapse" id="toggleDemo2" style="height: 0px;">
-                                    <ul class="nav nav-list">
-                                        <li><a href="#">Submenu2.1</a></li>
-                                        <li><a href="#">Submenu2.2</a></li>
-                                        <li><a href="#">Submenu2.3</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li><a href="#"><span class="glyphicon glyphicon-lock"></span> Normalmenu</a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-calendar"></span> WithBadges <span class="badge pull-right">42</span></a></li>
-                            <li><a href=""><span class="glyphicon glyphicon-cog"></span> PreferencesMenu</a></li>
-                        </ul>
-                    </div><!--/.nav-collapse -->
-                </div>
-            </div>
-        </div>
+        <div data-th-replace="/shop/fragments/products/side_menu :: categories"></div>
         <div class="col-sm-10">
             <div class="pull-right">
                 <form class="navbar-form" role="search">
                     <div class="input-group add-on">
                         <input class="form-control"
                                placeholder="Rechercher un produit"
-                               userName="srch-term"
+                               name="srch-term"
                                id="srch-term"
                                type="text">
                         <div class="input-group-btn">
-                            <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                            <button class="btn btn-default" type="submit">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
                         </div>
                     </div>
                 </form>
+            </div>
+            <div data-th-if="${selectedCategory == null}"
+                 data-th-insert="/shop/fragments/products/default :: default">
+            </div>
+            <div data-th-if="${selectedCategory != null && selectedProduct == null}"
+                 data-th-insert="/shop/fragments/products/product_list :: product_list">
+            </div>
+            <div data-th-if="${selectedCategory != null && selectedProduct != null}"
+                 data-th-insert="/shop/fragments/products/product_info :: product">
             </div>
         </div>
     </div>

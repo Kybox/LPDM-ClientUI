@@ -7,51 +7,52 @@
 <div data-layout-fragment="content" style="padding: 20px;">
 
     <div class="text-center">
-        <h2>Nos produits</h2>
-        <form class= form-group th:action="@{/products/sortbycatandprod}" method="post">
-            <fieldset>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <label>Par catégorie</label>
-                        <select class="form-control" name="category">
-                            <option value="0"> -- </option>
-                            <option th:each="category:${categories}" th:value="${category.getId()}" th:text="${category.getName()}"/>
-                        </select>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>Par producteur</label>
-                        <select class="form-control" name="producer">
-                            <option value="0"> -- </option>
-                            <option th:each="producer:${producers}" th:value="${producer.getId()}" th:text="${producer.getName()}"/>
-                        </select>
-                    </div>
+        <h2>Nouveau produits disponibles</h2>
+    </div>
+    <br>
+    <br>
+    <div class="row">
+        <div data-th-if="${productPageable != null}"
+             data-th-each="product,loop : ${productPageable.content}">
+            <div class="col-sm-4 shadow-box product">
+                <div class="col-sm-3 pull-right">
+                    <p class="pull-right" data-th-text="${product.price} + ' €'"></p>
                 </div>
-
-                <br/>
-                <input class="form-control" type="submit" value="Filtrer les produits"/><br/>
-
-            </fieldset>
-        </form>
+                <a data-th-href="'/shop/products/cat/' + ${product.category.id} + '/' + ${product.id}">
+                    <p data-th-text="${product.name}"></p>
+                    <img data-th-src="${product.picture}"
+                         class="img-thumbnail"
+                         alt="Image" style="height: 220px; width: 100%; overflow: auto">
+                </a>
+            </div>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <div class="text-center">
+        <h2>Meilleures ventes</h2>
     </div>
     <br>
     <div class="row">
-        <div th:each="product: ${products}" class="col-sm-4 shadow-box product">
-            <a class="img-responsive" th:href="@{'/products/' + ${product.getId()}}" th:value="${product.getId()}"
-               th:text="${product.getName()}"/> <div th:text="${product.getPrice()}"/><br/>
-            <p><a th:href="@{'/orders/' + ${product.getId()} + '/sub'}" class="minus" th:value="${product.getId()}" >-</a> <input class="nbitem" /> <a th:href="@{'/orders/' + ${product.getId()} + '/add'}" class="plus" th:value="${product.getId()}" >+</a></p>
-
-            <img th:src="${product.getPicture()}" class="product product-img"/><br/>
-
+        <div class="col-sm-4 shadow-box">
+            <p>Lorem ipsum..</p>
+            <img src="https://cache.magazine-avantages.fr/data/photo/w1000_ci/1bj/calendrier-fruits-legumes.jpg"
+                 class="img-thumbnail"
+                 alt="Image">
         </div>
-
-
+        <div class="col-sm-4 shadow-box">
+            <p>Lorem ipsum..</p>
+            <img src="https://cache.magazine-avantages.fr/data/photo/w1000_ci/1bj/calendrier-fruits-legumes.jpg"
+                 class="img-thumbnail"
+                 alt="Image">
+        </div>
+        <div class="col-sm-4 shadow-box">
+            <p>Lorem ipsum..</p>
+            <img src="https://cache.magazine-avantages.fr/data/photo/w1000_ci/1bj/calendrier-fruits-legumes.jpg"
+                 class="img-thumbnail"
+                 alt="Image">
+        </div>
     </div>
-
-    <br>
-
-    <hr>
-
-    <br>
 
 </div>
 </body>

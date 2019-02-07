@@ -3,6 +3,7 @@ package com.lpdm.msuser.model.order;
 import com.lpdm.msuser.model.auth.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -106,6 +107,8 @@ public class Order {
     }
 
     public List<OrderedProduct> getOrderedProducts() {
+
+        if(orderedProducts == null) orderedProducts = new ArrayList<>();
         return orderedProducts;
     }
 

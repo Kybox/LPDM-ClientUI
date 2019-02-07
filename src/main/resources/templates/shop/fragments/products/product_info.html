@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<div data-th-fragment="product">
+    <script data-th-src="@{/js/shop/cart/cart.js}" charset="UTF-8"></script>
+    <h4 data-th-text="'Catégorie ' + ${selectedCategory}"></h4>
+    <hr>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="shadow-box">
+                    <img data-th-src="${selectedProduct.picture}"
+                         class="img-thumbnail"
+                         id="product_img"
+                         alt="Image">
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="col-sm-5">
+                    <h5><b data-th-text="${selectedProduct.name}"></b></h5>
+                    <span data-th-text="${selectedProduct.label}"></span>
+                    <hr>
+                    <span class="info" data-th-text="'Quantité en stock : ' + ${stockQuantity}"></span>
+                </div>
+                <div class="col-sm-3">
+                    <div class="text-right">
+                        <span data-th-text="'Prix HT : ' + ${selectedProduct.price} + ' €'"></span><br>
+                        <span data-th-text="'T.V.A. : ' + ${selectedProduct.tax} + ' %'"></span><br>
+                        <span data-th-text="'Prix TTC : ' + ${selectedProduct.price + (selectedProduct.price * (selectedProduct.tax / 100))} + ' €'"></span>
+                    </div>
+                    <hr>
+                    <label for="product_quantity">Quantité</label>
+                    <input type="text" id="product_quantity" class="form-control" value="1">
+                    <hr>
+                    <input type="hidden" id="product_id" data-th-value="${selectedProduct.id}">
+                    <input type="hidden" id="category_id" data-th-value="${selectedProduct.category.id}">
+                    <button type="button"
+                            class="btn btn-success"
+                            id="btn_add_product"
+                            data-th-if="${stockQuantity > 0}">
+                        Ajouter au panier
+                        <span class="glyphicon glyphicon-shopping-cart"></span>
+                    </button>
+                    <button class="btn btn-warning" type="button"
+                            data-th-if="${stockQuantity == 0}" disabled>
+                        Non disponible
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+</div>
+</html>

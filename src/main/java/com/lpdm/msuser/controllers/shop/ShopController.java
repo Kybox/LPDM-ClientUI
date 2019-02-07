@@ -1,12 +1,16 @@
 package com.lpdm.msuser.controllers.shop;
 
 import com.lpdm.msuser.services.shop.ProductService;
+import com.lpdm.msuser.utils.shop.CustomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @Controller
 public class ShopController {
@@ -21,19 +25,20 @@ public class ShopController {
     }
 
     @GetMapping(value = "/shop")
-    public ModelAndView homePage(){
+    public ModelAndView homePage(HttpServletRequest request) throws IOException {
 
         log.info("-> Home page");
-        return new ModelAndView("shop/fragments/home");
+
+        return CustomModel.getFor("shop/fragments/home", request)
+                .addObject("productPageable", productService.findProductPageable(0,9));
+
+        /*
+        return new ModelAndView("shop/fragments/home")
+                .addObject("productPageable", productService.findProductPageable(0,9));
+                */
     }
 
-    @GetMapping(value = "/shop/products")
-    public ModelAndView productsPage(){
 
-        log.info("-> Products page");
-        return new ModelAndView("shop/fragments/products/index")
-                .addObject("productCategories", productService.findAllProductCategories());
-    }
 
     @GetMapping(value = "/shop/login")
     public ModelAndView loginPage(){
@@ -42,17 +47,21 @@ public class ShopController {
         return new ModelAndView("shop/fragments/account/login");
     }
 
+    /*
     @GetMapping(value = "/shop/account")
     public ModelAndView accountPage(){
 
         log.info("-> Account page");
         return new ModelAndView("shop/fragments/account/account");
     }
+    */
 
+    /*
     @GetMapping(value = "/shop/cart")
     public ModelAndView cartPage(){
 
         log.info("-> Cart page");
         return new ModelAndView("shop/fragments/cart/view");
     }
+    */
 }

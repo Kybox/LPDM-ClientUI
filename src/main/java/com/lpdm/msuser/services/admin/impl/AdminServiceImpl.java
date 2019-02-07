@@ -193,7 +193,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<Category> findAllCategories() {
 
-        return productProxy.listCategories();
+        return productProxy.findAllCategories();
     }
 
     @Override

@@ -50,7 +50,7 @@ public class HomeController {
         else logger.info("No valide user in cookie");
 
         //sessionController.addSessionAttributes(session,model);
-        model.addAttribute("categories", productProxy.listCategories());
+        model.addAttribute("categories", productProxy.findAllCategories());
         model.addAttribute("producers", userProxy.getUsersByRole(3));
         return "home";
     }

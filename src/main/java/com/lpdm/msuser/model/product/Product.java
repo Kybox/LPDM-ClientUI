@@ -7,26 +7,19 @@ import java.util.List;
 public class Product {
 
     private Integer id;
-
     private String name;
-
     private Category category;
-
     private String label;
-
     private double price;
-
     private double tax;
-
     private boolean deactivate;
-
     private List<Stock> listStock;
-
     private String picture;
-
     private Integer producerID;
-
     private User producer;
+
+    public Product() {
+    }
 
     public Integer getId() {
         return id;
@@ -76,6 +69,14 @@ public class Product {
         this.tax = tax;
     }
 
+    public boolean isDeactivate() {
+        return deactivate;
+    }
+
+    public void setDeactivate(boolean deactivate) {
+        this.deactivate = deactivate;
+    }
+
     public List<Stock> getListStock() {
         return listStock;
     }
@@ -108,14 +109,6 @@ public class Product {
         this.producer = producer;
     }
 
-    public boolean isDeactivate() {
-        return deactivate;
-    }
-
-    public void setDeactivate(boolean deactivate) {
-        this.deactivate = deactivate;
-    }
-
     @Override
     public String toString() {
         return "Product{" +
@@ -132,22 +125,4 @@ public class Product {
                 ", producer=" + producer +
                 '}';
     }
-
-    /*
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", category=" + category +
-                ", label='" + label + '\'' +
-                ", price=" + price +
-                ", tva=" + tva +
-                ", deactivate=" + deactivate +
-                ", listStock=" + listStock +
-                ", picture='" + picture + '\'' +
-                ", producerID=" + producerID +
-                ", producer=" + producer +
-                '}';
-     */
 }

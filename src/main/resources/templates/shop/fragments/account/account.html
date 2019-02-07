@@ -14,70 +14,60 @@
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <td>Mes informations</td>
-                            <p th:text="'Nom: ' + ${user.getName()}"/>
-                            <p th:text="'Prénom: ' + ${user.getFirstName()}"/>
-                            <p th:text="'Date de naissance: ' + ${user.getBirthday()}"/>
-                            <p th:text="'Email: ' + ${user.getEmail()}"/>
-                            <p th:text="'Tél.: ' + ${user.getTel()}"/>
-                            <p th:text="'Date d\'enregistrement: ' + ${user.getRegistrationDate()}"/>
-                            <p th:text="'Rôle(s): '"/>
-                            <p th:each="role: ${user.getAppRole()}" th:text="' - ' + ${role.getRoleName()}"/>
-                            <hr>
-                            <p th:unless="!${user.getAddress()}" th:text="'Adresse: ' + ${user.getAddress().getStreetNumber()} + ', ' + ${user.getAddress().getStreetName()} + ',' + ${user.getAddress().getCity().getName()} "/>
-
-                            <hr>
-
-                            <a th:value="'Editer l\'utilisateur'" th:href="@{'/identification/edit/' + ${user.getId()}}" th:text="'Editer l\'utilisateur ' + ${user.getEmail()}"/>
+                            <td>
+                                <a href="#">
+                                    <span data-th-if="${accountContent == 'cart'}"
+                                          class="glyphicon glyphicon-chevron-right">
+                                    </span>
+                                    Mon panier
+                                </a>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Mes commandes</td>
+                            <td>
+                                <a href="#">
+                                    <span data-th-if="${accountContent == 'infos'}"
+                                          class="glyphicon glyphicon-chevron-right">
+                                    </span>
+                                    Mes informations
+                                </a>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Mes factures</td>
+                            <td>
+                                <a href="#">
+                                    <span data-th-if="${accountContent == 'orders'}"
+                                          class="glyphicon glyphicon-chevron-right">
+                                    </span>
+                                    Mes commandes
+                                </a>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Se déconnecter</td>
+                            <td>
+                                <a href="#">
+                                    <span data-th-if="${accountContent == 'invoices'}"
+                                          class="glyphicon glyphicon-chevron-right">
+                                    </span>
+                                    Mes factures
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#">Se déconnecter</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <div class="col-sm-9">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4><b>Mes commandes</b></h4>
-                </div>
-                <div class="panel-body">
-                    <h5>Vos commandes en un seul endroit</h5>
-                    <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter.</a></h6>
-                    <br>
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Référence</th>
-                            <th>Date</th>
-                            <th>Montant</th>
-                            <th>Etat</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="order : ${orders}">
-                            <td th:text="${order.getId()}"/>
-                            <td th:text="${order.getOrderDate()}"/>
-                            <td th:text="${order.getTotal()}"/>
-                            <td th:text="${order.getStatus()}"/>
-                            <td><a th:href="@{'/orders/description/'+ ${order.getId()}}" th:text="'Voir'" th:value="${order.getId()}"/></td>
-                            <!--th:href="@{'/users/'+ ${user.getId()}}"-->
-                        </tr>
-
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div data-th-if="${accountContent == 'cart'}"
+             data-th-insert="/shop/fragments/account/account_cart :: cart">
+        </div>
+        <div data-th-if="${accountContent == 'history'}"
+             data-th-insert="/shop/fragments/account/account_orders_history :: history">
         </div>
     </div>
 </div>

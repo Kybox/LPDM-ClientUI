@@ -1,16 +1,3 @@
-# APPLICATION
-#-----------------------------------------------------
-# Set the application name
-# (needed for the remote properties)
-#spring.application.name=microservice-users
-# CLOUD
-#-----------------------------------------------------
-# Allow to override remote properties
-#spring.cloud.config.allowOverride=true
-# Set the external configuration URI
-#spring.cloud.config.uri=http://5.196.95.68:28088
-
-
 spring:
   main:
     allow-bean-definition-overriding: true

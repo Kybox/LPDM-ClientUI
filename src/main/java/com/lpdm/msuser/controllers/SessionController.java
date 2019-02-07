@@ -57,7 +57,7 @@ public class SessionController {
         model.addAttribute("producers", msUserProxy.getUsersByRole(3));
         model.addAttribute("total", cartTotal);
         model.addAttribute("products", msProductProxy.listProduct());
-        model.addAttribute("categories", msProductProxy.listCategories());
+        model.addAttribute("categories", msProductProxy.findAllCategories());
         model.addAttribute("roles", msAuthProxy.findAllRoles());
     }
 

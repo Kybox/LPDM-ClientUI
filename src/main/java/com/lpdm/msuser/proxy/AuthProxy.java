@@ -2,14 +2,12 @@ package com.lpdm.msuser.proxy;
 
 import com.lpdm.msuser.model.auth.UserRole;
 import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.model.shop.LoginForm;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,6 +15,10 @@ import java.util.List;
 @FeignClient(name = "${lpdm.zuul.name}", url = "${lpdm.zuul.uri}")
 @RibbonClient(name = "${lpdm.auth.name}")
 public interface AuthProxy {
+
+    @PostMapping(path = "${lpdm.auth.name}/users/login",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    User loginUser(@RequestBody LoginForm loginForm);
 
     // Search by id
     @RequestMapping(path = "${lpdm.auth.name}/users/{id}",
