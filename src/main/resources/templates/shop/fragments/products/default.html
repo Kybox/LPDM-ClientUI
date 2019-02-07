@@ -13,10 +13,12 @@
             <div class="col-sm-4 pull-right">
                 <p class="pull-right" data-th-text="${product.price} + ' €'"></p>
             </div>
-            <p data-th-text="${product.name}"></p>
-            <img data-th-src="${product.picture}"
-                 class="img-thumbnail"
-                 alt="Image" style="height: 220px; width: 100%; overflow: auto">
+            <a data-th-href="'/shop/products/cat/' + ${product.category.id} + '/' + ${product.id}">
+                <p data-th-text="${product.name}"></p>
+                <img data-th-src="${product.picture}"
+                     class="img-thumbnail"
+                     alt="Image" style="height: 220px; width: 100%; overflow: auto">
+            </a>
         </div>
     </div>
 </div>

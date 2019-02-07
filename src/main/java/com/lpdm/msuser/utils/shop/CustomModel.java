@@ -38,21 +38,39 @@ public class CustomModel {
 
         Order order = cartService.getCartFormCookie(request);
 
-        for(OrderedProduct orderedProduct : order.getOrderedProducts()) {
-            orderedProduct.setPriceWithTax(orderService.getOrderedProductPriceWithTax(orderedProduct));
-            orderedProduct.setTotalAmount(orderService.getOrderedProductTotalAmount(orderedProduct));
+        if(order != null){
+
+            if(order.getId() != 0) {
+                order = orderService.getOrderById(order.getId());
+                order.setCustomer(new User(order.getCustomer().getId()));
+            }
+
+            for(OrderedProduct orderedProduct : order.getOrderedProducts()) {
+                orderedProduct.setPriceWithTax(orderService.getOrderedProductPriceWithTax(orderedProduct));
+                orderedProduct.setTotalAmount(orderService.getOrderedProductTotalAmount(orderedProduct));
+                orderedProduct.getProduct().setListStock(null);
+            }
+
+            log.info("Custom model Order = " + order);
+
+            int total = orderService.getTotalOrderedProducts(order);
+
+            order.setTotal(orderService.getTotalOrderAmount(order));
+
+            ModelAndView modelAndView =  new ModelAndView(url)
+                    .addObject("cookieOrder", order)
+                    .addObject("totalProducts", total);
+
+            User user = securityService.getAuthenticatedUser(request);
+
+            if(user != null)
+                modelAndView.addObject("user", user);
+
+            return modelAndView;
         }
 
-        User user = securityService.getAuthenticatedUser(request);
+        log.info("No order found in the cookies");
 
-        log.info("Custom model Order = " + order);
-
-        int total = 0;
-        if(order != null) total = orderService.getTotalOrderedProducts(order);
-
-        return new ModelAndView(url)
-                .addObject("cookieOrder", order)
-                .addObject("totalProducts", total)
-                .addObject("user", user);
+        return new ModelAndView(url);
     }
 }

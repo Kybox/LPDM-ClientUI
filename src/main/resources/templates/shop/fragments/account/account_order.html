@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<div data-th-fragment="order">
+    <div class="col-sm-9">
+        <h3>Ma commande en cours</h3>
+        <h5 data-th-text="'Vous avez actuellement ' + ${totalProducts} + ' articles dans votre panier'"></h5>
+        <h6>N'oubliez pas d'indiquer votre coupon de réduction si vous en possédez un !</h6>
+        <br>
+        <table class="table table-hover table-responsive">
+            <thead>
+            <tr>
+                <th>Produit</th>
+                <th class="text-right">Prix HT</th>
+                <th class="text-center">Quantité</th>
+                <th class="text-center">T.V.A.</th>
+                <th class="text-right">Total HT</th>
+                <th class="text-center">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-th-each="item : ${cookieOrder.orderedProducts}"
+                data-th-id="'product_' + ${item.product.id}">
+
+                <!-- Product -->
+                <td>
+                    <a data-th-href="'/shop/products/cat/' + ${item.product.category.id} + '/' + ${item.product.id}"
+                       style="text-decoration: none">
+                        <img data-th-src="${item.product.picture}"
+                             class="img-thumbnail"
+                             alt="Image"
+                             style="height: 40px;">
+                        <span data-th-text="${item.product.name}"></span>
+                    </a>
+
+                </td>
+
+                <!-- Price without tax -->
+                <td class="text-right" data-th-text="${item.product.price} + ' €'"></td>
+
+                <!-- Quantity -->
+                <td class="text-center">
+                    <a href="#" style="text-decoration: none">
+                        <span data-th-id="'quantity_less_' + ${item.product.id}"
+                              class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                    <span data-th-id="'quantity_text_' + ${item.product.id}"
+                          data-th-text="${item.quantity}"></span>
+                    <a href="#" style="text-decoration: none">
+                        <span data-th-id="'quantity_more_' + ${item.product.id}"
+                              class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </td>
+
+                <!-- Tax -->
+                <td class="text-center" data-th-text="${item.product.tax} + ' %'"></td>
+
+                <!-- Total without tax -->
+                <td class="text-right"
+                    data-th-id="'total_product_amount_' + ${item.product.id}"
+                    data-th-text="${(item.product.price * item.quantity)} + ' €'">
+                </td>
+
+
+                <td class="text-center">
+                    <a href="#" style="text-decoration: none">
+                        <span data-th-id="'delete_product_' + ${item.product.id}"
+                              class="glyphicon glyphicon-trash"></span>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <hr>
+        <div class="text-right">
+            <h4 id="cart-total"
+                data-th-text="'Montant total du panier : ' + ${cookieOrder.total} + ' €'"
+                style="margin-right: 60px;">
+            </h4>
+        </div>
+        <hr>
+        <div class="row" style="padding: 10px;">
+            <div class="col-sm-4">
+                <a data-th-href="'/shop/products'">
+                    <button type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                        Continuer mes achats
+                    </button>
+                </a>
+            </div>
+            <div class="col-sm-8 text-right">
+                <a data-th-href="'/shop/cart/save'">
+                    <button type="button" class="btn btn-default">
+                        Régler ma commande
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                </a>
+            </div>
+        </div>
+        <br>
+    </div>
+</div>
+</html>

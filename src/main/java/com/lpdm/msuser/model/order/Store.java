@@ -1,15 +1,15 @@
 package com.lpdm.msuser.model.order;
 
-public class StoreBean {
+public class Store {
 
     private int id;
     private String name;
     private LocationBean location;
 
-    public StoreBean() {
+    public Store() {
     }
 
-    public StoreBean(int id) {
+    public Store(int id) {
         this.id = id;
     }
 

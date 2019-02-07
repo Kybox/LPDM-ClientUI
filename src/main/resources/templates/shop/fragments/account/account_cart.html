@@ -7,81 +7,89 @@
         <h5 data-th-text="'Vous avez actuellement ' + ${totalProducts} + ' articles dans votre panier'"></h5>
         <h6>Les montants exprimés ci-dessous sont TTC</h6>
         <br>
-        <table class="table table-hover table-responsive">
-            <thead>
-            <tr>
-                <th>Produit</th>
-                <th class="text-right">Prix</th>
-                <th class="text-center">Quantité</th>
-                <th class="text-right">Total</th>
-                <th class="text-center">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr data-th-each="item : ${cookieOrder.orderedProducts}"
-                data-th-id="'product_' + ${item.product.id}">
-                <td>
-                    <a data-th-href="'/shop/products/cat/' + ${item.product.category.id} + '/' + ${item.product.id}"
-                       style="text-decoration: none">
-                        <img data-th-src="${item.product.picture}"
-                             class="img-thumbnail"
-                             alt="Image"
-                             style="height: 40px;">
-                        <span data-th-text="${item.product.name}"></span>
-                    </a>
+        <div data-th-if="${cookieOrder != null}">
+            <table class="table table-hover table-responsive">
+                <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th class="text-right">Prix</th>
+                    <th class="text-center">Quantité</th>
+                    <th class="text-right">Total</th>
+                    <th class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-th-if="${cookieOrder != null}"
+                    data-th-each="item : ${cookieOrder?.orderedProducts}"
+                    data-th-id="'product_' + ${item.product.id}">
+                    <td>
+                        <a data-th-href="'/shop/products/cat/' + ${item.product.category.id} + '/' + ${item.product.id}"
+                           style="text-decoration: none">
+                            <img data-th-src="${item.product.picture}"
+                                 class="img-thumbnail"
+                                 alt="Image"
+                                 style="height: 40px;">
+                            <span data-th-text="${item.product.name}"></span>
+                        </a>
 
-                </td>
-                <td class="text-right" data-th-text="${item.priceWithTax} + ' €'"></td>
-                <td class="text-center">
-                    <a href="#" style="text-decoration: none">
+                    </td>
+                    <td class="text-right" data-th-text="${item.priceWithTax} + ' €'"></td>
+                    <td class="text-center">
+                        <a href="#" style="text-decoration: none">
                         <span data-th-id="'quantity_less_' + ${item.product.id}"
                               class="glyphicon glyphicon-chevron-left"></span>
-                    </a>
-                    <span data-th-id="'quantity_text_' + ${item.product.id}"
-                          data-th-text="${item.quantity}"></span>
-                    <a href="#" style="text-decoration: none">
+                        </a>
+                        <span data-th-id="'quantity_text_' + ${item.product.id}"
+                              data-th-text="${item.quantity}"></span>
+                        <a href="#" style="text-decoration: none">
                         <span data-th-id="'quantity_more_' + ${item.product.id}"
                               class="glyphicon glyphicon-chevron-right"></span>
-                    </a>
-                </td>
-                <td class="text-right"
-                    data-th-id="'total_product_amount_' + ${item.product.id}"
-                    data-th-text="${item.totalAmount} + ' €'">
-                </td>
-                <td class="text-center">
-                    <a href="#" style="text-decoration: none">
+                        </a>
+                    </td>
+                    <td class="text-right"
+                        data-th-id="'total_product_amount_' + ${item.product.id}"
+                        data-th-text="${item.totalAmount} + ' €'">
+                    </td>
+                    <td class="text-center">
+                        <a href="#" style="text-decoration: none">
                         <span data-th-id="'delete_product_' + ${item.product.id}"
                               class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <hr>
+            <div class="text-right">
+                <h4 id="cart-total"
+                    data-th-text="'Montant total du panier : ' + ${cookieOrder?.total} + ' €'"
+                    style="margin-right: 60px;">
+                </h4>
+            </div>
+            <hr>
+            <div class="row" style="padding: 10px;">
+                <div class="col-sm-4">
+                    <a data-th-href="'/shop/products'">
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                            Continuer mes achats
+                        </button>
                     </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <hr>
-        <div class="text-right">
-            <h4 id="cart-total"
-                data-th-text="'Montant total du panier : ' + ${cookieOrder.total} + ' €'"
-                style="margin-right: 60px;">
-            </h4>
-        </div>
-        <hr>
-        <div class="row" style="padding: 10px;">
-            <div class="col-sm-4">
-                <a data-th-href="'/shop/products'">
-                    <button type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-chevron-left"></span>
-                        Continuer mes achats
-                    </button>
-                </a>
+                </div>
+                <div class="col-sm-8 text-right">
+                    <a data-th-href="'/shop/cart/save'">
+                        <button type="button" class="btn btn-default">
+                            Valider le panier
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </button>
+                    </a>
+                </div>
             </div>
-            <div class="col-sm-8 text-right">
-                <button type="button" class="btn btn-default">
-                    Valider le panier
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                </button>
-            </div>
+            <br>
         </div>
-        <br>
+        <div data-th-if="${cookieOrder == null}" class="alert alert-warning">
+            Votre panier est vide !
+        </div>
     </div>
 </div>
 </html>

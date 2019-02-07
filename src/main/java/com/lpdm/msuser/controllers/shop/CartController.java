@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.OrderedProduct;
+import com.lpdm.msuser.model.order.Status;
 import com.lpdm.msuser.model.shop.LoginForm;
 import com.lpdm.msuser.services.shop.CartService;
+import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.SecurityService;
 import com.lpdm.msuser.utils.shop.CustomModel;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @RestController
 public class CartController {
@@ -25,11 +28,15 @@ public class CartController {
 
     private final CartService cartService;
     private final SecurityService securityService;
+    private final OrderService orderService;
 
     @Autowired
-    public CartController(CartService cartService, SecurityService securityService) {
+    public CartController(CartService cartService,
+                          SecurityService securityService,
+                          OrderService orderService) {
         this.cartService = cartService;
         this.securityService = securityService;
+        this.orderService = orderService;
     }
 
     @PostMapping(value = "/shop/cart/add")
@@ -49,8 +56,8 @@ public class CartController {
 
         if(user != null){
 
-            modelAndView = CustomModel.getFor("shop/fragments/cart/view", request)
-                    .addObject("user", user);
+
+            modelAndView = CustomModel.getFor("shop/fragments/cart/view", request);
         }
         else{
 
@@ -78,5 +85,30 @@ public class CartController {
                                HttpServletResponse response) throws IOException {
 
         return cartService.deleteProductFromCart(productId, request, response);
+    }
+
+    @GetMapping(value = "/shop/cart/save")
+    public ModelAndView saveCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+
+        Order order = cartService.getCartFormCookie(request);
+        User user = securityService.getAuthenticatedUser(request);
+
+        order.setCustomer(user);
+
+        if(order.getStatus() == null)
+            order.setStatus(Status.VALIDATED);
+
+        if(order.getOrderDate() == null)
+            order.setOrderDate(LocalDateTime.now());
+
+        order = orderService.saveOrder(order);
+
+        log.info("Order saved : " + order);
+
+        orderService.setOrderToCookie(order, response);
+
+        return CustomModel.getFor("/shop/fragments/account/account", request)
+                .addObject("accountContent", "order");
     }
 }

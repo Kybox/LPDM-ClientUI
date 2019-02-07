@@ -2,7 +2,7 @@
 <html lang="fr">
 <div data-th-fragment="header">
     <script data-th-src="@{/js/shop/header.js}" charset="UTF-8"></script>
-    <div class="main-title">
+    <div class="main-title" style="margin-left:60px;">
         <h1>La place du marché</h1>
     </div>
     <nav class="navbar navbar-default">
@@ -54,7 +54,7 @@
                                                      alt="" style="width: 50px; height: 50px;"/>
                                                 <span class="item-info">
                                                     <span data-th-text="${orderedProduct.product.name}"></span>
-                                                    <span data-th-text="${orderedProduct.quantity}"></span>
+                                                    <span data-th-text="'x ' + ${orderedProduct.quantity}"></span>
                                                 </span>
                                             </span>
                                             <span class="item-right">

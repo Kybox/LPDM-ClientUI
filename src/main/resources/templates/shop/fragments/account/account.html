@@ -16,10 +16,15 @@
                         <tr>
                             <td>
                                 <a href="#">
-                                    <span data-th-if="${accountContent == 'cart'}"
-                                          class="glyphicon glyphicon-chevron-right">
-                                    </span>
-                                    Mon panier
+                                    <div data-th-if="${accountContent == 'cart'}">
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        Mon panier
+                                    </div>
+
+                                    <div data-th-if="${accountContent == 'order'}">
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        Ma commande en cours
+                                    </div>
                                 </a>
                             </td>
                         </tr>
@@ -65,6 +70,9 @@
         </div>
         <div data-th-if="${accountContent == 'cart'}"
              data-th-insert="/shop/fragments/account/account_cart :: cart">
+        </div>
+        <div data-th-if="${accountContent == 'order'}"
+             data-th-insert="/shop/fragments/account/account_order :: order">
         </div>
         <div data-th-if="${accountContent == 'history'}"
              data-th-insert="/shop/fragments/account/account_orders_history :: history">

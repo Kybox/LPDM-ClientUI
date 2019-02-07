@@ -1,7 +1,6 @@
 package com.lpdm.msuser.controllers.shop;
 
 import com.lpdm.msuser.model.auth.User;
-import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.shop.LoginForm;
 import com.lpdm.msuser.security.cookie.CookieAppender;
 import com.lpdm.msuser.security.jwt.auth.JwtGenerator;

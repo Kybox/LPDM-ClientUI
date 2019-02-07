@@ -1,6 +1,11 @@
 package com.lpdm.msuser.model.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.utils.json.ParseDeserializer;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,29 +14,21 @@ import java.util.List;
 public class Order {
 
     private int id;
-
     private double total;
 
+    @JsonDeserialize(using = ParseDeserializer.class)
+    @JsonSerialize(using = ToStringSerializer.class)
     private LocalDateTime orderDate;
 
     private Status status;
-
     private Payment payment;
-
     private int storeId;
-
-    private StoreBean store;
-
+    private Store store;
     private int customerId;
-
     private User customer;
-
     private Coupon coupon;
-
     private Delivery delivery;
-
     private double shippingCost;
-
     private List<OrderedProduct> orderedProducts;
 
     public int getId() {
@@ -74,11 +71,11 @@ public class Order {
         this.payment = payment;
     }
 
-    public StoreBean getStore() {
+    public Store getStore() {
         return store;
     }
 
-    public void setStore(StoreBean store) {
+    public void setStore(Store store) {
         this.store = store;
     }
 

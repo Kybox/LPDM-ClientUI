@@ -1,6 +1,9 @@
 package com.lpdm.msuser;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lpdm.msuser.controllers.SessionController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,6 +12,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+
+import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 @EnableFeignClients
@@ -25,4 +30,11 @@ public class MsUserApplication {
 		return new SessionController();
 	}
 
+	@Autowired
+	private ObjectMapper objectMapper;
+
+	@PostConstruct
+	public void init(){
+		objectMapper.registerModule(new JavaTimeModule());
+	}
 }
