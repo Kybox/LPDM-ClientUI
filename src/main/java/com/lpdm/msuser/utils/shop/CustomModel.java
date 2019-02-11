@@ -54,12 +54,15 @@ public class CustomModel {
             log.info("Custom model Order = " + order);
 
             int total = orderService.getTotalOrderedProducts(order);
+            double subAmount = orderService.getTotalOrderAmountWithoutTax(order);
 
             order.setTotal(orderService.getTotalOrderAmount(order));
+            order.setTaxAmount(Math.round(order.getTaxAmount() * 100D) / 100D);
 
             ModelAndView modelAndView =  new ModelAndView(url)
                     .addObject("cookieOrder", order)
-                    .addObject("totalProducts", total);
+                    .addObject("totalProducts", total)
+                    .addObject("subAmount", subAmount);
 
             User user = securityService.getAuthenticatedUser(request);
 

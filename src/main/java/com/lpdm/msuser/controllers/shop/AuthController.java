@@ -1,27 +1,29 @@
 package com.lpdm.msuser.controllers.shop;
 
 import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.model.location.Address;
+import com.lpdm.msuser.model.location.City;
 import com.lpdm.msuser.model.shop.LoginForm;
 import com.lpdm.msuser.security.cookie.CookieAppender;
 import com.lpdm.msuser.security.jwt.auth.JwtGenerator;
 import com.lpdm.msuser.security.jwt.auth.JwtUserBuilder;
 import com.lpdm.msuser.security.jwt.model.JwtUser;
 import com.lpdm.msuser.services.shop.AuthService;
+import com.lpdm.msuser.services.shop.LocationService;
 import com.lpdm.msuser.services.shop.SecurityService;
 import com.lpdm.msuser.utils.shop.CustomModel;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class AuthController {
@@ -31,15 +33,18 @@ public class AuthController {
     private final AuthService authService;
     private final JwtGenerator jwtGenerator;
     private final SecurityService securityService;
+    private final LocationService locationService;
 
     @Autowired
     public AuthController(AuthService authService,
                           JwtGenerator jwtGenerator,
-                          SecurityService securityService) {
+                          SecurityService securityService,
+                          LocationService locationService) {
 
         this.authService = authService;
         this.jwtGenerator = jwtGenerator;
         this.securityService = securityService;
+        this.locationService = locationService;
     }
 
     @GetMapping(value = "/shop/account/login")
@@ -106,5 +111,12 @@ public class AuthController {
         }
 
         return modelAndView;
+    }
+
+    @PostMapping(value = {"/shop/address/cities", "/search/address/cities/"})
+    public List<City> searchAddressResult(@RequestParam Map<String, String> data){
+
+        log.info("Search cities for zipCode " + data.get("zipCode"));
+        return locationService.findCitiesByZipCode(data.get("zipCode"));
     }
 }

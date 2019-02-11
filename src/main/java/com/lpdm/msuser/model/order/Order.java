@@ -1,6 +1,5 @@
 package com.lpdm.msuser.model.order;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -28,7 +27,7 @@ public class Order {
     private User customer;
     private Coupon coupon;
     private Delivery delivery;
-    private double shippingCost;
+    private double taxAmount;
     private List<OrderedProduct> orderedProducts;
 
     public int getId() {
@@ -129,12 +128,12 @@ public class Order {
         this.delivery = delivery;
     }
 
-    public double getShippingCost() {
-        return shippingCost;
+    public double getTaxAmount() {
+        return taxAmount;
     }
 
-    public void setShippingCost(double shippingCost) {
-        this.shippingCost = shippingCost;
+    public void setTaxAmount(double taxAmount) {
+        this.taxAmount = taxAmount;
     }
 
     @Override
@@ -149,8 +148,10 @@ public class Order {
                 ", store=" + store +
                 ", customerId=" + customerId +
                 ", customer=" + customer +
-                ", orderedProducts=" + orderedProducts +
                 ", coupon=" + coupon +
+                ", delivery=" + delivery +
+                ", taxAmount=" + taxAmount +
+                ", orderedProducts=" + orderedProducts +
                 '}';
     }
 }

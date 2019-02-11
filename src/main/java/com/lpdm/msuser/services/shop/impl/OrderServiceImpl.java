@@ -2,8 +2,10 @@ package com.lpdm.msuser.services.shop.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.model.order.Delivery;
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.OrderedProduct;
+import com.lpdm.msuser.model.order.Payment;
 import com.lpdm.msuser.proxy.OrderProxy;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.utils.cookie.CookieUtils;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -75,6 +78,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public double getTotalOrderAmountWithoutTax(Order order) {
+
+        double totalAmount = 0;
+
+        for(OrderedProduct orderedProduct : order.getOrderedProducts()){
+
+            totalAmount += orderedProduct.getQuantity() * orderedProduct.getProduct().getPrice();
+
+        }
+        return Math.round(totalAmount * 100D) / 100D;
+    }
+
+    @Override
     public Order saveOrder(Order order) {
 
         return orderProxy.saveOrder(order);
@@ -97,6 +113,18 @@ public class OrderServiceImpl implements OrderService {
         }
 
         response.addCookie(CookieUtils.getCookieFromOrder(order));
+    }
+
+    @Override
+    public List<Delivery> findAllDeliveryMethods() {
+
+        return orderProxy.findAllDeliveryMethods();
+    }
+
+    @Override
+    public List<Payment> findAllPayments() {
+
+        return orderProxy.findAllPaymentMethods();
     }
 
 }

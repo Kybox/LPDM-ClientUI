@@ -30,7 +30,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh "docker stop LPDM-ClientUI || true && docker rm LPDM-ClientUI || true"
-                sh "docker pull vyjorg/lpdm-user:latest"
+                sh "docker pull kybox/lpdm-clientui:latest"
                 sh "docker run -d --name LPDM-ClientUI -p 30000:28082 --restart always --memory-swappiness=0 kybox/lpdm-clientui:latest"
             }
         }

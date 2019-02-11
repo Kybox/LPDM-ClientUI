@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html data-layout-decorate="~{shop/layout}" lang="fr">
+<head>
+    <link rel="stylesheet" data-th-href="@{/css/shop/order/order_process.css}">
+    <title>LPDM - Commande</title>
+</head>
+<body>
+<div data-layout-fragment="content" style="padding-top: 10px;">
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="col-sm-3 step-process"
+                         data-th-classappend="${orderProcess == 1} ? 'step-process-active shadow-box-6'">
+                        <span class="glyphicon glyphicon-map-marker"></span>
+                        <br>
+                        <b>Addresse</b>
+                    </div>
+                    <div class="col-sm-3 step-process"
+                         data-th-classappend="${orderProcess == 2} ? 'step-process-active shadow-box-6'">
+                        <span class="glyphicon glyphicon-road">
+                        </span>
+                        <br>
+                        <b>Mode de livraison</b>
+                    </div>
+                    <div class="col-sm-3 step-process"
+                         data-th-classappend="${orderProcess == 3} ? 'step-process-active shadow-box-6'">
+                        <span class="glyphicon glyphicon-euro"></span>
+                        <br>
+                        <b>Paiement</b>
+                    </div>
+                    <div class="col-sm-3 step-process"
+                         data-th-classappend="${orderProcess == 4} ? 'step-process-active shadow-box-6'">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        <br>
+                        <b>Récapitualif</b>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div data-th-if="${orderProcess == 1}"
+                 data-th-insert="/shop/fragments/order/order_process_address :: order_process_1">
+            </div>
+            <div data-th-if="${orderProcess == 2}"
+                 data-th-insert="/shop/fragments/order/order_process_delivery :: order_process_2">
+            </div>
+            <div data-th-if="${orderProcess == 3}"
+                 data-th-insert="/shop/fragments/order/order_process_payment :: order_process_3">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <br>
+            <div class="panel panel-success">
+                <div class="panel-heading"><h4><b>Récapitulatif de la commande</b></h4></div>
+                <div class="panel-body shadow-box-8">
+                    <h5>Les frais d’expédition seront calculés
+                        en fonction des valeurs que vous aurez entré.</h5>
+                    <table class="table table-hover">
+                        <tbody>
+                        <tr>
+                            <td>Sous-total</td>
+                            <td class="text-right"
+                                id="sub_amount"
+                                data-th-text="${subAmount} + ' €'">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Frais de port</td>
+                            <td class="text-right"
+                                id="delivery_amount"
+                                data-th-text="${cookieOrder.delivery != null ? (cookieOrder.delivery.amount + ' €') : '0.0 €'}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Code promo</td>
+                            <td class="text-right"
+                                id="coupon_amount"
+                                data-th-text="${cookieOrder.coupon != null ? cookieOrder.coupon.amount : '0.0 €'}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>T.V.A</td>
+                            <td class="text-right"
+                                id="tax_amount"
+                                data-th-text="${cookieOrder.taxAmount} + ' €'">
+                            </td>
+                        </tr>
+                        <tr id="total_table_line">
+                            <td><b>Total</b></td>
+                            <td class="text-right"
+                                id="total_amount"
+                                data-th-text="${cookieOrder.total} + ' €'">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+</body>
+</html>

@@ -108,7 +108,10 @@ public class CartController {
 
         orderService.setOrderToCookie(order, response);
 
+        boolean userAddress = user.getAddress() != null;
+
         return CustomModel.getFor("/shop/fragments/account/account", request)
-                .addObject("accountContent", "order");
+                .addObject("accountContent", "order")
+                .addObject("userAddress", userAddress);
     }
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface AuthService {
 
     User findUserById(int id);
-
     User loginUser(LoginForm loginForm);
+
+    User updateUser(User user);
 }

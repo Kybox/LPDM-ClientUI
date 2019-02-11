@@ -1,0 +1,12 @@
+.step-process{
+    text-align: center;
+    display: block;
+    height: 60px;
+    padding: 10px;
+    border-bottom: 2px solid rgb(214, 233, 198);
+
+}
+.step-process-active{
+
+    background: rgb(214, 233, 198);
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<div data-th-fragment="order_process_3">
+
+    <!-- Include Javascript file -->
+    <script data-th-src="@{/js/shop/order/process3.js}" charset="UTF-8"></script>
+
+
+    <div class="text-left" style="padding-left: 20px;">
+        <h4>Veuillez sélectionner une méthode de paiement</h4>
+        <br>
+        <p>A l'étape suivante, vous serez en mesure de régler votre commande</p>
+        <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter</a></h6>
+    </div>
+    <br>
+    <div class="row">
+        <div data-th-each="payment : ${paymentList}" class="col-sm-4 product">
+            <div class="panel panel-default">
+                <div class="panel-body text-center">
+                    <label data-th-for="'payment_' + ${payment.id}"
+                           data-th-text="${payment.label}"
+                           style="cursor: pointer;">
+                    </label>
+                </div>
+                <div class="panel-footer text-center">
+                    <input type="radio"
+                           name="optradio"
+                           data-th-id="'payment_' + ${payment.id}"
+                           style="cursor: pointer;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-4">
+            <a data-th-href="'/shop/order/process/1'">
+                <button class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                    Modifier mon addresse
+                </button>
+            </a>
+        </div>
+        <div class="col-sm-4 pull-right text-right">
+            <button class="btn btn-default" type="button" disabled id="btn_validate">
+                Valider le mode de livraison
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+    </div>
+
+    <br>
+</div>
+</html>

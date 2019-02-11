@@ -27,9 +27,10 @@ public interface OrderProxy {
     @GetMapping(value = "${lpdm.order.name}/orders/all/customer/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     List<Order> findAllByUserId(@PathVariable("id") int id);
 
-    // Get all payments
-    @GetMapping(value = "${lpdm.order.name}/orders/payments", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    List<Payment> getPaymentList();
+    // Find all payments
+    @GetMapping(value = "${lpdm.order.name}/orders/payments",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    List<Payment> findAllPaymentMethods();
 
     // Search orders by customer email
     @GetMapping(value = "${lpdm.order.name}/admin/orders/all/customer/email/{email}",

@@ -1,0 +1,165 @@
+<div data-th-fragment="order_process_1">
+    <script data-th-src="@{/js/shop/user/address.js}" charset="UTF-8"></script>
+
+    <h4 data-th-if="${userAddress == true}">Veuillez confirmer votre addresse postale</h4>
+    <h4 data-th-if="${userAddress == false}">Veuillez renseigner votre addresse postale</h4>
+    <br>
+    <p>L'ensemble du processus ne vous prendra pas plus d'une minute !</p>
+    <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter</a></h6>
+    <br>
+    <div class="panel panel-default">
+        <div class="panel-heading text-center">
+            <b data-th-if="${userAddress == true}">Votre adresse actuelle</b>
+            <b data-th-if="${userAddress == false}">Merci de saisir tout les champs nécessaires</b>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="address_streetNumber"
+                                   class="input-group-addon" style="width: 104px;">
+                                Numéro
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="address_streetNumber"
+                                   data-th-value="${user.address?.streetNumber}">
+                            <div class="input-group-btn">
+                                <button class="btn btn-danger"
+                                        type="button"
+                                        tabindex="-1"
+                                        id="check_number"
+                                        data-toggle="tooltip"
+                                        data-placement="left"
+                                        title="Saisir un numéro de voie"
+                                        style="cursor: default;"
+                                        disabled>
+                                    <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="address_streetName"
+                                   class="input-group-addon" style="width: 104px;">
+                                Voie
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="address_streetName"
+                                   data-th-value="${user.address?.streetName}">
+                            <div class="input-group-btn">
+                                <button class="btn btn-danger"
+                                        type="button"
+                                        tabindex="-1"
+                                        id="check_streetName"
+                                        data-toggle="tooltip"
+                                        data-placement="left"
+                                        title="Saisir un nom de voie"
+                                        style="cursor: default;"
+                                        disabled>
+                                    <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="address_complement"
+                           class="input-group-addon" style="width: 104px;">
+                        Complément
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           id="address_complement"
+                           data-th-value="${user.address?.complement}">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default"
+                                type="button"
+                                tabindex="-1"
+                                id="check_complement"
+                                data-toggle="tooltip"
+                                data-placement="left"
+                                title="Saisir un complément de voie"
+                                style="cursor: default;"
+                                disabled>
+                            <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="address_zipCode"
+                                   class="input-group-addon" style="width: 104px;">
+                                Code postal
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="address_zipCode"
+                                   data-th-value="${user.address?.city?.zipCode}">
+                            <div class="input-group-btn">
+                                <button class="btn btn-danger"
+                                        type="button"
+                                        tabindex="-1"
+                                        id="check_zipCode"
+                                        data-toggle="tooltip"
+                                        data-placement="left"
+                                        title="Saisir un code postal"
+                                        style="cursor: default;"
+                                        disabled>
+                                    <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <label class="input-group-addon" style="width: 104px;">
+                            Ville
+                        </label>
+                        <select id="address_cities"
+                                class="form-control"
+                                style="cursor: pointer;"
+                                disabled>
+                            <option value=""
+                                    data-th-text="${user.address?.city?.name}"
+                                    disabled
+                                    selected></option>
+                        </select>
+                        <div class="input-group-btn">
+                            <button class="btn btn-danger"
+                                    type="button" tabindex="-1"
+                                    id="check_city"
+                                    data-toggle="tooltip"
+                                    data-placement="left"
+                                    title="Sélectionner un statut"
+                                    style="cursor: default;"
+                                    disabled>
+                                <span class="glyphicon glyphicon-check" aria-hidden="true" style="padding-left: 6px;"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="text-center">
+                <button class="btn btn-success"
+                        data-th-id="${user.address == null ? 'btn_validate_create' : 'btn_validate_update'}"
+                        data-th-disabled="${userAddress == false}">
+                    <span data-th-if="${userAddress == true}" data-th-text="'Valider mon adresse'"></span>
+                    <span data-th-if="${userAddress == false}" data-th-text="'Enregistrer mon addresse'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

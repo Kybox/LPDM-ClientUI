@@ -35,4 +35,10 @@ public interface LocationProxy {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Address saveNewAddress(@RequestBody Address address);
+
+    @RequestMapping(path = "${lpdm.location.name}/address",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Address updateAddress(@RequestBody Address address);
 }

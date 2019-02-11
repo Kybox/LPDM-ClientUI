@@ -155,7 +155,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<Payment> findAllPayment() {
-        return orderProxy.getPaymentList();
+        return orderProxy.findAllPaymentMethods();
     }
 
     @Override

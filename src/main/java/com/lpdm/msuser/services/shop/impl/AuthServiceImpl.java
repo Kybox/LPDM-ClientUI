@@ -28,4 +28,10 @@ public class AuthServiceImpl implements AuthService {
 
         return authProxy.loginUser(loginForm);
     }
+
+    @Override
+    public User updateUser(User user) {
+
+        return authProxy.updateUser(user);
+    }
 }

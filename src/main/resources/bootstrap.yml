@@ -2,7 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   application:
-    name: microservice-users
+    name: client-ui
   cloud:
     config:
       allow-override: true
