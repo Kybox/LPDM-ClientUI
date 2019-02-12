@@ -3,9 +3,12 @@ package com.lpdm.msuser.utils.shop;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.OrderedProduct;
+import com.lpdm.msuser.model.order.Status;
 import com.lpdm.msuser.services.shop.CartService;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.SecurityService;
+import com.lpdm.msuser.utils.order.OrderUtils;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +37,24 @@ public class CustomModel {
         CustomModel.securityService = securityService;
     }
 
-    public static ModelAndView getFor(String url, HttpServletRequest request) throws IOException {
+    public static ModelAndView getFor(String url,
+                                      HttpServletRequest request,
+                                      boolean getOrderFromCookie)
+            throws IOException {
 
         Order order = cartService.getCartFormCookie(request);
+
+        if(!getOrderFromCookie) {
+            try{
+                User user = securityService.getAuthenticatedUser(request);
+                order = orderService.findLastOrderByCustomerAndStatus(user.getId(), Status.VALIDATED.getId());
+                log.info("Last order validated : " + order);
+            }
+            catch (FeignException e) {
+                log.info(e.getMessage());
+                order = cartService.getCartFormCookie(request);
+            }
+        }
 
         if(order != null){
 
@@ -46,17 +64,17 @@ public class CustomModel {
             }
 
             for(OrderedProduct orderedProduct : order.getOrderedProducts()) {
-                orderedProduct.setPriceWithTax(orderService.getOrderedProductPriceWithTax(orderedProduct));
-                orderedProduct.setTotalAmount(orderService.getOrderedProductTotalAmount(orderedProduct));
+                orderedProduct.setPriceWithTax(OrderUtils.getOrderedProductPriceWithTax(orderedProduct));
+                orderedProduct.setTotalAmount(OrderUtils.getOrderedProductTotalAmount(orderedProduct));
                 orderedProduct.getProduct().setListStock(null);
             }
 
             log.info("Custom model Order = " + order);
 
             int total = orderService.getTotalOrderedProducts(order);
-            double subAmount = orderService.getTotalOrderAmountWithoutTax(order);
+            double subAmount = OrderUtils.getTotalOrderAmountWithoutTax(order);
 
-            order.setTotal(orderService.getTotalOrderAmount(order));
+            order.setTotal(OrderUtils.getTotalOrderAmount(order));
             order.setTaxAmount(Math.round(order.getTaxAmount() * 100D) / 100D);
 
             ModelAndView modelAndView =  new ModelAndView(url)

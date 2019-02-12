@@ -1,10 +1,7 @@
 package com.lpdm.msuser.services.shop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.lpdm.msuser.model.order.Delivery;
-import com.lpdm.msuser.model.order.Order;
-import com.lpdm.msuser.model.order.OrderedProduct;
-import com.lpdm.msuser.model.order.Payment;
+import com.lpdm.msuser.model.order.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -12,14 +9,6 @@ import java.util.List;
 public interface OrderService {
 
     int getTotalOrderedProducts(Order order);
-
-    double getOrderedProductTotalAmount(OrderedProduct orderedProduct);
-
-    double getOrderedProductPriceWithTax(OrderedProduct orderedProduct);
-
-    double getTotalOrderAmount(Order order);
-
-    double getTotalOrderAmountWithoutTax(Order order);
 
     Order saveOrder(Order order);
 
@@ -30,4 +19,8 @@ public interface OrderService {
     List<Delivery> findAllDeliveryMethods();
 
     List<Payment> findAllPayments();
+
+    Order findLastOrderByCustomerAndStatus(int customer, int status);
+
+    PaypalUrl getPaypalPaymentUrl(int order, SuccessUrl urls);
 }

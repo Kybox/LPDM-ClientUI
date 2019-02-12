@@ -3,11 +3,13 @@ package com.lpdm.msuser.services.shop.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.OrderedProduct;
+import com.lpdm.msuser.model.order.Status;
 import com.lpdm.msuser.model.product.Product;
 import com.lpdm.msuser.services.shop.CartService;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.ProductService;
 import com.lpdm.msuser.utils.cookie.CookieUtils;
+import com.lpdm.msuser.utils.order.OrderUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,10 +98,10 @@ public class CartServiceImpl implements CartService {
         if(order == null){
 
             order = new Order();
-            List<OrderedProduct> orderedProductList = order.getOrderedProducts();
-            orderedProductList.add(orderedProduct);
+            order.setStatus(Status.CART);
+            order.getOrderedProducts().add(orderedProduct);
 
-            for(OrderedProduct op : orderedProductList){
+            for(OrderedProduct op : order.getOrderedProducts()){
 
 
                 Product product = productService.findProductById(op.getProductId());
@@ -162,8 +164,8 @@ public class CartServiceImpl implements CartService {
                         break;
                 }
 
-                orderedProduct.setTotalAmount(orderService.getOrderedProductTotalAmount(orderedProduct));
-                order.setTotal(orderService.getTotalOrderAmount(order));
+                orderedProduct.setTotalAmount(OrderUtils.getOrderedProductTotalAmount(orderedProduct));
+                order.setTotal(OrderUtils.getTotalOrderAmount(order));
 
                 response.addCookie(CookieUtils.getCookieFromOrder(order));
 
@@ -183,7 +185,7 @@ public class CartServiceImpl implements CartService {
 
         order.getOrderedProducts().removeIf(o -> o.getProduct().getId() == productId);
 
-        order.setTotal(orderService.getTotalOrderAmount(order));
+        order.setTotal(OrderUtils.getTotalOrderAmount(order));
 
         response.addCookie(CookieUtils.getCookieFromOrder(order));
 

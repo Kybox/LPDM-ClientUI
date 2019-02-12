@@ -14,7 +14,7 @@
                 <th class="text-center">Quantité</th>
                 <th class="text-center">T.V.A.</th>
                 <th class="text-right">Total HT</th>
-                <th class="text-center">Action</th>
+                <th class="text-center">Total TTC</th>
             </tr>
             </thead>
             <tbody>
@@ -39,16 +39,8 @@
 
                 <!-- Quantity -->
                 <td class="text-center">
-                    <a href="#" style="text-decoration: none">
-                        <span data-th-id="'quantity_less_' + ${item.product.id}"
-                              class="glyphicon glyphicon-chevron-left"></span>
-                    </a>
                     <span data-th-id="'quantity_text_' + ${item.product.id}"
                           data-th-text="${item.quantity}"></span>
-                    <a href="#" style="text-decoration: none">
-                        <span data-th-id="'quantity_more_' + ${item.product.id}"
-                              class="glyphicon glyphicon-chevron-right"></span>
-                    </a>
                 </td>
 
                 <!-- Tax -->
@@ -61,11 +53,8 @@
                 </td>
 
 
-                <td class="text-center">
-                    <a href="#" style="text-decoration: none">
-                        <span data-th-id="'delete_product_' + ${item.product.id}"
-                              class="glyphicon glyphicon-trash"></span>
-                    </a>
+                <td class="text-center"
+                    data-th-text="${item.totalAmount} + ' €'">
                 </td>
             </tr>
             </tbody>
@@ -73,7 +62,7 @@
         <hr>
         <div class="text-right">
             <h4 id="cart-total"
-                data-th-text="'Montant total du panier : ' + ${cookieOrder.total} + ' €'"
+                data-th-text="'Montant total du panier : ' + ${cookieOrder.total} + ' € TTC'"
                 style="margin-right: 60px;">
             </h4>
         </div>

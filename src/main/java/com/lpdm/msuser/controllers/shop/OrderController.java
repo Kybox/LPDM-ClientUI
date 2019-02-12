@@ -36,6 +36,7 @@ public class OrderController {
                            SecurityService securityService,
                            LocationService locationService,
                            AuthService authService, OrderService orderService) {
+
         this.cartService = cartService;
         this.securityService = securityService;
         this.locationService = locationService;
@@ -49,7 +50,7 @@ public class OrderController {
         User user = securityService.getAuthenticatedUser(request);
         boolean userAddress = user.getAddress() != null;
 
-        return CustomModel.getFor("/shop/fragments/order/order_process", request)
+        return CustomModel.getFor("/shop/fragments/order/order_process", request, false)
                 .addObject("user", user)
                 .addObject("userAddress", userAddress)
                 .addObject("orderProcess", 1);
@@ -91,7 +92,7 @@ public class OrderController {
 
         List<Delivery> deliveryList = orderService.findAllDeliveryMethods();
 
-        return CustomModel.getFor("/shop/fragments/order/order_process", request)
+        return CustomModel.getFor("/shop/fragments/order/order_process", request, false)
                 .addObject("orderProcess", 2)
                 .addObject("deliveryList", deliveryList);
     }
@@ -109,15 +110,31 @@ public class OrderController {
     @GetMapping("/shop/order/process/3")
     public ModelAndView orderProcess3(HttpServletRequest request) throws IOException {
 
-        return CustomModel.getFor("shop/fragments/order/order_process", request)
+        return CustomModel.getFor("shop/fragments/order/order_process", request, false)
                 .addObject("orderProcess", 3)
                 .addObject("paymentList", orderService.findAllPayments());
     }
 
     @GetMapping("/shop/order/process/4")
-    public ModelAndView orderProcess4(HttpServletRequest request){
+    public String orderProcess4(HttpServletRequest request,
+                                      HttpServletResponse response)
+            throws IOException {
 
-        return new ModelAndView();
+        SuccessUrl urls = new SuccessUrl();
+        urls.setReturnUrl("https://lpdm.kybox.fr/orders/paypalsuccess");
+        urls.setCancelUrl("https://lpdm.kybox.fr/orders/paypalcancel");
+
+        Order order = cartService.getCartFormCookie(request);
+
+        PaypalUrl paypalUrl = orderService.getPaypalPaymentUrl(order.getId(), urls);
+
+        for(Map.Entry<String, String> header : paypalUrl.getHeaders().entrySet())
+            response.setHeader(header.getKey(), header.getValue());
+
+        String redirectUrl = paypalUrl.getRedirectUrl();
+
+        if(redirectUrl == null) return "/orders/paypalcancel";
+        else return "redirect:" + paypalUrl.getRedirectUrl();
     }
 
     @GetMapping("/paypalsuccess")
@@ -125,26 +142,8 @@ public class OrderController {
         return "orders/paypalsuccess";
     }
 
-    @GetMapping("/paypalcancel")
+    @GetMapping("shop/order/payment/cancel")
     public String cancelPaypal(){
         return "orders/paypalcancel";
-    }
-
-
-    @GetMapping("/confirmorder/{id}")
-    public String confirmOrder(@PathVariable("id") int id, HttpServletResponse response){
-
-        SuccessUrl successUrl = new SuccessUrl();
-        successUrl.setReturnUrl("https://lpdm.kybox.fr/orders/paypalsuccess");
-        successUrl.setCancelUrl("https://lpdm.kybox.fr/orders/paypalcancel");
-
-        PaypalUrl paypalUrl = null;
-
-        for (Map.Entry<String, String> header: paypalUrl.getHeaders().entrySet()) {
-            response.setHeader(header.getKey(), header.getValue());
-        }
-
-
-        return "redirect:" + paypalUrl.getRedirectUrl();
     }
 }

@@ -29,7 +29,7 @@ public class ShopController {
 
         log.info("-> Home page");
 
-        return CustomModel.getFor("shop/fragments/home", request)
+        return CustomModel.getFor("shop/fragments/home", request, true)
                 .addObject("productPageable", productService.findProductPageable(0,9));
 
         /*

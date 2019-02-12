@@ -36,7 +36,7 @@ public class ProductController {
 
         log.info("cook = " + request.getCookies());
 
-        return CustomModel.getFor("shop/fragments/products/index", request)
+        return CustomModel.getFor("shop/fragments/products/index", request, true)
                 .addObject("productCategories", productService.findAllCategories())
                 .addObject("promotions", productService.findProductPromotions(0,9));
     }
@@ -51,18 +51,10 @@ public class ProductController {
         String selectedCategory = productService.getCategoryName(id);
         List<Product> productList = productService.findProductsByCategory(id);
 
-        return CustomModel.getFor("shop/fragments/products/index", request)
+        return CustomModel.getFor("shop/fragments/products/index", request, true)
                 .addObject("productCategories", categoryList)
                 .addObject("selectedCategory", selectedCategory)
                 .addObject("productList", productList);
-
-        /*
-        return new ModelAndView("shop/fragments/products/index")
-                .addObject("productCategories", categoryList)
-                .addObject("selectedCategory", selectedCategory)
-                .addObject("productList", productList)
-                .addObject("cookieOrder", cartService.getCartFormCookie(request));
-                */
     }
 
     @GetMapping(value = "/shop/products/cat/{cat}/{productId}")
@@ -73,19 +65,10 @@ public class ProductController {
         Product product = productService.findProductById(productId);
         int quantity = productService.coundProductQuatity(product);
 
-        return CustomModel.getFor("shop/fragments/products/index", request)
+        return CustomModel.getFor("shop/fragments/products/index", request, true)
                 .addObject("productCategories", productService.findAllCategories())
                 .addObject("selectedCategory", productService.getCategoryName(cat))
                 .addObject("selectedProduct", product)
                 .addObject("stockQuantity", quantity);
-
-        /*
-        return new ModelAndView("shop/fragments/products/index")
-                .addObject("productCategories", productService.findAllCategories())
-                .addObject("selectedCategory", productService.getCategoryName(cat))
-                .addObject("selectedProduct", product)
-                .addObject("stockQuantity", quantity)
-                .addObject("cookieOrder", cartService.getCartFormCookie(request));
-                */
     }
 }

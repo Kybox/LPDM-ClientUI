@@ -2,13 +2,12 @@ package com.lpdm.msuser.services.shop.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lpdm.msuser.model.auth.User;
-import com.lpdm.msuser.model.order.Delivery;
-import com.lpdm.msuser.model.order.Order;
-import com.lpdm.msuser.model.order.OrderedProduct;
-import com.lpdm.msuser.model.order.Payment;
+import com.lpdm.msuser.model.order.*;
 import com.lpdm.msuser.proxy.OrderProxy;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.utils.cookie.CookieUtils;
+import com.lpdm.msuser.utils.order.OrderUtils;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,61 +35,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public double getOrderedProductTotalAmount(OrderedProduct orderedProduct) {
-
-        double totalAmount = 0;
-
-        double totalWithoutTax = orderedProduct.getQuantity() * orderedProduct.getProduct().getPrice();
-        double taxAmount = totalWithoutTax * (orderedProduct.getProduct().getTax() / 100);
-
-        totalAmount = totalWithoutTax + taxAmount;
-
-        return Math.round(totalAmount * 100D) / 100D;
-    }
-
-    @Override
-    public double getOrderedProductPriceWithTax(OrderedProduct orderedProduct) {
-
-        double taxAmount = orderedProduct.getProduct().getPrice() * (orderedProduct.getProduct().getTax() / 100);
-
-        log.info("Tax amount = " + taxAmount);
-
-        double priceWithTax = orderedProduct.getProduct().getPrice() + taxAmount;
-
-        return Math.round(priceWithTax * 100D) / 100D;
-    }
-
-    @Override
-    public double getTotalOrderAmount(Order order) {
-
-        double totalAmount = 0;
-
-        for(OrderedProduct orderedProduct : order.getOrderedProducts()){
-
-            double amount = getOrderedProductTotalAmount(orderedProduct);
-
-            totalAmount += amount;
-        }
-
-        log.info("Order total amount : " + totalAmount);
-
-        return Math.round(totalAmount * 100D) / 100D;
-    }
-
-    @Override
-    public double getTotalOrderAmountWithoutTax(Order order) {
-
-        double totalAmount = 0;
-
-        for(OrderedProduct orderedProduct : order.getOrderedProducts()){
-
-            totalAmount += orderedProduct.getQuantity() * orderedProduct.getProduct().getPrice();
-
-        }
-        return Math.round(totalAmount * 100D) / 100D;
-    }
-
-    @Override
     public Order saveOrder(Order order) {
 
         return orderProxy.saveOrder(order);
@@ -105,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void setOrderToCookie(Order order, HttpServletResponse response) throws JsonProcessingException {
 
-        order.setTotal(getTotalOrderAmount(order));
+        order.setTotal(OrderUtils.getTotalOrderAmount(order));
         order.setCustomer(new User(order.getCustomer().getId()));
 
         for(OrderedProduct orderedProduct : order.getOrderedProducts()){
@@ -125,6 +69,23 @@ public class OrderServiceImpl implements OrderService {
     public List<Payment> findAllPayments() {
 
         return orderProxy.findAllPaymentMethods();
+    }
+
+    @Override
+    public Order findLastOrderByCustomerAndStatus(int customer, int status) {
+
+        Order order = null;
+
+        try{ order = orderProxy.findLastOrderByCustomerAndStatus(customer, status); }
+        catch (FeignException e){ log.warn(e.getMessage()); }
+
+        return order;
+    }
+
+    @Override
+    public PaypalUrl getPaypalPaymentUrl(int order, SuccessUrl urls) {
+
+        return orderProxy.getPayPalUrl(order, urls);
     }
 
 }

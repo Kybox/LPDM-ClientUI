@@ -3,6 +3,9 @@ package com.lpdm.msuser.controllers.shop;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.location.Address;
 import com.lpdm.msuser.model.location.City;
+import com.lpdm.msuser.model.order.Order;
+import com.lpdm.msuser.model.order.OrderedProduct;
+import com.lpdm.msuser.model.order.Status;
 import com.lpdm.msuser.model.shop.LoginForm;
 import com.lpdm.msuser.security.cookie.CookieAppender;
 import com.lpdm.msuser.security.jwt.auth.JwtGenerator;
@@ -10,7 +13,10 @@ import com.lpdm.msuser.security.jwt.auth.JwtUserBuilder;
 import com.lpdm.msuser.security.jwt.model.JwtUser;
 import com.lpdm.msuser.services.shop.AuthService;
 import com.lpdm.msuser.services.shop.LocationService;
+import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.SecurityService;
+import com.lpdm.msuser.utils.cookie.CookieUtils;
+import com.lpdm.msuser.utils.order.OrderUtils;
 import com.lpdm.msuser.utils.shop.CustomModel;
 import feign.FeignException;
 import org.slf4j.Logger;
@@ -19,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -34,23 +41,26 @@ public class AuthController {
     private final JwtGenerator jwtGenerator;
     private final SecurityService securityService;
     private final LocationService locationService;
+    private final OrderService orderService;
 
     @Autowired
     public AuthController(AuthService authService,
                           JwtGenerator jwtGenerator,
                           SecurityService securityService,
-                          LocationService locationService) {
+                          LocationService locationService,
+                          OrderService orderService) {
 
         this.authService = authService;
         this.jwtGenerator = jwtGenerator;
         this.securityService = securityService;
         this.locationService = locationService;
+        this.orderService = orderService;
     }
 
     @GetMapping(value = "/shop/account/login")
     public ModelAndView loginPage(HttpServletRequest request) throws IOException {
 
-        return CustomModel.getFor("/shop/fragments/account/login", request)
+        return CustomModel.getFor("/shop/fragments/account/login", request, true)
                 .addObject("loginForm", new LoginForm());
     }
 
@@ -80,11 +90,11 @@ public class AuthController {
             JwtUser jwtUser = JwtUserBuilder.build(user);
             CookieAppender.addToken(jwtGenerator.generate(jwtUser), response);
 
-            modelAndView = CustomModel.getFor("redirect:/shop/account", request);
+            modelAndView = CustomModel.getFor("redirect:/shop/account", request, true);
         }
         else {
 
-            modelAndView = CustomModel.getFor("redirect:/shop/account/login", request)
+            modelAndView = CustomModel.getFor("redirect:/shop/account/login", request, true)
                     .addObject("loginForm", new LoginForm())
                     .addObject("loginError", loginError);
         }
@@ -94,19 +104,41 @@ public class AuthController {
 
     @SuppressWarnings("Duplicates")
     @GetMapping(value = "/shop/account")
-    public ModelAndView accountDefault(HttpServletRequest request) throws IOException {
+    public ModelAndView accountDefault(HttpServletRequest request,
+                                       HttpServletResponse response)
+            throws IOException {
 
         User user = securityService.getAuthenticatedUser(request);
 
         ModelAndView modelAndView;
         if(user != null){
 
-            modelAndView = CustomModel.getFor("shop/fragments/account/account", request)
-                    .addObject("accountContent", "cart");
+            Order order = orderService.findLastOrderByCustomerAndStatus(user.getId(), Status.VALIDATED.getId());
+
+            if(order != null) {
+
+                Cookie cookie = CookieUtils.isThereAnOrderFromCookies(request.getCookies());
+                if(cookie != null){
+                    order = CookieUtils.addOrderedProductsFromCookieToOrder(cookie, order);
+                    log.info("Add products from cookie to last order from this customer");
+                    order = orderService.saveOrder(order);
+                }
+
+                cookie = CookieUtils.getCookieFromOrder(order);
+                response.addCookie(cookie);
+
+                modelAndView = CustomModel.getFor("shop/fragments/account/account", request, false);
+                modelAndView.addObject("accountContent", "order");
+                modelAndView.addObject("cookieOrder", OrderUtils.setAllAmountsFromOrder(order));
+            }
+            else {
+                modelAndView = CustomModel.getFor("shop/fragments/account/account", request, true);
+                modelAndView.addObject("accountContent", "cart");
+            }
         }
         else{
 
-            modelAndView = CustomModel.getFor("/shop/fragments/account/login", request)
+            modelAndView = CustomModel.getFor("/shop/fragments/account/login", request, true)
                     .addObject("loginForm", new LoginForm());
         }
 

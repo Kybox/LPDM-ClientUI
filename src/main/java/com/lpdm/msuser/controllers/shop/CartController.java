@@ -57,11 +57,11 @@ public class CartController {
         if(user != null){
 
 
-            modelAndView = CustomModel.getFor("shop/fragments/cart/view", request);
+            modelAndView = CustomModel.getFor("shop/fragments/cart/view", request, true);
         }
         else{
 
-            modelAndView = CustomModel.getFor("/shop/fragments/account/login", request)
+            modelAndView = CustomModel.getFor("/shop/fragments/account/login", request, true)
                     .addObject("loginForm", new LoginForm());
         }
 
@@ -95,13 +95,8 @@ public class CartController {
         User user = securityService.getAuthenticatedUser(request);
 
         order.setCustomer(user);
-
-        if(order.getStatus() == null)
-            order.setStatus(Status.VALIDATED);
-
-        if(order.getOrderDate() == null)
-            order.setOrderDate(LocalDateTime.now());
-
+        order.setStatus(Status.VALIDATED);
+        order.setOrderDate(LocalDateTime.now());
         order = orderService.saveOrder(order);
 
         log.info("Order saved : " + order);
@@ -110,7 +105,7 @@ public class CartController {
 
         boolean userAddress = user.getAddress() != null;
 
-        return CustomModel.getFor("/shop/fragments/account/account", request)
+        return CustomModel.getFor("/shop/fragments/account/account", request, true)
                 .addObject("accountContent", "order")
                 .addObject("userAddress", userAddress);
     }
