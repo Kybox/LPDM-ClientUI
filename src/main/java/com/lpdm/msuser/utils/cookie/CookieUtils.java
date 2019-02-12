@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +21,10 @@ public class CookieUtils {
 
     public static Order getOrderFromCookie(Cookie cookie) throws IOException {
 
-        Order order = new ObjectMapper().readValue(cookie.getValue(), Order.class);
+        Order order = null;
+
+        try { order = new ObjectMapper().readValue(cookie.getValue(), Order.class); }
+        catch (Exception e) { log.warn(e.getMessage()); }
 
         log.info("CookieUtils Order : " + order);
 
@@ -67,24 +71,43 @@ public class CookieUtils {
     public static Order addOrderedProductsFromCookieToOrder(Cookie cookie, Order order) throws IOException {
 
         Order orderFromCookie = getOrderFromCookie(cookie);
-        List<OrderedProduct> productsFromOrder = order.getOrderedProducts();
 
-        for(OrderedProduct orderedProduct : orderFromCookie.getOrderedProducts()) {
+        if(orderFromCookie.getId() == 0){
 
-            boolean exist = productsFromOrder
-                    .stream()
-                    .anyMatch(o -> Objects.equals(o.getProduct().getId(), orderedProduct.getProduct().getId()));
+            List<OrderedProduct> productsFromOrder = order.getOrderedProducts();
 
-            log.info("OrderedProduct already exist ? " + exist);
-            if(exist){
-                productsFromOrder
+            for(OrderedProduct orderedProduct : orderFromCookie.getOrderedProducts()) {
+
+                boolean exist = productsFromOrder
                         .stream()
-                        .filter(o-> o.getProduct().getId().equals(orderedProduct.getProduct().getId()))
-                        .findFirst().ifPresent(o -> o.setQuantity(o.getQuantity() + orderedProduct.getQuantity()));
+                        .anyMatch(o -> Objects.equals(o.getProduct().getId(), orderedProduct.getProduct().getId()));
+
+                log.info("OrderedProduct already exist ? " + exist);
+                if(exist){
+                    productsFromOrder
+                            .stream()
+                            .filter(o-> o.getProduct().getId().equals(orderedProduct.getProduct().getId()))
+                            .findFirst().ifPresent(o -> o.setQuantity(o.getQuantity() + orderedProduct.getQuantity()));
+                }
+                else order.getOrderedProducts().add(orderedProduct);
             }
-            else order.getOrderedProducts().add(orderedProduct);
         }
 
         return order;
+    }
+
+    public static Cookie removeOrderFromCookie(HttpServletRequest request){
+
+        Cookie emptyCookie = null;
+        for(Cookie cookie : request.getCookies()) {
+            if (cookie.getName().equals("order")) {
+                cookie.setValue("");
+                emptyCookie = cookie;
+                emptyCookie.setPath("/shop");
+                emptyCookie.setHttpOnly(true);
+            }
+        }
+
+        return emptyCookie;
     }
 }

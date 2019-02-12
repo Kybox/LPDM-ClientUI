@@ -41,6 +41,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void cancelOrderById(int id) {
+
+        Order order = orderProxy.getOrderById(id);
+
+        order.setStatus(Status.CANCELLED);
+        orderProxy.saveOrder(order);
+    }
+
+    @Override
     public Order getOrderById(int orderId) {
 
         return orderProxy.getOrderById(orderId);

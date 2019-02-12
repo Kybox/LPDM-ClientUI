@@ -151,4 +151,13 @@ public class AuthController {
         log.info("Search cities for zipCode " + data.get("zipCode"));
         return locationService.findCitiesByZipCode(data.get("zipCode"));
     }
+
+    @GetMapping(value = "/account/delete/order/{id}")
+    public ModelAndView cancelOrder(@PathVariable int id, HttpServletRequest request){
+
+        orderService.cancelOrderById(id);
+        CookieUtils.removeOrderFromCookie(request);
+
+        return new ModelAndView("redirect:/shop/account");
+    }
 }

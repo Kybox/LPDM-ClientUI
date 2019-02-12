@@ -4,8 +4,8 @@
     <script data-th-src="@{/js/shop/cart/cart_summary.js}" charset="UTF-8"></script>
     <div class="col-sm-9">
         <h3>Votre panier</h3>
-        <h5 data-th-text="'Vous avez actuellement ' + ${totalProducts} + ' articles dans votre panier'"></h5>
-        <h6>Les montants exprimés ci-dessous sont TTC</h6>
+        <h5 data-th-text="'Vous avez actuellement ' + ${(totalProducts != null) ? totalProducts : '0' } + ' articles dans votre panier'"></h5>
+        <h6 data-th-if="${cookieCart != null}">Les montants exprimés ci-dessous sont TTC</h6>
         <br>
         <div data-th-if="${cookieOrder != null}">
             <table class="table table-hover table-responsive">
@@ -76,7 +76,15 @@
                         </button>
                     </a>
                 </div>
-                <div class="col-sm-8 text-right">
+                <div class="col-sm-4 text-center">
+                    <a data-th-href="'/shop/cart/clear'">
+                        <button type="button" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
+                            Vider mon panier
+                        </button>
+                    </a>
+                </div>
+                <div class="col-sm-4 text-right">
                     <a data-th-href="'/shop/cart/save'">
                         <button type="button" class="btn btn-default">
                             Valider le panier

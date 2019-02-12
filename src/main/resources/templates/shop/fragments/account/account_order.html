@@ -76,7 +76,15 @@
                     </button>
                 </a>
             </div>
-            <div class="col-sm-8 text-right">
+            <div class="col-sm-4 text-center">
+                <a data-th-href="'/account/delete/order/' + ${cookieOrder.id}">
+                    <button type="button" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Annuler cette commande
+                    </button>
+                </a>
+            </div>
+            <div class="col-sm-4 text-right">
                 <a data-th-href="'/shop/order/process/1'">
                     <button type="button" class="btn btn-default">
                         Régler ma commande

@@ -12,6 +12,8 @@ public interface OrderService {
 
     Order saveOrder(Order order);
 
+    void cancelOrderById(int id);
+
     Order getOrderById(int orderId);
 
     void setOrderToCookie(Order order, HttpServletResponse response) throws JsonProcessingException;

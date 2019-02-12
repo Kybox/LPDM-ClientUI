@@ -9,6 +9,7 @@ import com.lpdm.msuser.model.shop.LoginForm;
 import com.lpdm.msuser.services.shop.CartService;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.SecurityService;
+import com.lpdm.msuser.utils.cookie.CookieUtils;
 import com.lpdm.msuser.utils.shop.CustomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,5 +109,13 @@ public class CartController {
         return CustomModel.getFor("/shop/fragments/account/account", request, true)
                 .addObject("accountContent", "order")
                 .addObject("userAddress", userAddress);
+    }
+
+    @GetMapping(value = "/shop/cart/clear")
+    public ModelAndView clearCart(HttpServletRequest request, HttpServletResponse response){
+
+        response.addCookie(CookieUtils.removeOrderFromCookie(request));
+
+        return new ModelAndView("redirect:/shop/account");
     }
 }
