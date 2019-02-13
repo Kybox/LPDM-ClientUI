@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html data-layout-decorate="~{shop/layout}" lang="fr">
+<head>
+    <link rel="stylesheet" data-th-href="@{/css/shop/order/order_process.css}">
+    <title>LPDM - Commande</title>
+</head>
+<body>
+<div data-layout-fragment="content" style="padding-top: 10px;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="alert alert-success">
+                <b>Votre paiement a été accepté</b>
+                <span class="glyphicon glyphicon-ok" style="padding-left: 12px;"></span>
+            </div>
+        </div>
+        <hr>
+        <div class="col-sm-12">
+            <div class="text-left" style="padding-left: 20px;">
+                <h4>Votre commande viens d'être prise en compte</h4>
+                <p>Vous recevrez prochainement une notification par e-mail sur l'évolution du traitement de votre commande</p>
+                <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter</a></h6>
+            </div>
+            <br>
+            <div class="text-center">
+                <h2>Merci pour votre confiance !</h2>
+                <br>
+                <a data-th-href="'/shop/order/process/4'">
+                    <button class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                        Mon compte
+                    </button>
+                </a>
+                <br>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <br>
+</div>
+</body>
+</html>

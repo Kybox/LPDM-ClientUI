@@ -3,12 +3,14 @@ package com.lpdm.msuser.controllers.shop;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.location.Address;
 import com.lpdm.msuser.model.order.*;
+import com.lpdm.msuser.model.paypal.TransactionInfo;
 import com.lpdm.msuser.services.shop.*;
+import com.lpdm.msuser.utils.cookie.CookieUtils;
 import com.lpdm.msuser.utils.shop.CustomModel;
-import org.bouncycastle.math.raw.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -133,16 +135,15 @@ public class OrderController {
     }
 
     @GetMapping("/shop/order/process/5")
-    public String orderProcess5(HttpServletRequest request,
+    public ModelAndView orderProcess5(HttpServletRequest request,
                                       HttpServletResponse response)
             throws IOException {
 
         SuccessUrl urls = new SuccessUrl();
-        urls.setReturnUrl("https://lpdm.kybox.fr/orders/paypalsuccess");
-        urls.setCancelUrl("https://lpdm.kybox.fr/orders/paypalcancel");
+        urls.setReturnUrl("http://localhost:30000/shop/order/process/success");
+        urls.setCancelUrl("http://localhost:30000/shop/order/process/error");
 
-        Order order = null;
-        //Order order = cartService.getCartFormCookie(request);
+        Order order = orderService.getOrderById(orderService.getOrderIdFromCookie(request));
 
         PaypalUrl paypalUrl = orderService.getPaypalPaymentUrl(order.getId(), urls);
 
@@ -151,13 +152,35 @@ public class OrderController {
 
         String redirectUrl = paypalUrl.getRedirectUrl();
 
-        if(redirectUrl == null) return "/orders/paypalcancel";
-        else return "redirect:" + paypalUrl.getRedirectUrl();
+        ModelAndView modelAndView;
+        if(redirectUrl == null) modelAndView = new ModelAndView("/orders/paypalcancel");
+        else modelAndView = new ModelAndView( "redirect:" + paypalUrl.getRedirectUrl());
+
+        return modelAndView;
     }
 
-    @GetMapping("/paypalsuccess")
-    public String successPaypal(){
-        return "orders/paypalsuccess";
+    @GetMapping("/shop/order/process/success")
+    public ModelAndView orderPaymentSuccess(@RequestParam Map<String, String> params,
+                                            HttpServletRequest request) throws IOException {
+
+        TransactionInfo transactionInfo = new TransactionInfo();
+        transactionInfo.setPayerID(params.get("PayerId"));
+        transactionInfo.setPaymentId(params.get("paymentId"));
+        transactionInfo.setToken(params.get("token"));
+
+        log.info("Transaction info = " + transactionInfo);
+
+        Order order = orderService.getOrderById(orderService.getOrderIdFromCookie(request));
+
+        log.info("Oder = " + order);
+
+        order.setStatus(Status.PAID);
+
+        orderService.saveOrder(order);
+
+        CookieUtils.removeOrderFromCookie(request);
+
+        return CustomModel.getFor("/shop/fragments/order/order_payment_success", request, true);
     }
 
     @GetMapping("shop/order/payment/cancel")

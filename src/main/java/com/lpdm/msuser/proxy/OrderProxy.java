@@ -3,6 +3,7 @@ package com.lpdm.msuser.proxy;
 import com.lpdm.msuser.model.admin.OrderStats;
 import com.lpdm.msuser.model.admin.SearchDates;
 import com.lpdm.msuser.model.order.*;
+import com.lpdm.msuser.model.paypal.TransactionInfo;
 import feign.FeignException;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -76,6 +77,10 @@ public interface OrderProxy {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     PaypalUrl getPayPalUrl(@PathVariable("id") int id, @RequestBody SuccessUrl successUrl);
+
+    // Get transaction details
+    @PostMapping(value = "${lpdm.order.name}/orders/transaction/details")
+    String getTransactionDetails(@RequestBody TransactionInfo transactionInfo);
 
     // Get all coupons
     @GetMapping(value = "${lpdm.order.name}/admin/coupon/all",

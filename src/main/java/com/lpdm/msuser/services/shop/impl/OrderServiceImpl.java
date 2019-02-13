@@ -3,6 +3,7 @@ package com.lpdm.msuser.services.shop.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.*;
+import com.lpdm.msuser.model.paypal.TransactionInfo;
 import com.lpdm.msuser.model.product.Product;
 import com.lpdm.msuser.model.shop.Cart;
 import com.lpdm.msuser.model.shop.CookieProduct;
@@ -156,7 +157,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public PaypalUrl getPaypalPaymentUrl(int order, SuccessUrl urls) {
 
-        return orderProxy.getPayPalUrl(order, urls);
+        PaypalUrl paypalUrl = null;
+
+        try { paypalUrl = orderProxy.getPayPalUrl(order, urls); }
+        catch (Exception e) { log.warn(e.getMessage()); }
+
+        return paypalUrl;
+    }
+
+    @Override
+    public String getTransactionDetails(TransactionInfo transactionInfo) {
+
+        return orderProxy.getTransactionDetails(transactionInfo);
     }
 
 }

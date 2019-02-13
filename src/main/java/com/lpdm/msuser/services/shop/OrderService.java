@@ -2,6 +2,7 @@ package com.lpdm.msuser.services.shop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lpdm.msuser.model.order.*;
+import com.lpdm.msuser.model.paypal.TransactionInfo;
 import com.lpdm.msuser.model.shop.Cart;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,4 +32,6 @@ public interface OrderService {
     Order findLastOrderByCustomerAndStatus(int customer, int status);
 
     PaypalUrl getPaypalPaymentUrl(int order, SuccessUrl urls);
+
+    String getTransactionDetails(TransactionInfo transactionInfo);
 }

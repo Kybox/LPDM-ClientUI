@@ -60,33 +60,36 @@ public class CartServiceImpl implements CartService {
             for(Cookie cookie : cookieList){
                 if(cookie.getName().equals(COOKIE_CART)){
                     log.info(" |_ Cookie temp_order exist");
-                    try {
-                        cart = CookieUtils.getCartFromCookie(cookie);
 
-                        boolean found = cart
-                                .getProductList()
-                                .stream()
-                                .anyMatch(p -> p.getId() == cookieProduct.getId());
+                    if(!cookie.getValue().equals("")){
+                        try {
+                            cart = CookieUtils.getCartFromCookie(cookie);
 
-                        if(found){
-                            log.info(" |_ product found");
-
-                            cart.getProductList()
+                            boolean found = cart
+                                    .getProductList()
                                     .stream()
-                                    .filter(p-> p.getId() == cookieProduct.getId())
-                                    .findFirst().ifPresent(p -> p.setQuantity(p.getQuantity() + cookieProduct.getQuantity()));
-                        }
-                        else {
+                                    .anyMatch(p -> p.getId() == cookieProduct.getId());
 
-                            log.info(" |_ product not found");
-                            cart.getProductList().add(cookieProduct);
-                        }
+                            if(found){
+                                log.info(" |_ product found");
 
-                        response.addCookie(CookieUtils
-                                .getCookieFromCart(CartUtils
-                                        .setAllCartInfos(cart)));
+                                cart.getProductList()
+                                        .stream()
+                                        .filter(p-> p.getId() == cookieProduct.getId())
+                                        .findFirst().ifPresent(p -> p.setQuantity(p.getQuantity() + cookieProduct.getQuantity()));
+                            }
+                            else {
+
+                                log.info(" |_ product not found");
+                                cart.getProductList().add(cookieProduct);
+                            }
+
+                            response.addCookie(CookieUtils
+                                    .getCookieFromCart(CartUtils
+                                            .setAllCartInfos(cart)));
+                        }
+                        catch (IOException e) { log.warn(e.getMessage()); }
                     }
-                    catch (IOException e) { log.warn(e.getMessage()); }
                 }
             }
         }
