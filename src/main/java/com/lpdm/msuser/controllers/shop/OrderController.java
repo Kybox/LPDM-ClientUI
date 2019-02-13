@@ -2,12 +2,10 @@ package com.lpdm.msuser.controllers.shop;
 
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.location.Address;
-import com.lpdm.msuser.model.order.Delivery;
-import com.lpdm.msuser.model.order.Order;
-import com.lpdm.msuser.model.order.PaypalUrl;
-import com.lpdm.msuser.model.order.SuccessUrl;
+import com.lpdm.msuser.model.order.*;
 import com.lpdm.msuser.services.shop.*;
 import com.lpdm.msuser.utils.shop.CustomModel;
+import org.bouncycastle.math.raw.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +45,7 @@ public class OrderController {
     @GetMapping("shop/order/process/1")
     public ModelAndView orderProcess1(HttpServletRequest request) throws IOException {
 
-        User user = securityService.getAuthenticatedUser(request);
-        boolean userAddress = user.getAddress() != null;
-
         return CustomModel.getFor("/shop/fragments/order/order_process", request, false)
-                .addObject("user", user)
-                .addObject("userAddress", userAddress)
                 .addObject("orderProcess", 1);
     }
 
@@ -90,6 +83,8 @@ public class OrderController {
     @GetMapping("/shop/order/process/2")
     public ModelAndView orderProcess2(HttpServletRequest request) throws IOException {
 
+        log.info("Method : orderProcess2");
+
         List<Delivery> deliveryList = orderService.findAllDeliveryMethods();
 
         return CustomModel.getFor("/shop/fragments/order/order_process", request, false)
@@ -100,9 +95,12 @@ public class OrderController {
     @PostMapping("/shop/order/process/2")
     public Order updateDeliveryMethod(@RequestBody Delivery delivery, HttpServletRequest request) throws IOException {
 
-        Order order = cartService.getCartFormCookie(request);
-        order = orderService.getOrderById(order.getId());
+        log.info("Method : updateDeliveryMethod");
+
+        Order order = orderService.getOrderById(orderService.getOrderIdFromCookie(request));
         order.setDelivery(delivery);
+
+        log.info(" |_ Order = " + order);
 
         return orderService.saveOrder(order);
     }
@@ -110,13 +108,32 @@ public class OrderController {
     @GetMapping("/shop/order/process/3")
     public ModelAndView orderProcess3(HttpServletRequest request) throws IOException {
 
+        log.info("Method : orderProcess3");
+
         return CustomModel.getFor("shop/fragments/order/order_process", request, false)
                 .addObject("orderProcess", 3)
                 .addObject("paymentList", orderService.findAllPayments());
     }
 
+    @PostMapping("/shop/order/process/3")
+    public Order updatePaymentMethod(@RequestBody Payment payment,
+                                            HttpServletRequest request) throws IOException {
+
+        Order order = orderService.getOrderById(orderService.getOrderIdFromCookie(request));
+        order.setPayment(payment);
+
+        return orderService.saveOrder(order);
+    }
+
     @GetMapping("/shop/order/process/4")
-    public String orderProcess4(HttpServletRequest request,
+    public ModelAndView orderProcess4(HttpServletRequest request) throws IOException {
+
+        return CustomModel.getFor("shop/fragments/order/order_process", request, false)
+                .addObject("orderProcess", 4);
+    }
+
+    @GetMapping("/shop/order/process/5")
+    public String orderProcess5(HttpServletRequest request,
                                       HttpServletResponse response)
             throws IOException {
 
@@ -124,7 +141,8 @@ public class OrderController {
         urls.setReturnUrl("https://lpdm.kybox.fr/orders/paypalsuccess");
         urls.setCancelUrl("https://lpdm.kybox.fr/orders/paypalcancel");
 
-        Order order = cartService.getCartFormCookie(request);
+        Order order = null;
+        //Order order = cartService.getCartFormCookie(request);
 
         PaypalUrl paypalUrl = orderService.getPaypalPaymentUrl(order.getId(), urls);
 

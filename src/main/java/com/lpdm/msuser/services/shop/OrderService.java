@@ -2,7 +2,9 @@ package com.lpdm.msuser.services.shop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lpdm.msuser.model.order.*;
+import com.lpdm.msuser.model.shop.Cart;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -15,6 +17,10 @@ public interface OrderService {
     void cancelOrderById(int id);
 
     Order getOrderById(int orderId);
+
+    Order getOrderFromCookie(HttpServletRequest request);
+
+    int getOrderIdFromCookie(HttpServletRequest request);
 
     void setOrderToCookie(Order order, HttpServletResponse response) throws JsonProcessingException;
 

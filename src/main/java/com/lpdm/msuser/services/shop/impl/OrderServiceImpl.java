@@ -3,8 +3,13 @@ package com.lpdm.msuser.services.shop.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.*;
+import com.lpdm.msuser.model.product.Product;
+import com.lpdm.msuser.model.shop.Cart;
+import com.lpdm.msuser.model.shop.CookieProduct;
 import com.lpdm.msuser.proxy.OrderProxy;
 import com.lpdm.msuser.services.shop.OrderService;
+import com.lpdm.msuser.services.shop.ProductService;
+import com.lpdm.msuser.utils.cart.CartUtils;
 import com.lpdm.msuser.utils.cookie.CookieUtils;
 import com.lpdm.msuser.utils.order.OrderUtils;
 import feign.FeignException;
@@ -13,8 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+
+import static com.lpdm.msuser.utils.shop.ValueType.COOKIE_CART;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -22,10 +31,12 @@ public class OrderServiceImpl implements OrderService {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final OrderProxy orderProxy;
+    private final ProductService productService;
 
     @Autowired
-    public OrderServiceImpl(OrderProxy orderProxy) {
+    public OrderServiceImpl(OrderProxy orderProxy, ProductService productService) {
         this.orderProxy = orderProxy;
+        this.productService = productService;
     }
 
     @Override
@@ -56,16 +67,67 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void setOrderToCookie(Order order, HttpServletResponse response) throws JsonProcessingException {
+    public Order getOrderFromCookie(HttpServletRequest request) {
 
-        order.setTotal(OrderUtils.getTotalOrderAmount(order));
-        order.setCustomer(new User(order.getCustomer().getId()));
+        log.info("  |_ Method : getOrderFromCookie");
 
-        for(OrderedProduct orderedProduct : order.getOrderedProducts()){
-            orderedProduct.getProduct().setListStock(null);
+        Cookie[] cookies = request.getCookies();
+        if(cookies == null) return null;
+
+        Cart cart = null;
+        for(Cookie cookie : cookies) {
+            if (cookie.getName().equals(COOKIE_CART))
+                cart = CookieUtils.getCartFromCookie(cookie);
         }
 
-        response.addCookie(CookieUtils.getCookieFromOrder(order));
+        if(cart == null) return null;
+
+        Order order = new Order();
+        order.setId(cart.getId());
+
+        int totalProducts = 0;
+
+        for(CookieProduct cookieProduct : cart.getProductList()){
+
+            Product product = productService.findProductById(cookieProduct.getId());
+
+            OrderedProduct orderedProduct = new OrderedProduct();
+            orderedProduct.setProduct(product);
+            orderedProduct.setProductId(product.getId());
+            orderedProduct.setQuantity(cookieProduct.getQuantity());
+            orderedProduct.setTax(product.getTax());
+            orderedProduct.setPrice(product.getPrice());
+
+            totalProducts += orderedProduct.getQuantity();
+            order.getOrderedProducts().add(orderedProduct);
+        }
+
+        order.setTotalProducts(totalProducts);
+        order.setTaxAmount(OrderUtils.getTotalOrderAmount(order));
+
+        log.info("   |_ Order = " + order);
+
+        return order;
+    }
+
+    @Override
+    public int getOrderIdFromCookie(HttpServletRequest request) {
+
+        Cookie[] cookies = request.getCookies();
+
+        Cart cart = null;
+        for(Cookie cookie : cookies) {
+            if (cookie.getName().equals(COOKIE_CART))
+                cart = CookieUtils.getCartFromCookie(cookie);
+        }
+
+        return cart.getId();
+    }
+
+    @Override
+    public void setOrderToCookie(Order order, HttpServletResponse response) throws JsonProcessingException {
+
+        response.addCookie(CookieUtils.getCookieFromCart(CartUtils.getCartFromOrder(order)));
     }
 
     @Override

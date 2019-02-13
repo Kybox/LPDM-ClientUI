@@ -33,7 +33,7 @@ pipeline {
         stage('Load Key') {
             steps {
                 script {
-                    configFileProvider([configFile(fileId: '2bd4e734-a03f-4fce-9015-aca988614b4e', targetLocation: 'lpdm.key')]) {
+                    configFileProvider([configFile(fileId: 'a7bba115-f683-48ba-bfb0-1f81d142d2cc', targetLocation: 'lpdm.key')]) {
                         lpdm_keys = readJSON file: 'lpdm.key'
                         KEY = lpdm_keys.lpdm
                     }

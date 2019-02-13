@@ -4,8 +4,12 @@ import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.OrderedProduct;
 import com.lpdm.msuser.model.order.Status;
+import com.lpdm.msuser.model.product.Product;
+import com.lpdm.msuser.model.shop.Cart;
+import com.lpdm.msuser.model.shop.CookieProduct;
 import com.lpdm.msuser.services.shop.CartService;
 import com.lpdm.msuser.services.shop.OrderService;
+import com.lpdm.msuser.services.shop.ProductService;
 import com.lpdm.msuser.services.shop.SecurityService;
 import com.lpdm.msuser.utils.order.OrderUtils;
 import feign.FeignException;
@@ -26,61 +30,70 @@ public class CustomModel {
     private static CartService cartService;
     private static OrderService orderService;
     private static SecurityService securityService;
+    private static ProductService productService;
 
     @Autowired
     public CustomModel(CartService cartService,
                        OrderService orderService,
-                       SecurityService securityService) {
+                       SecurityService securityService,
+                       ProductService productService) {
 
         CustomModel.cartService = cartService;
         CustomModel.orderService = orderService;
         CustomModel.securityService = securityService;
+        CustomModel.productService = productService;
     }
 
     public static ModelAndView getFor(String url,
                                       HttpServletRequest request,
-                                      boolean getOrderFromCookie)
+                                      boolean getCartFromCookie)
             throws IOException {
 
-        Order order = cartService.getCartFormCookie(request);
+        log.info("Method : getFor");
 
-        if(!getOrderFromCookie) {
+        Order order;
+        Cart cart = cartService.getCartFormCookie(request);
+
+        if(!getCartFromCookie) {
             try{
                 User user = securityService.getAuthenticatedUser(request);
                 order = orderService.findLastOrderByCustomerAndStatus(user.getId(), Status.VALIDATED.getId());
-                log.info("Last order validated : " + order);
+                log.info(" |_ Last order validated = " + order);
+
+                boolean userAddress = user.getAddress() != null;
+
+                return new ModelAndView(url)
+                        .addObject("cookieOrder", order)
+                        .addObject("totalProducts", OrderUtils.getTotalOrderedProducts(order))
+                        .addObject("subAmount", OrderUtils.getTotalOrderAmountWithoutTax(order))
+                        .addObject("user", user)
+                        .addObject("userAddress", userAddress);
             }
             catch (FeignException e) {
                 log.info(e.getMessage());
-                order = cartService.getCartFormCookie(request);
             }
         }
 
-        if(order != null){
+        if(cart != null && cart.getProductList() != null && cart.getProductList().size() != 0){
 
-            if(order.getId() != 0) {
-                order = orderService.getOrderById(order.getId());
-                order.setCustomer(new User(order.getCustomer().getId()));
+            order = new Order();
+            for(CookieProduct cookieProduct : cart.getProductList()){
+
+                Product product = productService.findProductById(cookieProduct.getId());
+                product.setProducer(null);
+                product.setListStock(null);
+
+                OrderedProduct orderedProduct = new OrderedProduct();
+                orderedProduct.setProduct(product);
+                orderedProduct.setQuantity(cookieProduct.getQuantity());
+
+                order.getOrderedProducts().add(orderedProduct);
             }
-
-            for(OrderedProduct orderedProduct : order.getOrderedProducts()) {
-                orderedProduct.setPriceWithTax(OrderUtils.getOrderedProductPriceWithTax(orderedProduct));
-                orderedProduct.setTotalAmount(OrderUtils.getOrderedProductTotalAmount(orderedProduct));
-                orderedProduct.getProduct().setListStock(null);
-            }
-
-            log.info("Custom model Order = " + order);
-
-            int total = orderService.getTotalOrderedProducts(order);
-            double subAmount = OrderUtils.getTotalOrderAmountWithoutTax(order);
-
-            order.setTotal(OrderUtils.getTotalOrderAmount(order));
-            order.setTaxAmount(Math.round(order.getTaxAmount() * 100D) / 100D);
 
             ModelAndView modelAndView =  new ModelAndView(url)
-                    .addObject("cookieOrder", order)
-                    .addObject("totalProducts", total)
-                    .addObject("subAmount", subAmount);
+                    .addObject("cookieOrder", OrderUtils.setAllAmountsFromOrder(order))
+                    .addObject("totalProducts", OrderUtils.getTotalOrderedProducts(order))
+                    .addObject("subAmount", OrderUtils.getTotalOrderAmountWithoutTax(order));
 
             User user = securityService.getAuthenticatedUser(request);
 
@@ -90,7 +103,7 @@ public class CustomModel {
             return modelAndView;
         }
 
-        log.info("No order found in the cookies");
+        log.info(" |_ No cart found in the cookies");
 
         return new ModelAndView(url);
     }

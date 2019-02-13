@@ -2,10 +2,9 @@ package com.lpdm.msuser.utils.cookie;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.OrderedProduct;
-import com.lpdm.msuser.utils.order.OrderUtils;
+import com.lpdm.msuser.model.shop.Cart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,24 +14,55 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+import static com.lpdm.msuser.utils.shop.ValueType.*;
+
 public class CookieUtils {
 
     private static Logger log = LoggerFactory.getLogger(CookieUtils.class);
 
     public static Order getOrderFromCookie(Cookie cookie) throws IOException {
 
+        log.info("Method : getOrderFromCookie");
+
         Order order = null;
 
         try { order = new ObjectMapper().readValue(cookie.getValue(), Order.class); }
         catch (Exception e) { log.warn(e.getMessage()); }
 
-        log.info("CookieUtils Order : " + order);
+        log.info(" |_ Order = " + order);
 
         return order;
     }
 
-    public static Cookie getCookieFromOrder(Order order) throws JsonProcessingException {
+    public static Cart getCartFromCookie(Cookie cookie){
 
+        log.info("Method : getCartFromCookie");
+
+        Cart cart = null;
+        try { cart = new ObjectMapper().readValue(cookie.getValue(), Cart.class); }
+        catch (Exception e) { log.warn(e.getMessage()); }
+
+        log.info(" |_ Cart = " + cart);
+
+        return cart;
+    }
+
+    public static Cookie getCookieFromCart(Cart cart) throws JsonProcessingException {
+
+        log.info("Method : getCookieFromCart");
+
+        ObjectMapper objectMapper =  new ObjectMapper();
+        String jsonObj = objectMapper.writeValueAsString(cart);
+
+        Cookie cookie = new Cookie(COOKIE_CART, jsonObj);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/shop");
+
+        log.info(" |_ Cookie = " + cookie.getValue());
+
+        return cookie;
+
+        /*
         if(order.getCustomer() != null) {
             order.setCustomerId(order.getCustomer().getId());
             order.setCustomer(new User(order.getCustomerId()));
@@ -48,27 +78,34 @@ public class CookieUtils {
         ObjectMapper objectMapper =  new ObjectMapper();
         String json = objectMapper.writeValueAsString(order);
 
-        Cookie cookie = new Cookie("order", json);
+        Cookie cookie = new Cookie(COOKIE_CART, json);
         cookie.setHttpOnly(true);
         cookie.setPath("/shop");
 
-        log.info("Cookie = " + cookie.getValue());
+        log.info(" |_ Cookie = " + cookie.getValue());
 
         return cookie;
+
+        */
     }
 
-    public static Cookie isThereAnOrderFromCookies(Cookie[] cookies){
+    public static Cookie isThereATempOrderFromCookies(Cookie[] cookies){
+
+        log.info("Method : isThereATempOrderFromCookies");
 
         for(Cookie cookie : cookies) {
-            log.info("Cookie : " + cookie.getName());
-            if (cookie.getName().equals("order"))
+            if (cookie.getName().equals(COOKIE_CART)) {
+                log.info(" |_ Cart from cookies found");
                 return cookie;
+            }
         }
 
         return null;
     }
 
     public static Order addOrderedProductsFromCookieToOrder(Cookie cookie, Order order) throws IOException {
+
+        log.info("Method : addOrderedProductsFromCookieToOrder");
 
         Order orderFromCookie = getOrderFromCookie(cookie);
 
@@ -98,13 +135,19 @@ public class CookieUtils {
 
     public static Cookie removeOrderFromCookie(HttpServletRequest request){
 
+        log.info("Method : removeOrderFromCookie");
+
         Cookie emptyCookie = null;
-        for(Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals("order")) {
-                cookie.setValue("");
-                emptyCookie = cookie;
-                emptyCookie.setPath("/shop");
-                emptyCookie.setHttpOnly(true);
+        Cookie[] cookies = request.getCookies();
+
+        if(cookies != null){
+            for(Cookie cookie : cookies) {
+                if (cookie.getName().equals(COOKIE_CART)) {
+                    cookie.setValue("");
+                    emptyCookie = cookie;
+                    emptyCookie.setPath("/shop");
+                    emptyCookie.setHttpOnly(true);
+                }
             }
         }
 

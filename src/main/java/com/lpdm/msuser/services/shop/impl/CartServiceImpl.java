@@ -1,15 +1,14 @@
 package com.lpdm.msuser.services.shop.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.lpdm.msuser.model.order.Order;
-import com.lpdm.msuser.model.order.OrderedProduct;
-import com.lpdm.msuser.model.order.Status;
 import com.lpdm.msuser.model.product.Product;
+import com.lpdm.msuser.model.shop.Cart;
+import com.lpdm.msuser.model.shop.CookieProduct;
 import com.lpdm.msuser.services.shop.CartService;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.ProductService;
+import com.lpdm.msuser.utils.cart.CartUtils;
 import com.lpdm.msuser.utils.cookie.CookieUtils;
-import com.lpdm.msuser.utils.order.OrderUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+
+import static com.lpdm.msuser.utils.shop.ValueType.COOKIE_CART;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -37,158 +37,146 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Order addProductToCart(OrderedProduct orderedProduct,
-                                 HttpServletRequest request,
-                                 HttpServletResponse response)
+    public Cart addProductToCart(CookieProduct cookieProduct,
+                                  HttpServletRequest request,
+                                  HttpServletResponse response)
             throws JsonProcessingException {
 
-        Order order = null;
-        Cookie[] cookieList = request.getCookies();
+        log.info("Method : addProductToCart");
+        log.info(" |_ Cookie product = " + cookieProduct);
 
-        log.info("Ordered product = " + orderedProduct);
+        Product product = productService.findProductById(cookieProduct.getId());
+        cookieProduct.setName(product.getName());
+        cookieProduct.setPicture(product.getPicture());
+        cookieProduct.setPrice(product.getPrice());
+        cookieProduct.setTax(product.getTax());
+
+        log.info(" |_ Cookie product now = " + cookieProduct);
+
+        Cart cart = null;
+        Cookie[] cookieList = request.getCookies();
 
         if(cookieList != null){
             for(Cookie cookie : cookieList){
-
-                if(cookie.getName().equals("order")){
-
+                if(cookie.getName().equals(COOKIE_CART)){
+                    log.info(" |_ Cookie temp_order exist");
                     try {
-                        order = CookieUtils.getOrderFromCookie(cookie);
+                        cart = CookieUtils.getCartFromCookie(cookie);
 
-                        List<OrderedProduct> orderedProductList = order.getOrderedProducts();
-
-                        boolean found = orderedProductList
+                        boolean found = cart
+                                .getProductList()
                                 .stream()
-                                .anyMatch(o -> o.getProductId() == orderedProduct.getProductId());
+                                .anyMatch(p -> p.getId() == cookieProduct.getId());
 
                         if(found){
+                            log.info(" |_ product found");
 
-                            log.info("product found !");
-                            orderedProductList
+                            cart.getProductList()
                                     .stream()
-                                    .filter(o-> o.getProductId() == orderedProduct.getProductId())
-                                    .findFirst()
-                                    .ifPresent(o -> o.setQuantity(o.getQuantity() + orderedProduct.getQuantity()));
+                                    .filter(p-> p.getId() == cookieProduct.getId())
+                                    .findFirst().ifPresent(p -> p.setQuantity(p.getQuantity() + cookieProduct.getQuantity()));
                         }
                         else {
 
-                            log.info("product not found !");
-                            Product product = productService
-                                    .findProductById(orderedProduct.getProductId());
-
-                            orderedProduct.setProduct(product);
-                            orderedProductList.add(orderedProduct);
+                            log.info(" |_ product not found");
+                            cart.getProductList().add(cookieProduct);
                         }
 
-                        for(OrderedProduct op : orderedProductList){
-                            op.getProduct().setListStock(null);
-                            op.getProduct().setProducer(null);
-                        }
-
-                        order.setOrderedProducts(orderedProductList);
-
-                        response.addCookie(CookieUtils.getCookieFromOrder(order));
-
+                        response.addCookie(CookieUtils
+                                .getCookieFromCart(CartUtils
+                                        .setAllCartInfos(cart)));
                     }
                     catch (IOException e) { log.warn(e.getMessage()); }
                 }
             }
         }
 
-        if(order == null){
+        if(cart == null){
 
-            order = new Order();
-            order.setStatus(Status.CART);
-            order.getOrderedProducts().add(orderedProduct);
+            log.info(" |_ Create new temp order");
 
-            for(OrderedProduct op : order.getOrderedProducts()){
+            cart = new Cart();
+            cart.getProductList().add(cookieProduct);
 
+            log.info(" |_ Cart = " + cart);
 
-                Product product = productService.findProductById(op.getProductId());
-                product.setListStock(null);
-                product.setProducer(null);
-                op.setProduct(product);
-
-                log.info("OrderedProduct now : " + op);
-            }
-
-            log.info("Order = " + order);
-
-            response.addCookie(CookieUtils.getCookieFromOrder(order));
+            response.addCookie(CookieUtils
+                    .getCookieFromCart(CartUtils
+                            .setAllCartInfos(cart)));
         }
 
-        return order;
+        return cart;
     }
 
     @Override
-    public Order getCartFormCookie(HttpServletRequest request) throws IOException {
+    public Cart getCartFormCookie(HttpServletRequest request) throws IOException {
 
-        Order order = null;
+        log.info("Method : getCartFormCookie");
+
+        Cart cart = null;
         Cookie[] cookies = request.getCookies();
-
         if(cookies != null) {
 
-            Cookie cookieOrder = CookieUtils.isThereAnOrderFromCookies(cookies);
+            Cookie cookieCart = CookieUtils.isThereATempOrderFromCookies(cookies);
 
-            if(cookieOrder != null){
+            if(cookieCart != null){
 
-                log.info("Yes is there an Order from cookie");
-
-                order = CookieUtils.getOrderFromCookie(cookieOrder);
+                log.info(" |_ Cart from cookie found");
+                cart = CookieUtils.getCartFromCookie(cookieCart);
             }
         }
-        else log.info("No order from cookie");
+        else log.info(" |_ There are no cookies");
 
-        return order;
+        return cart;
     }
 
     @Override
-    public Order updateQuantity(int productId, String mode,
+    public Cart updateQuantity(int productId, String mode,
                                          HttpServletRequest request,
                                          HttpServletResponse response) throws IOException {
 
-        Order order = getCartFormCookie(request);
+        log.info("Method : updateQuantity");
 
-        for(OrderedProduct orderedProduct : order.getOrderedProducts()){
+        Cart cart = getCartFormCookie(request);
 
-            if(orderedProduct.getProduct().getId() == productId){
+        for(CookieProduct product : cart.getProductList()){
+
+            if(product.getId() == productId){
 
                 switch (mode){
 
                     case "less" :
-                        orderedProduct.setQuantity(orderedProduct.getQuantity() - 1);
+                        product.setQuantity(product.getQuantity() - 1);
+                        log.info(" |_ -1");
                         break;
 
                     case "more" :
-                        orderedProduct.setQuantity(orderedProduct.getQuantity() + 1);
+                        product.setQuantity(product.getQuantity() + 1);
+                        log.info(" |_ +1");
                         break;
                 }
 
-                orderedProduct.setTotalAmount(OrderUtils.getOrderedProductTotalAmount(orderedProduct));
-                order.setTotal(OrderUtils.getTotalOrderAmount(order));
-
-                response.addCookie(CookieUtils.getCookieFromOrder(order));
-
-                return order;
+                break;
             }
         }
 
-        return null;
+        response.addCookie(CookieUtils.getCookieFromCart(CartUtils.setAllCartInfos(cart)));
+
+        return cart;
     }
 
     @Override
-    public Order deleteProductFromCart(int productId,
+    public Cart deleteProductFromCart(int productId,
                                        HttpServletRequest request,
                                        HttpServletResponse response) throws IOException {
 
-        Order order = getCartFormCookie(request);
+        log.info("Method : deleteProductFromCart");
 
-        order.getOrderedProducts().removeIf(o -> o.getProduct().getId() == productId);
+        Cart cart = getCartFormCookie(request);
+        cart.getProductList().removeIf(p -> p.getId() == productId);
 
-        order.setTotal(OrderUtils.getTotalOrderAmount(order));
+        response.addCookie(CookieUtils.getCookieFromCart(CartUtils.setAllCartInfos(cart)));
 
-        response.addCookie(CookieUtils.getCookieFromOrder(order));
-
-        return order;
+        return cart;
     }
 }

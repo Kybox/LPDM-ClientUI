@@ -61,22 +61,14 @@ function updateQuantity(id, mode){
 
 function displayProductUpdated(data){
 
-    let orderedProduct = data.orderedProducts;
+    let productList = data.productList;
 
-    $.each(orderedProduct, function(i, item){
+    $.each(productList, function(i, item){
 
-        console.log("item id = " + item.product.id + "/ product id = " + productId);
+        if(item.id === parseInt(productId)){
 
-        if(item.product.id === parseInt(productId)){
-
-            console.log("Item found : " + JSON.stringify(item));
-            let id = item.product.id;
-            let quantity = item.quantity;
-
-            $("#quantity_text_" + id).text(quantity);
-
-            let productTotal = item.totalAmount;
-            $("#total_product_amount_" + id).text(productTotal + " €");
+            $("#quantity_text_" + item.id).text(item.quantity);
+            $("#total_product_amount_" + item.id).text(item.priceWithTax + " €");
 
             return false;
         }
@@ -87,9 +79,15 @@ function displayProductUpdated(data){
 
 function displayTotalAmount(data){
 
-    let totalAmount = data.total;
-
-    $("#cart-total").text("Montant total du panier : " + totalAmount + " €");
+    let totalProducts = data.productList.length;
+    if(totalProducts === 0){
+        $("#cart_summary").fadeOut();
+        $("#alert_cart_empty").fadeIn();
+        $("#top_infos").fadeOut();
+    }
+    else{
+        $("#cart-total").text("Montant total du panier : " + data.amountWithTax + " €");
+    }
 
     updateCart(data);
 }

@@ -24,6 +24,43 @@ function updateCart(order){
 
     let totalProduct = 0;
 
+    $.each(order.productList, function (i, product) {
+
+        let list = $("<li/>");
+        let spanItem = $("<span/>").attr("class", "item");
+        let spanItemLeft = $("<span/>").attr("class", "item-left");
+        let productImg = $("<img/>")
+            .prop("src", product.picture)
+            .prop("alt", "productImg")
+            .attr("style", "width:50px; height:50px;");
+
+
+        let spanItemInfo = $("<span/>").attr("class", "item-info");
+        let spanProductName = $("<span/>").html(product.name);
+        let spanProdutPrice = $("<span/>").html("x " + product.quantity);
+
+        let spanItemRight = $("<span/>").attr("class", "item-right");
+        let btn = "<button class='btn btn-xs btn-danger pull-right'>x</button>";
+
+        spanItemRight.append(btn);
+
+        spanItemInfo.append(spanProductName);
+        spanItemInfo.append(spanProdutPrice);
+
+        spanItemLeft.append(productImg);
+        spanItemLeft.append(spanItemInfo);
+
+        spanItem.append(spanItemLeft);
+        spanItem.append(spanItemRight);
+
+        list.append(spanItem);
+
+        cart_list.append(list);
+
+        totalProduct = totalProduct + product.quantity;
+    });
+
+    /*
     $.each(order.orderedProducts, function (i, orderedProduct) {
 
         let list = $("<li/>");
@@ -59,6 +96,7 @@ function updateCart(order){
 
         totalProduct = totalProduct + orderedProduct.quantity;
     });
+    */
 
     cart_list.append("<li class='divider'></li>");
     cart_list.append(validateCart);

@@ -1,6 +1,6 @@
 package com.lpdm.msuser.security.jwt.filter;
 
-import com.lpdm.msuser.security.cookie.CookieRemover;
+import com.lpdm.msuser.security.cookie.JwtCookieRemover;
 import com.lpdm.msuser.security.jwt.config.JwtAuthConfig;
 import com.lpdm.msuser.security.jwt.model.JwtAuthToken;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
         log.warn("Authentication failed -> " + failed.getMessage());
 
-        CookieRemover.remove(response);
+        JwtCookieRemover.remove(response);
 
         if(failed.getMessage().equals(USER_ACCOUNT_LOCKED))
             response.sendRedirect("/identification/login?error=" + URLEncoder.encode("Compte utilisateur désactivé", "UTF-8"));

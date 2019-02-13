@@ -1,13 +1,13 @@
 package com.lpdm.msuser.controllers.shop;
 
 import com.lpdm.msuser.model.auth.User;
-import com.lpdm.msuser.model.location.Address;
 import com.lpdm.msuser.model.location.City;
 import com.lpdm.msuser.model.order.Order;
-import com.lpdm.msuser.model.order.OrderedProduct;
 import com.lpdm.msuser.model.order.Status;
+import com.lpdm.msuser.model.shop.Cart;
 import com.lpdm.msuser.model.shop.LoginForm;
 import com.lpdm.msuser.security.cookie.CookieAppender;
+import com.lpdm.msuser.security.cookie.JwtCookieRemover;
 import com.lpdm.msuser.security.jwt.auth.JwtGenerator;
 import com.lpdm.msuser.security.jwt.auth.JwtUserBuilder;
 import com.lpdm.msuser.security.jwt.model.JwtUser;
@@ -55,6 +55,14 @@ public class AuthController {
         this.securityService = securityService;
         this.locationService = locationService;
         this.orderService = orderService;
+    }
+
+    @GetMapping(value = "/shop/account/logout")
+    public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        JwtCookieRemover.remove(response);
+
+        return CustomModel.getFor("redirect:/shop", request, true);
     }
 
     @GetMapping(value = "/shop/account/login")
@@ -117,15 +125,16 @@ public class AuthController {
 
             if(order != null) {
 
-                Cookie cookie = CookieUtils.isThereAnOrderFromCookies(request.getCookies());
+                Cookie cookie = CookieUtils.isThereATempOrderFromCookies(request.getCookies());
                 if(cookie != null){
-                    order = CookieUtils.addOrderedProductsFromCookieToOrder(cookie, order);
+
+                    //order = CookieUtils.addOrderedProductsFromCookieToOrder(cookie, order);
                     log.info("Add products from cookie to last order from this customer");
-                    order = orderService.saveOrder(order);
+                    //order = orderService.saveOrder(order);
                 }
 
-                cookie = CookieUtils.getCookieFromOrder(order);
-                response.addCookie(cookie);
+                //cookie = CookieUtils.getCookieFromCart(order);
+                //response.addCookie(cookie);
 
                 modelAndView = CustomModel.getFor("shop/fragments/account/account", request, false);
                 modelAndView.addObject("accountContent", "order");
@@ -159,5 +168,15 @@ public class AuthController {
         CookieUtils.removeOrderFromCookie(request);
 
         return new ModelAndView("redirect:/shop/account");
+    }
+
+    @GetMapping(value = "/shop/account/infos")
+    public ModelAndView userInfos(HttpServletRequest request) throws IOException {
+
+        User user = securityService.getAuthenticatedUser(request);
+
+        return CustomModel.getFor("/shop/fragments/account/account", request, true)
+                .addObject("accountContent", "infos")
+                .addObject("user", user);
     }
 }

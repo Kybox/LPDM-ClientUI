@@ -3,8 +3,9 @@ package com.lpdm.msuser.controllers.shop;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.Order;
-import com.lpdm.msuser.model.order.OrderedProduct;
 import com.lpdm.msuser.model.order.Status;
+import com.lpdm.msuser.model.shop.Cart;
+import com.lpdm.msuser.model.shop.CookieProduct;
 import com.lpdm.msuser.model.shop.LoginForm;
 import com.lpdm.msuser.services.shop.CartService;
 import com.lpdm.msuser.services.shop.OrderService;
@@ -41,11 +42,12 @@ public class CartController {
     }
 
     @PostMapping(value = "/shop/cart/add")
-    public Order addProductToCart(@RequestBody OrderedProduct orderedProduct,
-                                  HttpServletRequest request,
-                                  HttpServletResponse response) throws JsonProcessingException {
+    public Cart addProductToCart(@RequestBody CookieProduct cookieProduct,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response) throws JsonProcessingException {
 
-        return cartService.addProductToCart(orderedProduct, request, response);
+
+        return cartService.addProductToCart(cookieProduct, request, response);
     }
 
     @GetMapping(value = "/shop/cart")
@@ -70,18 +72,16 @@ public class CartController {
     }
 
     @PostMapping(value = "/shop/cart/quantity/{mode}")
-    public Order updateQuantity(@ModelAttribute(value = "id") int productId,
+    public Cart updateQuantity(@ModelAttribute(value = "id") int productId,
                                          @PathVariable String mode,
                                          HttpServletRequest request,
                                          HttpServletResponse response) throws IOException {
-
-        log.info("Id : " + productId);
 
         return cartService.updateQuantity(productId, mode, request, response);
     }
 
     @DeleteMapping(value = "/shop/cart/delete")
-    public Order deleteProduct(@ModelAttribute(value = "id") int productId,
+    public Cart deleteProduct(@ModelAttribute(value = "id") int productId,
                                HttpServletRequest request,
                                HttpServletResponse response) throws IOException {
 
@@ -89,12 +89,21 @@ public class CartController {
     }
 
     @GetMapping(value = "/shop/cart/save")
-    public ModelAndView saveCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ModelAndView saveCart(HttpServletRequest request,
+                                 HttpServletResponse response) throws IOException {
 
 
-        Order order = cartService.getCartFormCookie(request);
+        Order order = orderService.getOrderFromCookie(request);
         User user = securityService.getAuthenticatedUser(request);
 
+        if(order == null || user == null)
+            return CustomModel.getFor("redirect:/shop/account", request, true);
+
+        if(order.getId() != 0){
+            Order orderSaved = orderService.getOrderById(order.getId());
+            if(orderSaved.getStatus() == Status.CANCELLED)
+                order.setId(0);
+        }
         order.setCustomer(user);
         order.setStatus(Status.VALIDATED);
         order.setOrderDate(LocalDateTime.now());

@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
-<div data-th-fragment="order">
-    <div class="col-sm-9">
-        <h3>Ma commande en cours</h3>
-        <h5 data-th-text="'Vous avez actuellement ' + ${totalProducts} + ' articles dans votre panier'"></h5>
-        <h6>N'oubliez pas d'indiquer votre coupon de réduction si vous en possédez un !</h6>
+<div data-th-fragment="order_process_4">
+    <div class="text-left" style="padding-left: 20px;">
+        <h4>Récapitulatif de votre commande</h4>
         <br>
+        <p>A l'étape suivante, vous serez en mesure de régler votre commande</p>
+        <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter</a></h6>
+    </div>
+    <br>
+    <div class="row">
         <table class="table table-hover table-responsive">
             <thead>
             <tr>
@@ -67,33 +70,6 @@
             </h4>
         </div>
         <hr>
-        <div class="row" style="padding: 10px;">
-            <div class="col-sm-4">
-                <a data-th-href="'/shop/products'">
-                    <button type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-chevron-left"></span>
-                        Continuer mes achats
-                    </button>
-                </a>
-            </div>
-            <div class="col-sm-4 text-center">
-                <a data-th-href="'/account/delete/order/' + ${cookieOrder.id}">
-                    <button type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-remove"></span>
-                        Annuler cette commande
-                    </button>
-                </a>
-            </div>
-            <div class="col-sm-4 text-right">
-                <a data-th-href="'/shop/order/process/1'">
-                    <button type="button" class="btn btn-default">
-                        Régler ma commande
-                        <span class="glyphicon glyphicon-chevron-right"></span>
-                    </button>
-                </a>
-            </div>
-        </div>
-        <br>
     </div>
 </div>
 </html>

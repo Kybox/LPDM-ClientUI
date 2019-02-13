@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<div data-th-fragment="infos">
+    <div class="col-sm-9">
+        <h3>Mes informations</h3>
+        <h5>Vous retrouverez sur cette page l'ensemble des informations relatives à votre compte.</h5>
+        <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter</a></h6>
+        <br>
+        <table class="table table-responsive table-hover">
+            <tr>
+                <td>Nom</td>
+                <td data-th-text="${user.firstName}"></td>
+            </tr>
+            <tr>
+                <td>Prénom</td>
+                <td data-th-text="${user.name}"></td>
+            </tr>
+            <tr>
+                <td>Date de naissance</td>
+                <td data-th-text="${user.birthday}"></td>
+            </tr>
+            <tr>
+                <td>Adresse postale</td>
+                <td data-th-text="${user.address.streetNumber} + ' ' + ${user.address.streetName} + ' ' + ${user.address.city.zipCode} + ' ' + ${user.address.city.name}"></td>
+            </tr>
+            <tr>
+                <td style=>Téléphone</td>
+                <td data-th-text="${user.tel}"></td>
+            </tr>
+            <tr>
+                <td style="width: 180px;">Date d'enregistrement</td>
+                <td data-th-text="${user.registrationDate}"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+</html>

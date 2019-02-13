@@ -1,13 +1,13 @@
 $(document).ready(function() {
 
     $("#btn_add_product").click(function () {
-        //$(this).prop("disabled", true);
         addProduct();
     });
 });
 
 function addProduct() {
 
+    /*
     let category = {};
     category.id = parseInt($("#category_id").val());
 
@@ -15,6 +15,12 @@ function addProduct() {
     product.id = parseInt($("#product_id").val());
     product.productId = parseInt($("#product_id").val());
     product.category = category;
+    product.quantity = parseInt($("#product_quantity").val());
+
+    */
+
+    let product = {};
+    product.id = parseInt($("#product_id").val());
     product.quantity = parseInt($("#product_quantity").val());
 
     console.log(JSON.stringify(product));

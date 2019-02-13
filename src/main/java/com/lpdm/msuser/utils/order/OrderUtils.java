@@ -2,7 +2,9 @@ package com.lpdm.msuser.utils.order;
 
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.OrderedProduct;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrderUtils {
 
     public static double getOrderedProductPriceWithTax(OrderedProduct orderedProduct) {
@@ -60,8 +62,13 @@ public class OrderUtils {
             orderedProduct.setPriceWithTax(OrderUtils.getOrderedProductPriceWithTax(orderedProduct));
         }
 
-        order.setTotal(OrderUtils.getTotalOrderAmount(order));
+        order.setTotal(getTotalOrderAmount(order));
 
         return order;
+    }
+
+    public static int getTotalOrderedProducts(Order order){
+
+        return order.getOrderedProducts().stream().mapToInt(OrderedProduct::getQuantity).sum();
     }
 }

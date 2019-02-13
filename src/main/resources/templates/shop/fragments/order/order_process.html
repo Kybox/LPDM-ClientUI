@@ -21,7 +21,7 @@
                         <span class="glyphicon glyphicon-road">
                         </span>
                         <br>
-                        <b>Mode de livraison</b>
+                        <b>Livraison</b>
                     </div>
                     <div class="col-sm-3 step-process"
                          data-th-classappend="${orderProcess == 3} ? 'step-process-active shadow-box-6'">
@@ -47,6 +47,9 @@
             <div data-th-if="${orderProcess == 3}"
                  data-th-insert="/shop/fragments/order/order_process_payment :: order_process_3">
             </div>
+            <div data-th-if="${orderProcess == 4}"
+                 data-th-insert="/shop/fragments/order/order_process_final :: order_process_4">
+            </div>
         </div>
         <div class="col-sm-3">
             <br>
@@ -57,6 +60,10 @@
                         en fonction des valeurs que vous aurez entré.</h5>
                     <table class="table table-hover">
                         <tbody>
+                        <tr>
+                            <td data-th-text="'Articles x ' + ${totalProducts}"></td>
+                            <td></td>
+                        </tr>
                         <tr>
                             <td>Sous-total</td>
                             <td class="text-right"

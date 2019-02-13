@@ -8,13 +8,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class CookieRemover {
+public class JwtCookieRemover {
 
     private static JwtAuthConfig jwtAuthConfig;
 
     @Autowired
-    public CookieRemover(JwtAuthConfig jwtAuthConfig) {
-        CookieRemover.jwtAuthConfig = jwtAuthConfig;
+    public JwtCookieRemover(JwtAuthConfig jwtAuthConfig) {
+        JwtCookieRemover.jwtAuthConfig = jwtAuthConfig;
     }
 
     public static void remove(HttpServletResponse response){

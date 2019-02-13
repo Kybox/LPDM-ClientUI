@@ -30,6 +30,9 @@ public class Order {
     private double taxAmount;
     private List<OrderedProduct> orderedProducts;
 
+    // ClientUI
+    private int totalProducts;
+
     public int getId() {
         return id;
     }
@@ -134,6 +137,14 @@ public class Order {
 
     public void setTaxAmount(double taxAmount) {
         this.taxAmount = taxAmount;
+    }
+
+    public int getTotalProducts() {
+        return totalProducts;
+    }
+
+    public void setTotalProducts(int totalProducts) {
+        this.totalProducts = totalProducts;
     }
 
     @Override

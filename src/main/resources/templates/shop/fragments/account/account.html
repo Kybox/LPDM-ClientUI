@@ -6,7 +6,7 @@
 <body>
 <div data-layout-fragment="content" style="padding-top: 10px;">
     <div class="row">
-        <div class="col-sm-3 ">
+        <div class="col-sm-3">
             <br>
             <div class="panel panel-info">
                 <div class="panel-heading"><b>Mon compte</b></div>
@@ -15,7 +15,7 @@
                         <tbody>
                         <tr>
                             <td>
-                                <a href="#">
+                                <a data-th-href="'/shop/account'">
                                     <div data-th-if="${accountContent == 'cart'}">
                                         <span class="glyphicon glyphicon-chevron-right"></span>
                                         Mon panier
@@ -25,12 +25,15 @@
                                         <span class="glyphicon glyphicon-chevron-right"></span>
                                         Ma commande en cours
                                     </div>
+                                    <div data-th-if="${accountContent != 'cart' && accountContent != 'order'}">
+                                        Mon panier
+                                    </div>
                                 </a>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <a href="#">
+                                <a data-th-href="'/shop/account/infos'">
                                     <span data-th-if="${accountContent == 'infos'}"
                                           class="glyphicon glyphicon-chevron-right">
                                     </span>
@@ -60,7 +63,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <a href="#">Se déconnecter</a>
+                                <a data-th-href="'/shop/account/logout'">Se déconnecter</a>
                             </td>
                         </tr>
                         </tbody>
@@ -76,6 +79,9 @@
         </div>
         <div data-th-if="${accountContent == 'history'}"
              data-th-insert="/shop/fragments/account/account_orders_history :: history">
+        </div>
+        <div data-th-if="${accountContent == 'infos'}"
+             data-th-insert="/shop/fragments/account/account_infos :: infos">
         </div>
     </div>
 </div>

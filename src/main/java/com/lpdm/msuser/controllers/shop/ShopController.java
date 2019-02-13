@@ -24,18 +24,13 @@ public class ShopController {
         this.productService = productService;
     }
 
-    @GetMapping(value = "/shop")
+    @GetMapping(value = {"/", "/shop"})
     public ModelAndView homePage(HttpServletRequest request) throws IOException {
 
         log.info("-> Home page");
 
         return CustomModel.getFor("shop/fragments/home", request, true)
                 .addObject("productPageable", productService.findProductPageable(0,9));
-
-        /*
-        return new ModelAndView("shop/fragments/home")
-                .addObject("productPageable", productService.findProductPageable(0,9));
-                */
     }
 
 
@@ -46,22 +41,4 @@ public class ShopController {
         log.info("-> Login page");
         return new ModelAndView("shop/fragments/account/login");
     }
-
-    /*
-    @GetMapping(value = "/shop/account")
-    public ModelAndView accountPage(){
-
-        log.info("-> Account page");
-        return new ModelAndView("shop/fragments/account/account");
-    }
-    */
-
-    /*
-    @GetMapping(value = "/shop/cart")
-    public ModelAndView cartPage(){
-
-        log.info("-> Cart page");
-        return new ModelAndView("shop/fragments/cart/view");
-    }
-    */
 }

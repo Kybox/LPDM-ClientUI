@@ -4,16 +4,20 @@
     <script data-th-src="@{/js/shop/cart/cart_summary.js}" charset="UTF-8"></script>
     <div class="col-sm-9">
         <h3>Votre panier</h3>
-        <h5 data-th-text="'Vous avez actuellement ' + ${(totalProducts != null) ? totalProducts : '0' } + ' articles dans votre panier'"></h5>
-        <h6 data-th-if="${cookieCart != null}">Les montants exprimés ci-dessous sont TTC</h6>
+        <div id="top_infos">
+            <h5 data-th-if="${cookieOrder != null}"
+                data-th-text="'Vous avez actuellement ' + ${(totalProducts != null) ? totalProducts : '0' } + ' articles dans votre panier'"></h5>
+            <h6 data-th-if="${cookieOrder != null}">Les montants exprimés ci-dessous sont TTC</h6>
+        </div>
         <br>
-        <div data-th-if="${cookieOrder != null}">
+        <div id="cart_summary" data-th-if="${cookieOrder != null}">
             <table class="table table-hover table-responsive">
                 <thead>
                 <tr>
                     <th>Produit</th>
                     <th class="text-right">Prix</th>
                     <th class="text-center">Quantité</th>
+                    <th class="text-center">T.V.A.</th>
                     <th class="text-right">Total</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -46,6 +50,7 @@
                               class="glyphicon glyphicon-chevron-right"></span>
                         </a>
                     </td>
+                    <td class="text-center" data-th-text="${item.product.tax} + ' %'"></td>
                     <td class="text-right"
                         data-th-id="'total_product_amount_' + ${item.product.id}"
                         data-th-text="${item.totalAmount} + ' €'">
@@ -78,7 +83,7 @@
                 </div>
                 <div class="col-sm-4 text-center">
                     <a data-th-href="'/shop/cart/clear'">
-                        <button type="button" class="btn btn-danger">
+                        <button type="button" class="btn btn-default">
                             <span class="glyphicon glyphicon-remove"></span>
                             Vider mon panier
                         </button>
@@ -95,7 +100,9 @@
             </div>
             <br>
         </div>
-        <div data-th-if="${cookieOrder == null}" class="alert alert-warning">
+        <div data-th-attr="hidden=${cookieOrder != null ? 'hidden' : null}"
+             class="alert alert-warning"
+             id="alert_cart_empty">
             Votre panier est vide !
         </div>
     </div>
