@@ -40,7 +40,7 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
 
-        http.authorizeRequests().antMatchers("/admin/**").authenticated()
+        http.authorizeRequests().antMatchers("/admin/**", "/shop/order/***").authenticated()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthEntryPoint)
