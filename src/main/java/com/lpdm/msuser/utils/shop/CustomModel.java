@@ -11,7 +11,7 @@ import com.lpdm.msuser.services.shop.CartService;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.ProductService;
 import com.lpdm.msuser.services.shop.SecurityService;
-import com.lpdm.msuser.utils.order.OrderUtils;
+import com.lpdm.msuser.utils.OrderUtils;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +54,15 @@ public class CustomModel {
         Order order;
         Cart cart = cartService.getCartFormCookie(request);
 
+        User user = securityService.getAuthenticatedUser(request);
+
+        boolean admin = false;
+        if(user != null)
+            admin = user.getAppRole().stream().anyMatch(r -> r.getRoleName().equals("ADMIN"));
+
         if(!getCartFromCookie) {
             try{
-                User user = securityService.getAuthenticatedUser(request);
+
                 order = orderService.findLastOrderByCustomerAndStatus(user.getId(), Status.VALIDATED.getId());
                 log.info(" |_ Last order validated = " + order);
 
@@ -67,7 +73,8 @@ public class CustomModel {
                         .addObject("totalProducts", OrderUtils.getTotalOrderedProducts(order))
                         .addObject("subAmount", OrderUtils.getTotalOrderAmountWithoutTax(order))
                         .addObject("user", user)
-                        .addObject("userAddress", userAddress);
+                        .addObject("userAddress", userAddress)
+                        .addObject("adminRole", admin);
             }
             catch (FeignException e) {
                 log.info(e.getMessage());
@@ -90,21 +97,18 @@ public class CustomModel {
                 order.getOrderedProducts().add(orderedProduct);
             }
 
-            ModelAndView modelAndView =  new ModelAndView(url)
+            return new ModelAndView(url)
                     .addObject("cookieOrder", OrderUtils.setAllAmountsFromOrder(order))
                     .addObject("totalProducts", OrderUtils.getTotalOrderedProducts(order))
-                    .addObject("subAmount", OrderUtils.getTotalOrderAmountWithoutTax(order));
-
-            User user = securityService.getAuthenticatedUser(request);
-
-            if(user != null)
-                modelAndView.addObject("user", user);
-
-            return modelAndView;
+                    .addObject("subAmount", OrderUtils.getTotalOrderAmountWithoutTax(order))
+                    .addObject("user", user)
+                    .addObject("adminRole", admin);
         }
 
         log.info(" |_ No cart found in the cookies");
 
-        return new ModelAndView(url);
+        return new ModelAndView(url)
+                .addObject("user", user)
+                .addObject("adminRole", admin);
     }
 }

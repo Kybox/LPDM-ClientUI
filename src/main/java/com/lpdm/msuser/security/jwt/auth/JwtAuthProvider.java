@@ -52,7 +52,7 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
         // Get the roles from the jwtUser to the security authorities
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(jwtUser.getRole()));
+        jwtUser.getRoleList().forEach(r -> grantedAuthorities.add(new SimpleGrantedAuthority(r)));
 
         // Return the custom UserDetails implemented class
         return new JwtUserDetails(

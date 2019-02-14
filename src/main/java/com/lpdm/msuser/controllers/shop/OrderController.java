@@ -5,12 +5,11 @@ import com.lpdm.msuser.model.location.Address;
 import com.lpdm.msuser.model.order.*;
 import com.lpdm.msuser.model.paypal.TransactionInfo;
 import com.lpdm.msuser.services.shop.*;
-import com.lpdm.msuser.utils.cookie.CookieUtils;
+import com.lpdm.msuser.utils.CookieUtils;
 import com.lpdm.msuser.utils.shop.CustomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 

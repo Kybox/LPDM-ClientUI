@@ -1,11 +1,14 @@
 package com.lpdm.msuser.security.jwt.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JwtUser {
 
     private int id;
     private String userName;
-    private String role;
     private boolean active;
+    private List<String> roleList;
 
     public JwtUser() {
     }
@@ -26,14 +29,6 @@ public class JwtUser {
         this.userName = userName;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public boolean isActive() {
         return active;
     }
@@ -42,13 +37,22 @@ public class JwtUser {
         this.active = active;
     }
 
+    public List<String> getRoleList() {
+        if(roleList == null) roleList = new ArrayList<>();
+        return roleList;
+    }
+
+    public void setRoleList(List<String> roleList) {
+        this.roleList = roleList;
+    }
+
     @Override
     public String toString() {
         return "JwtUser{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
-                ", role='" + role + '\'' +
                 ", active=" + active +
+                ", roleList=" + roleList +
                 '}';
     }
 }

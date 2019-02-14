@@ -1,6 +1,7 @@
 package com.lpdm.msuser.security.jwt.auth;
 
 import com.lpdm.msuser.model.auth.User;
+import com.lpdm.msuser.model.auth.UserRole;
 import com.lpdm.msuser.security.jwt.model.JwtUser;
 
 public class JwtUserBuilder {
@@ -13,8 +14,10 @@ public class JwtUserBuilder {
         JwtUser jwtUser = new JwtUser();
         jwtUser.setId(user.getId());
         jwtUser.setUserName(user.getFirstName());
-        jwtUser.setRole(user.getAppRole().get(0).getRoleName());
         jwtUser.setActive(user.getActive());
+
+        for(UserRole role : user.getAppRole())
+            jwtUser.getRoleList().add(role.getRoleName());
 
         return jwtUser;
     }

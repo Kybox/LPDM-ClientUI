@@ -1,10 +1,9 @@
-package com.lpdm.msuser.utils.cart;
+package com.lpdm.msuser.utils;
 
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.OrderedProduct;
 import com.lpdm.msuser.model.shop.Cart;
 import com.lpdm.msuser.model.shop.CookieProduct;
-import com.lpdm.msuser.utils.order.OrderUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.util.Date;
 
+import static com.lpdm.msuser.utils.global.ValueType.ROLE_LIST;
+
 @Component
 public class JwtGenerator {
 
@@ -34,7 +36,11 @@ public class JwtGenerator {
         // Set the claims
         Claims claims = Jwts.claims().setSubject(jwtUser.getUserName());
         claims.put("id", jwtUser.getId());
-        claims.put("role", jwtUser.getRole());
+
+        StringBuilder roles = new StringBuilder();
+        jwtUser.getRoleList().forEach(r -> roles.append(r).append(","));
+        claims.put(ROLE_LIST, roles.toString());
+        claims.put("active", jwtUser.isActive());
 
         // Build the token
         String token = Jwts.builder()

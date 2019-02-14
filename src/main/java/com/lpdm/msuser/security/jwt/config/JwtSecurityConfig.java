@@ -2,7 +2,6 @@ package com.lpdm.msuser.security.jwt.config;
 
 import com.lpdm.msuser.security.jwt.handler.JwtAuthEntryPoint;
 import com.lpdm.msuser.security.jwt.filter.JwtAuthTokenFilter;
-import com.lpdm.msuser.security.jwt.handler.JwtDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,28 +18,27 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
     private final JwtAuthTokenFilter jwtAuthTokenFilter;
-    private final JwtDeniedHandler jwtDeniedHandler;
 
     @Autowired
     public JwtSecurityConfig(JwtAuthEntryPoint jwtAuthEntryPoint,
-                             JwtAuthTokenFilter jwtAuthTokenFilter, JwtDeniedHandler jwtDeniedHandler) {
+                             JwtAuthTokenFilter jwtAuthTokenFilter) {
 
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
         this.jwtAuthTokenFilter = jwtAuthTokenFilter;
-        this.jwtDeniedHandler = jwtDeniedHandler;
     }
 
     /**
      * The main method of security configuration in which specify the URLs that require authentication
      * @param http A HttpSecurity self injected
-     * @throws Exception
+     * @throws Exception Thrown if something fail
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable();
-
-        http.authorizeRequests().antMatchers("/admin/**", "/shop/order/***").authenticated()
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/admin/**", "/shop/account/**","/shop/order/**")
+                .authenticated()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthEntryPoint)
@@ -49,6 +47,5 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.headers().cacheControl();
-
     }
 }

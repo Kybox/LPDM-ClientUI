@@ -131,7 +131,6 @@ public class ProductAdminController {
             produces = MediaType.TEXT_HTML_VALUE)
     public String getUploadForm(@RequestParam Map<String, String> data){
 
-        log.info("user bean = " + data.get("id"));
         StorageUser user = new StorageUser();
         user.setId(Integer.parseInt(data.get("id")));
         user.setRestricted(Boolean.parseBoolean(data.get("restricted")));

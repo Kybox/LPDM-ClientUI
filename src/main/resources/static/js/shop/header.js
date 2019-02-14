@@ -29,7 +29,7 @@ function updateCart(order){
         let list = $("<li/>");
         let spanItem = $("<span/>").attr("class", "item");
         let spanItemLeft = $("<span/>").attr("class", "item-left");
-        let productImg = $("<img/>")
+        let productImg = $("<images/>")
             .prop("src", product.picture)
             .prop("alt", "productImg")
             .attr("style", "width:50px; height:50px;");
@@ -59,44 +59,6 @@ function updateCart(order){
 
         totalProduct = totalProduct + product.quantity;
     });
-
-    /*
-    $.each(order.orderedProducts, function (i, orderedProduct) {
-
-        let list = $("<li/>");
-        let spanItem = $("<span/>").attr("class", "item");
-        let spanItemLeft = $("<span/>").attr("class", "item-left");
-        let productImg = $("<img/>")
-            .prop("src", orderedProduct.product.picture)
-            .prop("alt", "productImg")
-            .attr("style", "width:50px; height:50px;");
-
-
-        let spanItemInfo = $("<span/>").attr("class", "item-info");
-        let spanProductName = $("<span/>").html(orderedProduct.product.name);
-        let spanProdutPrice = $("<span/>").html("x " + orderedProduct.quantity);
-
-        let spanItemRight = $("<span/>").attr("class", "item-right");
-        let btn = "<button class='btn btn-xs btn-danger pull-right'>x</button>";
-
-        spanItemRight.append(btn);
-
-        spanItemInfo.append(spanProductName);
-        spanItemInfo.append(spanProdutPrice);
-
-        spanItemLeft.append(productImg);
-        spanItemLeft.append(spanItemInfo);
-
-        spanItem.append(spanItemLeft);
-        spanItem.append(spanItemRight);
-
-        list.append(spanItem);
-
-        cart_list.append(list);
-
-        totalProduct = totalProduct + orderedProduct.quantity;
-    });
-    */
 
     cart_list.append("<li class='divider'></li>");
     cart_list.append(validateCart);

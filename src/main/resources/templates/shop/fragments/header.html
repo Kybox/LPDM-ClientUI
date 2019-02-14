@@ -31,6 +31,9 @@
                     <li><a href="#">Vendre</a></li>
                     <li><a href="#">Contact</a></li>
                     <li><a data-th-href="'/shop/account'">Mon compte</a></li>
+                    <li data-th-if="${adminRole == true}">
+                        <a data-th-href="'/admin'">Panel admin</a>
+                    </li>
                     <li>
                         <ul class="nav navbar-nav navbar-right" id="cart_menu">
                             <li class="dropdown">

@@ -1,7 +1,6 @@
 package com.lpdm.msuser.services.shop.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.*;
 import com.lpdm.msuser.model.paypal.TransactionInfo;
 import com.lpdm.msuser.model.product.Product;
@@ -10,9 +9,9 @@ import com.lpdm.msuser.model.shop.CookieProduct;
 import com.lpdm.msuser.proxy.OrderProxy;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.ProductService;
-import com.lpdm.msuser.utils.cart.CartUtils;
-import com.lpdm.msuser.utils.cookie.CookieUtils;
-import com.lpdm.msuser.utils.order.OrderUtils;
+import com.lpdm.msuser.utils.CartUtils;
+import com.lpdm.msuser.utils.CookieUtils;
+import com.lpdm.msuser.utils.OrderUtils;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

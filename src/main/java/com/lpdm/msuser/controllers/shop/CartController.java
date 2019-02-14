@@ -10,7 +10,7 @@ import com.lpdm.msuser.model.shop.LoginForm;
 import com.lpdm.msuser.services.shop.CartService;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.SecurityService;
-import com.lpdm.msuser.utils.cookie.CookieUtils;
+import com.lpdm.msuser.utils.CookieUtils;
 import com.lpdm.msuser.utils.shop.CustomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -32,13 +32,4 @@ public class ShopController {
         return CustomModel.getFor("shop/fragments/home", request, true)
                 .addObject("productPageable", productService.findProductPageable(0,9));
     }
-
-
-
-    @GetMapping(value = "/shop/login")
-    public ModelAndView loginPage(){
-
-        log.info("-> Login page");
-        return new ModelAndView("shop/fragments/account/login");
-    }
 }

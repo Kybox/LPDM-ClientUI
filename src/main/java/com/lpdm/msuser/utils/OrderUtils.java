@@ -1,4 +1,4 @@
-package com.lpdm.msuser.utils.order;
+package com.lpdm.msuser.utils;
 
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.OrderedProduct;

@@ -45,8 +45,8 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
         JwtCookieRemover.remove(response);
 
         if(failed.getMessage().equals(USER_ACCOUNT_LOCKED))
-            response.sendRedirect("/identification/login?error=" + URLEncoder.encode("Compte utilisateur désactivé", "UTF-8"));
-        else  response.sendRedirect("/identification/login?error=" + failed.getMessage());
+            response.sendRedirect("/shop/login?error=" + URLEncoder.encode("Compte utilisateur désactivé", "UTF-8"));
+        else  response.sendRedirect("/shop/login?error=" + failed.getMessage());
 
     }
 
@@ -81,7 +81,7 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
             String param = urlRequest.substring(urlRequest.lastIndexOf("/") + 1);
             log.info("Param = " + param);
 
-            response.sendRedirect("/identification/login?page=" + param);
+            response.sendRedirect("/shop/login?page=" + param);
             return null;
         }
 

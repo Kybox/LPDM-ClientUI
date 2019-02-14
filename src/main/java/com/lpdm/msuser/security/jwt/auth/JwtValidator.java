@@ -9,6 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.lpdm.msuser.utils.global.ValueType.ROLE_LIST;
+
 @Component
 public class JwtValidator {
 
@@ -43,7 +50,16 @@ public class JwtValidator {
             jwtUser = new JwtUser();
             jwtUser.setUserName(tokenBody.getSubject());
             jwtUser.setId((Integer) tokenBody.get("id"));
-            jwtUser.setRole(String.valueOf(tokenBody.get("role")));
+            jwtUser.setActive((Boolean) tokenBody.get("active"));
+
+            List<String> roleList = Arrays
+                    .stream(tokenBody.get(ROLE_LIST).toString().split(","))
+                    .collect(Collectors.toList());
+
+            jwtUser.setRoleList(roleList);
+
+            log.info("JwtUser = " + jwtUser);
+
         }
         catch (Exception e) {
 

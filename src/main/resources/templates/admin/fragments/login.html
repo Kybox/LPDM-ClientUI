@@ -1,31 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      data-layout-decorate="~{admin/layout}">
+<html data-layout-decorate="~{admin/layout}" lang="fr">
 <head>
-    <title th:text="${pageTitle}"></title>
+    <title data-th-text="${pageTitle}"></title>
 </head>
 <body>
 <div data-layout-fragment="content" style="margin-top: 100px;">
     <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-6">
-            <div class="panel panel-default" style="margin-left: 10px; margin-right: 10px;">
-                <div class="panel-body text-center">
-                    <form method="post">
-                        <div class="form-group">
-                            <label for="email">Adresse email :</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Mot de passe :</label>
-                            <input class="form-control" id="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Connexion</button>
-                    </form>
-                </div>
-            </div>
+        <div class="col-sm-12 text-center">
+            <h3>Panel d'administration</h3>
+            <h4>Votre rôle utilisateur est définit sur "administrateur".</h4>
+            <h5>Soyez attentif aux modifications que vous comptez effectuer !</h5>
+            <img data-th-src="@{/images/caution.jpg}" alt="img"/>
         </div>
-        <div class="col-md-3"></div>
     </div>
 </div>
 </body>

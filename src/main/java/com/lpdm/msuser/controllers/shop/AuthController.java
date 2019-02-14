@@ -4,7 +4,6 @@ import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.location.City;
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.Status;
-import com.lpdm.msuser.model.shop.Cart;
 import com.lpdm.msuser.model.shop.LoginForm;
 import com.lpdm.msuser.security.cookie.CookieAppender;
 import com.lpdm.msuser.security.cookie.JwtCookieRemover;
@@ -15,8 +14,8 @@ import com.lpdm.msuser.services.shop.AuthService;
 import com.lpdm.msuser.services.shop.LocationService;
 import com.lpdm.msuser.services.shop.OrderService;
 import com.lpdm.msuser.services.shop.SecurityService;
-import com.lpdm.msuser.utils.cookie.CookieUtils;
-import com.lpdm.msuser.utils.order.OrderUtils;
+import com.lpdm.msuser.utils.CookieUtils;
+import com.lpdm.msuser.utils.OrderUtils;
 import com.lpdm.msuser.utils.shop.CustomModel;
 import feign.FeignException;
 import org.slf4j.Logger;
@@ -65,14 +64,14 @@ public class AuthController {
         return CustomModel.getFor("redirect:/shop", request, true);
     }
 
-    @GetMapping(value = "/shop/account/login")
+    @GetMapping(value = "/shop/login")
     public ModelAndView loginPage(HttpServletRequest request) throws IOException {
 
         return CustomModel.getFor("/shop/fragments/account/login", request, true)
                 .addObject("loginForm", new LoginForm());
     }
 
-    @PostMapping(value = "/shop/account/login")
+    @PostMapping(value = "/shop/login")
     public ModelAndView loginUser(@ModelAttribute LoginForm loginForm,
                                   HttpServletRequest request,
                                   HttpServletResponse response)
@@ -102,7 +101,7 @@ public class AuthController {
         }
         else {
 
-            modelAndView = CustomModel.getFor("redirect:/shop/account/login", request, true)
+            modelAndView = CustomModel.getFor("redirect:/shop/login", request, true)
                     .addObject("loginForm", new LoginForm())
                     .addObject("loginError", loginError);
         }
@@ -147,7 +146,7 @@ public class AuthController {
         }
         else{
 
-            modelAndView = CustomModel.getFor("/shop/fragments/account/login", request, true)
+            modelAndView = CustomModel.getFor("redirect:/shop/login", request, true)
                     .addObject("loginForm", new LoginForm());
         }
 

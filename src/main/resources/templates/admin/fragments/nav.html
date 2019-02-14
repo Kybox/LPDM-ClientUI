@@ -10,21 +10,28 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/admin/">LPDM - Admin panel</a>
+            <span class="navbar-brand" style="color: #fff;">LPDM - Admin panel</span>
+            <a class="navbar-brand" href="/admin/"></a>
         </div>
 
         <!-- Menu items -->
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li><a href="/admin/eureka/">EUREKA</a></li>
-                <li><a href="/admin/auth/">UTILISATEURS</a></li>
-                <li><a href="/admin/orders/">COMMANDES</a></li>
-                <li><a href="/admin/products/">PRODUITS</a></li>
-                <li><a href="/admin/stocks/">STOCKS</a></li>
-                <li><a href="/admin/stores/">MAGASINS</a></li>
+                <li><a data-th-href="@{/admin/eureka/}"><h4>EUREKA</h4></a></li>
+                <li><a data-th-href="@{/admin/auth/}"><h4>UTILISATEURS</h4></a></li>
+                <li><a data-th-href="@{/admin/orders/}"><h4>COMMANDES</h4></a></li>
+                <li><a data-th-href="@{/admin/products/}"><h4>PRODUITS</h4></a></li>
+                <li><a data-th-href="@{/admin/stocks/}"><h4>STOCKS</h4></a></li>
+                <li><a data-th-href="@{/admin/stores/}"><h4>MAGASINS</h4></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/admin/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li>
+                    <a data-th-href="@{/shop}">
+                        <h4>
+                        <span class="glyphicon glyphicon-log-in"></span>
+                        Retour à la boutique</h4>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
