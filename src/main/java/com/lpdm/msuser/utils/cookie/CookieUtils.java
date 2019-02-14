@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -133,7 +134,8 @@ public class CookieUtils {
         return order;
     }
 
-    public static Cookie removeOrderFromCookie(HttpServletRequest request){
+    public static Cookie removeOrderFromCookie(HttpServletRequest request,
+                                               HttpServletResponse response){
 
         log.info("Method : removeOrderFromCookie");
 
@@ -147,6 +149,7 @@ public class CookieUtils {
                     emptyCookie = cookie;
                     emptyCookie.setPath("/shop");
                     emptyCookie.setHttpOnly(true);
+                    response.addCookie(emptyCookie);
                 }
             }
         }

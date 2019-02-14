@@ -162,10 +162,12 @@ public class AuthController {
     }
 
     @GetMapping(value = "/account/delete/order/{id}")
-    public ModelAndView cancelOrder(@PathVariable int id, HttpServletRequest request){
+    public ModelAndView cancelOrder(@PathVariable int id,
+                                    HttpServletRequest request,
+                                    HttpServletResponse response){
 
         orderService.cancelOrderById(id);
-        CookieUtils.removeOrderFromCookie(request);
+        CookieUtils.removeOrderFromCookie(request, response);
 
         return new ModelAndView("redirect:/shop/account");
     }

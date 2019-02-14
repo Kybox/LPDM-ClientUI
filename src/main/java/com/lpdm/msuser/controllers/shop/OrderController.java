@@ -140,8 +140,8 @@ public class OrderController {
             throws IOException {
 
         SuccessUrl urls = new SuccessUrl();
-        urls.setReturnUrl("http://localhost:30000/shop/order/process/success");
-        urls.setCancelUrl("http://localhost:30000/shop/order/process/error");
+        urls.setReturnUrl("https://shop.lpdm.kybox.fr/shop/order/process/success");
+        urls.setCancelUrl("https://shop.lpdm.kybox.fr/shop/order/process/error");
 
         Order order = orderService.getOrderById(orderService.getOrderIdFromCookie(request));
 
@@ -161,7 +161,8 @@ public class OrderController {
 
     @GetMapping("/shop/order/process/success")
     public ModelAndView orderPaymentSuccess(@RequestParam Map<String, String> params,
-                                            HttpServletRequest request) throws IOException {
+                                            HttpServletRequest request,
+                                            HttpServletResponse response) throws IOException {
 
         TransactionInfo transactionInfo = new TransactionInfo();
         transactionInfo.setPayerID(params.get("PayerId"));
@@ -172,19 +173,22 @@ public class OrderController {
 
         Order order = orderService.getOrderById(orderService.getOrderIdFromCookie(request));
 
-        log.info("Oder = " + order);
+        if(order != null){
 
-        order.setStatus(Status.PAID);
+            log.info("Oder = " + order);
+            order.setStatus(Status.PAID);
+            orderService.saveOrder(order);
+        }
 
-        orderService.saveOrder(order);
-
-        CookieUtils.removeOrderFromCookie(request);
+        CookieUtils.removeOrderFromCookie(request, response);
 
         return CustomModel.getFor("/shop/fragments/order/order_payment_success", request, true);
     }
 
-    @GetMapping("shop/order/payment/cancel")
-    public String cancelPaypal(){
-        return "orders/paypalcancel";
+    @GetMapping("/shop/order/process/error")
+    public ModelAndView orderPaymentError(HttpServletRequest request) throws IOException {
+
+
+        return CustomModel.getFor("/shop/fragments/order/order_payment_error", request, true);
     }
 }

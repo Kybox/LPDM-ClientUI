@@ -123,7 +123,7 @@ public class CartController {
     @GetMapping(value = "/shop/cart/clear")
     public ModelAndView clearCart(HttpServletRequest request, HttpServletResponse response){
 
-        response.addCookie(CookieUtils.removeOrderFromCookie(request));
+        CookieUtils.removeOrderFromCookie(request, response);
 
         return new ModelAndView("redirect:/shop/account");
     }
