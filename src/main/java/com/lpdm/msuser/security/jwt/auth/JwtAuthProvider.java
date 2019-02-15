@@ -33,6 +33,7 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
     protected void additionalAuthenticationChecks(UserDetails userDetails,
                                                   UsernamePasswordAuthenticationToken userPassAuthToken)
             throws AuthenticationException {
+
     }
 
     @Override
@@ -40,6 +41,8 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
                                        UsernamePasswordAuthenticationToken userPassAuthToken)
 
             throws AuthenticationException {
+
+        log.info("Method : retrieveUser");
 
         JwtAuthToken jwtAuthToken = (JwtAuthToken) userPassAuthToken;
         String token = jwtAuthToken.getToken();
@@ -64,6 +67,8 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> supportClass) {
+
+        log.info("Method : supports");
         return (JwtAuthToken.class.isAssignableFrom(supportClass));
     }
 }

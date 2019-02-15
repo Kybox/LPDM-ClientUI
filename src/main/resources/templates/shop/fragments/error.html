@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html data-layout-decorate="~{shop/layout}" lang="fr">
+<head>
+    <title>LPDM - Error</title>
+</head>
+<body>
+<div data-layout-fragment="content" style="padding: 20px;">
+    <br>
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <div class="alert alert-danger">
+                <h4><b>Oops, vous ne devriez pas être ici...</b></h4>
+            </div>
+            <code data-th-text="${errorMsg}"></code>
+            <br>
+            <br>
+            <div class="alert">
+                <a data-th-href="@{/shop}">
+                    <button type="button" class="btn btn-default">Retour à la boutique</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

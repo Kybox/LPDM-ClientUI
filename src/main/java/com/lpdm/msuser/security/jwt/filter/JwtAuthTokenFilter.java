@@ -2,6 +2,7 @@ package com.lpdm.msuser.security.jwt.filter;
 
 import com.lpdm.msuser.security.cookie.JwtCookieRemover;
 import com.lpdm.msuser.security.jwt.config.JwtAuthConfig;
+import com.lpdm.msuser.security.jwt.handler.JwtSuccessHandler;
 import com.lpdm.msuser.security.jwt.model.JwtAuthToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.lpdm.msuser.utils.shop.ValueType.USER_ACCOUNT_LOCKED;
 
@@ -26,14 +33,27 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final JwtAuthConfig jwtConfig;
+    @Autowired
+    private JwtAuthConfig jwtConfig;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public JwtAuthTokenFilter(JwtAuthConfig jwtConfig) {
+    public JwtAuthTokenFilter(JwtAuthConfig jwtConfig, RequestMatcher requestMatcher) {
 
-        super("/admin/**");
+        super(requestMatcher);
+
+
+
+
+        //super.setRequiresAuthenticationRequestMatcher(requestMatcher);
+        //super.setContinueChainBeforeSuccessfulAuthentication(true);
+        //super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/shop/account", "GET"));
+        //super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/shop/account/**", "GET"));
+        //super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/shop/order/**", "GET"));
+        //super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/shop/order/**"));
+        //setAuthenticationSuccessHandler(new JwtSuccessHandler());
+        //super.setAuthenticationManager(authenticationManager);
         this.jwtConfig = jwtConfig;
     }
 
@@ -81,6 +101,7 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
             String param = urlRequest.substring(urlRequest.lastIndexOf("/") + 1);
             log.info("Param = " + param);
 
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.sendRedirect("/shop/login?page=" + param);
             return null;
         }

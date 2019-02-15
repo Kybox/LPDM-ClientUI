@@ -43,7 +43,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping("shop/order/process/1")
+    @GetMapping("/shop/order/process/1")
     public ModelAndView orderProcess1(HttpServletRequest request) throws IOException {
 
         return CustomModel.getFor("/shop/fragments/order/order_process", request, false)
@@ -138,11 +138,11 @@ public class OrderController {
                                       HttpServletResponse response)
             throws IOException {
 
-        SuccessUrl urls = new SuccessUrl();
-        urls.setReturnUrl("https://shop.lpdm.kybox.fr/shop/order/process/success");
-        urls.setCancelUrl("https://shop.lpdm.kybox.fr/shop/order/process/error");
-
         Order order = orderService.getOrderById(orderService.getOrderIdFromCookie(request));
+
+        SuccessUrl urls = new SuccessUrl();
+        urls.setReturnUrl("https://shop.lpdm.kybox.fr/shop/order/process/success/" + order.getId());
+        urls.setCancelUrl("https://shop.lpdm.kybox.fr/shop/order/process/error");
 
         PaypalUrl paypalUrl = orderService.getPaypalPaymentUrl(order.getId(), urls);
 
@@ -158,8 +158,9 @@ public class OrderController {
         return modelAndView;
     }
 
-    @GetMapping("/shop/order/process/success")
+    @GetMapping("/shop/order/process/success/{id}")
     public ModelAndView orderPaymentSuccess(@RequestParam Map<String, String> params,
+                                            @PathVariable int id,
                                             HttpServletRequest request,
                                             HttpServletResponse response) throws IOException {
 
@@ -170,9 +171,9 @@ public class OrderController {
 
         log.info("Transaction info = " + transactionInfo);
 
-        Order order = orderService.getOrderById(orderService.getOrderIdFromCookie(request));
+        Order order = orderService.getOrderById(id);
 
-        if(order != null){
+        if(order != null && order.getStatus() != Status.PAID){
 
             log.info("Oder = " + order);
             order.setStatus(Status.PAID);

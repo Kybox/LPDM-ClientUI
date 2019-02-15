@@ -29,7 +29,7 @@ function updateCart(order){
         let list = $("<li/>");
         let spanItem = $("<span/>").attr("class", "item");
         let spanItemLeft = $("<span/>").attr("class", "item-left");
-        let productImg = $("<images/>")
+        let productImg = $("<img/>")
             .prop("src", product.picture)
             .prop("alt", "productImg")
             .attr("style", "width:50px; height:50px;");
@@ -37,7 +37,7 @@ function updateCart(order){
 
         let spanItemInfo = $("<span/>").attr("class", "item-info");
         let spanProductName = $("<span/>").html(product.name);
-        let spanProdutPrice = $("<span/>").html("x " + product.quantity);
+        let spanProductQuantity = $("<span/>").html("x " + product.quantity);
 
         let spanItemRight = $("<span/>").attr("class", "item-right");
         let btn = "<button class='btn btn-xs btn-danger pull-right'>x</button>";
@@ -45,7 +45,7 @@ function updateCart(order){
         spanItemRight.append(btn);
 
         spanItemInfo.append(spanProductName);
-        spanItemInfo.append(spanProdutPrice);
+        spanItemInfo.append(spanProductQuantity);
 
         spanItemLeft.append(productImg);
         spanItemLeft.append(spanItemInfo);

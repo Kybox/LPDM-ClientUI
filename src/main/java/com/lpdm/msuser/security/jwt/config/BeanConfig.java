@@ -11,8 +11,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 public class BeanConfig {
@@ -37,9 +42,19 @@ public class BeanConfig {
         return new ProviderManager(Collections.singletonList(jwtAuthProvider()));
     }
 
+    @Bean RequestMatcher customRequestMatch(){
+
+        List<RequestMatcher> requestMatcherList = new ArrayList<>();
+        requestMatcherList.add(new AntPathRequestMatcher("/shop/account/**"));
+        requestMatcherList.add(new AntPathRequestMatcher("/admin/**"));
+        requestMatcherList.add(new AntPathRequestMatcher("/shop/order/**"));
+        return new OrRequestMatcher(requestMatcherList);
+    }
+
     @Bean
     public JwtAuthTokenFilter authenticationTokenFilter() {
-        JwtAuthTokenFilter filter = new JwtAuthTokenFilter(jwtAuthConfig());
+
+        JwtAuthTokenFilter filter = new JwtAuthTokenFilter(jwtAuthConfig(), customRequestMatch());
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(new JwtSuccessHandler());
         return filter;

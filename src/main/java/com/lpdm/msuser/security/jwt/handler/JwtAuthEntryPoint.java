@@ -19,7 +19,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
 
-        log.info("Entry point");
+        log.warn("Jwt Error : " + e.getMessage());
         response.sendRedirect("/shop/login");
     }
 }

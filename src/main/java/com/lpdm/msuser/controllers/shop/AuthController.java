@@ -94,12 +94,16 @@ public class AuthController {
 
         if(user != null){
 
+            log.info("-> Redirect account");
+
             JwtUser jwtUser = JwtUserBuilder.build(user);
             CookieAppender.addToken(jwtGenerator.generate(jwtUser), response);
 
             modelAndView = CustomModel.getFor("redirect:/shop/account", request, true);
         }
         else {
+
+            log.info("-> Redirect login");
 
             modelAndView = CustomModel.getFor("redirect:/shop/login", request, true)
                     .addObject("loginForm", new LoginForm())
@@ -124,17 +128,6 @@ public class AuthController {
 
             if(order != null) {
 
-                Cookie cookie = CookieUtils.isThereATempOrderFromCookies(request.getCookies());
-                if(cookie != null){
-
-                    //order = CookieUtils.addOrderedProductsFromCookieToOrder(cookie, order);
-                    log.info("Add products from cookie to last order from this customer");
-                    //order = orderService.saveOrder(order);
-                }
-
-                //cookie = CookieUtils.getCookieFromCart(order);
-                //response.addCookie(cookie);
-
                 modelAndView = CustomModel.getFor("shop/fragments/account/account", request, false);
                 modelAndView.addObject("accountContent", "order");
                 modelAndView.addObject("cookieOrder", OrderUtils.setAllAmountsFromOrder(order));
@@ -145,6 +138,8 @@ public class AuthController {
             }
         }
         else{
+
+            log.info("-> User is null, redirect login");
 
             modelAndView = CustomModel.getFor("redirect:/shop/login", request, true)
                     .addObject("loginForm", new LoginForm());
