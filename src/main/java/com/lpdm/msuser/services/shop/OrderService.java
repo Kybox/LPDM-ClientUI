@@ -34,4 +34,6 @@ public interface OrderService {
     PaypalUrl getPaypalPaymentUrl(int order, SuccessUrl urls);
 
     String getTransactionDetails(TransactionInfo transactionInfo);
+
+    List<Order> findAllByCustomerSorted(int customer, String sort);
 }

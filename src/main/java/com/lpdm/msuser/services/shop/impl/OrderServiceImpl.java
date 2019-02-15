@@ -170,4 +170,14 @@ public class OrderServiceImpl implements OrderService {
         return orderProxy.getTransactionDetails(transactionInfo);
     }
 
+    @Override
+    public List<Order> findAllByCustomerSorted(int customer, String sort) {
+
+        List<Order> orderList = orderProxy.findAllByCustomerSortedByDate(customer, sort);
+
+        orderList.forEach(o -> o.setTotal((Math.round(o.getTotal() * 100D) / 100D)));
+
+        return orderList;
+    }
+
 }

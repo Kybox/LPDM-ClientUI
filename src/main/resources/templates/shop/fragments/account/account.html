@@ -43,8 +43,8 @@
                         </tr>
                         <tr>
                             <td>
-                                <a href="#">
-                                    <span data-th-if="${accountContent == 'orders'}"
+                                <a data-th-href="@{/shop/account/orders}">
+                                    <span data-th-if="${accountContent == 'orders_history'}"
                                           class="glyphicon glyphicon-chevron-right">
                                     </span>
                                     Mes commandes
@@ -77,12 +77,13 @@
         <div data-th-if="${accountContent == 'order'}"
              data-th-insert="/shop/fragments/account/account_order :: order">
         </div>
-        <div data-th-if="${accountContent == 'history'}"
-             data-th-insert="/shop/fragments/account/account_orders_history :: history">
-        </div>
         <div data-th-if="${accountContent == 'infos'}"
              data-th-insert="/shop/fragments/account/account_infos :: infos">
         </div>
+        <div data-th-if="${accountContent == 'orders_history'}"
+             data-th-insert="/shop/fragments/account/account_orders_history :: orders_history">
+        </div>
+
     </div>
 </div>
 </body>

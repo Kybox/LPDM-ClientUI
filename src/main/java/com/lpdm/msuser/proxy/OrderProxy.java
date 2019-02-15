@@ -25,13 +25,21 @@ public interface OrderProxy {
     @PostMapping(value = "/ms-order/orders/save", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Order saveOrder(@Valid @RequestBody Order order);
 
+    // Find all orders by customer id
     @GetMapping(value = "${lpdm.order.name}/orders/all/customer/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     List<Order> findAllByUserId(@PathVariable("id") int id);
 
+    // Find last order by customer and status
     @GetMapping(value = "${lpdm.order.name}/orders/last/customer/{customer}/status/{status}",
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Order findLastOrderByCustomerAndStatus(@PathVariable("customer") int customer,
                                            @PathVariable("status") int status);
+
+    // Find all orders by customer sorted by date
+    @GetMapping(value = "${lpdm.order.name}/orders/all/customer/{id}/date/{sort}",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    List<Order> findAllByCustomerSortedByDate(@PathVariable("id") int id,
+                                              @PathVariable("sort") String sort);
 
     // Find all payments
     @GetMapping(value = "${lpdm.order.name}/orders/payments",

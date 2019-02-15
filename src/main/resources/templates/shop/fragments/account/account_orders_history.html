@@ -1,50 +1,48 @@
 <!DOCTYPE html>
 <html lang="fr">
-<div data-th-fragment="history">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4><b>Mes commandes</b></h4>
-        </div>
-        <div class="panel-body">
-            <h5>Vos commandes en un seul endroit</h5>
-            <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter.</a></h6>
-            <br>
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>Référence</th>
-                    <th>Date</th>
-                    <th>Montant</th>
-                    <th>Etat</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>#1459</td>
-                    <td>10/12/2018</td>
-                    <td>28.29 €</td>
-                    <td>Livrée</td>
-                    <td>Voir</td>
-                </tr>
-                <tr>
-                    <td>#5796</td>
-                    <td>02/01/2019</td>
-                    <td>144.50 €</td>
-                    <td>Livrée</td>
-                    <td>Voir</td>
-                </tr>
-                <tr>
-                    <td>#1836</td>
-                    <td>10/01/2019</td>
-                    <td>8.99 €</td>
-                    <td>Livrée</td>
-                    <td>
-                        Voir
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+<div data-th-fragment="orders_history">
+    <div class="col-sm-9">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4><b>Mes commandes</b></h4>
+            </div>
+            <div class="panel-body">
+                <div class="col-sm-7">
+                    <h4>Vos commandes en un seul endroit</h4>
+                    <h5>Sélectionnez un statut de commande pour afficher une liste</h5>
+                    <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter.</a></h6>
+                    <br>
+                </div>
+                <div class="col-sm-3 pull-right">
+                    <div class="form-group">
+                        <label for="status_select">Sélectionner un statut</label>
+                        <select class="form-control" id="status_select">
+                            <option data-th-each="status : ${statusList}"
+                                    data-th-text="${status}"></option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <table class="table table-hover table-responsive"
+                       data-th-if="${orderList != null}">
+                    <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Date de commande</th>
+                        <th class="text-right">Montant</th>
+                        <th class="text-center">Etat</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-th-each="order : ${orderList}">
+                        <td data-th-text="'#' + ${order.id}"></td>
+                        <td data-th-text="'Le ' + ${#temporals.format(order.orderDate, 'dd / MM / yyyy à HH:mm')}"></td>
+                        <td data-th-text="${order.total} + ' € TTC'" class="text-right"></td>
+                        <td data-th-text="${order.status}" class="text-center"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

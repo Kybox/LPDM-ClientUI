@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class AuthController {
+public class AccountController {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -43,11 +43,11 @@ public class AuthController {
     private final OrderService orderService;
 
     @Autowired
-    public AuthController(AuthService authService,
-                          JwtGenerator jwtGenerator,
-                          SecurityService securityService,
-                          LocationService locationService,
-                          OrderService orderService) {
+    public AccountController(AuthService authService,
+                             JwtGenerator jwtGenerator,
+                             SecurityService securityService,
+                             LocationService locationService,
+                             OrderService orderService) {
 
         this.authService = authService;
         this.jwtGenerator = jwtGenerator;
@@ -174,5 +174,19 @@ public class AuthController {
         return CustomModel.getFor("/shop/fragments/account/account", request, true)
                 .addObject("accountContent", "infos")
                 .addObject("user", user);
+    }
+
+    @GetMapping(value = "/shop/account/orders")
+    public ModelAndView userOrders(HttpServletRequest request) throws IOException {
+
+        User user = securityService.getAuthenticatedUser(request);
+
+        log.info("user = " + user);
+
+        List<Order> orderList = orderService.findAllByCustomerSorted(user.getId(), "desc");
+
+        return CustomModel.getFor("/shop/fragments/account/account", request, true)
+                .addObject("accountContent", "orders_history")
+                .addObject("statusList", Status.values());
     }
 }
