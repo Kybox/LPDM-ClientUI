@@ -1,16 +1,11 @@
 package com.lpdm.msuser.controllers.shop;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfDocument;
-import com.itextpdf.text.pdf.PdfStream;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.parser.PdfContentReaderTool;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.location.City;
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.Status;
 import com.lpdm.msuser.model.shop.LoginForm;
+import com.lpdm.msuser.model.shop.RegisterForm;
 import com.lpdm.msuser.proxy.OrderProxy;
 import com.lpdm.msuser.security.cookie.CookieAppender;
 import com.lpdm.msuser.security.cookie.JwtCookieRemover;
@@ -28,20 +23,12 @@ import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +43,6 @@ public class AccountController {
     private final SecurityService securityService;
     private final LocationService locationService;
     private final OrderService orderService;
-    @Autowired
-    private OrderProxy orderProxy;
 
     @Autowired
     public AccountController(AuthService authService,
@@ -85,7 +70,8 @@ public class AccountController {
     public ModelAndView loginPage(HttpServletRequest request) throws IOException {
 
         return CustomModel.getFor("/shop/fragments/account/login", request, true)
-                .addObject("loginForm", new LoginForm());
+                .addObject("loginForm", new LoginForm())
+                .addObject("registerForm", new RegisterForm());
     }
 
     @PostMapping(value = "/shop/login")
@@ -124,10 +110,46 @@ public class AccountController {
 
             modelAndView = CustomModel.getFor("redirect:/shop/login", request, true)
                     .addObject("loginForm", new LoginForm())
-                    .addObject("loginError", loginError);
+                    .addObject("loginError", loginError)
+                    .addObject("registerForm", new RegisterForm());
         }
 
         return modelAndView;
+    }
+
+    @PostMapping(value = "/shop/register")
+    public ModelAndView registerUser(@ModelAttribute RegisterForm registerForm,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response) throws IOException {
+
+        User user = null;
+        String error = null;
+
+        try{ user = authService.registerUser(registerForm); }
+        catch (Exception e){
+            log.warn(e.getMessage());
+            error = e.getMessage();
+        }
+
+        if(user != null) {
+
+            LoginForm loginForm = new LoginForm();
+            loginForm.setEmail(registerForm.getEmail());
+            loginForm.setPassword(registerForm.getPassword());
+
+            user = authService.loginUser(loginForm);
+
+            if(user != null){
+
+                JwtUser jwtUser = JwtUserBuilder.build(user);
+                CookieAppender.addToken(jwtGenerator.generate(jwtUser), response);
+
+                return CustomModel.getFor("redirect:/shop/account", request, true);
+            }
+            else return CustomModel.getFor("redirect:/shop/login", request, true);
+        }
+        else return CustomModel.getFor("redirect:/shop/login", request, true)
+                .addObject("registerError", error);
     }
 
     @SuppressWarnings("Duplicates")

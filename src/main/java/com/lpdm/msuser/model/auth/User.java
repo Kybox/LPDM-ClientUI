@@ -4,6 +4,7 @@ import com.lpdm.msuser.model.location.Address;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -54,6 +55,8 @@ public class User {
     }
 
     public List<UserRole> getAppRole() {
+
+        if(appRole == null) appRole = new ArrayList<>();
         return appRole;
     }
 

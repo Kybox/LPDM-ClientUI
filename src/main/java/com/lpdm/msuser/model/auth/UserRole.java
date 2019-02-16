@@ -5,8 +5,11 @@ public class UserRole {
     private int id;
     private String roleName;
 
-
     public UserRole() {
+    }
+
+    public UserRole(int id) {
+        this.id = id;
     }
 
     public int getId() {

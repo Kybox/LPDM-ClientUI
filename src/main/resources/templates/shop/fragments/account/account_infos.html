@@ -17,15 +17,15 @@
             </tr>
             <tr>
                 <td>Date de naissance</td>
-                <td data-th-text="${user.birthday}"></td>
+                <td data-th-if="${user.birthday != null}" data-th-text="${user.birthday}"></td>
             </tr>
             <tr>
                 <td>Adresse postale</td>
-                <td data-th-text="${user.address.streetNumber} + ' ' + ${user.address.streetName} + ' ' + ${user.address.city.zipCode} + ' ' + ${user.address.city.name}"></td>
+                <td data-th-if="${user.address != null}" data-th-text="${user.address.streetNumber} + ' ' + ${user.address.streetName} + ' ' + ${user.address.city.zipCode} + ' ' + ${user.address.city.name}"></td>
             </tr>
             <tr>
                 <td style=>Téléphone</td>
-                <td data-th-text="${user.tel}"></td>
+                <td data-th-if="${user.tel != null}" data-th-text="${user.tel}"></td>
             </tr>
             <tr>
                 <td style="width: 180px;">Date d'enregistrement</td>
