@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<div data-th-fragment="invoices">
+    <div class="col-sm-9">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4><b>Mes factures</b></h4>
+            </div>
+            <div class="panel-body">
+                <div class="col-sm-9">
+                    <h4>Vos factures en un seul endroit</h4>
+                    <h5>Sélectionnez un statut de commande pour afficher une liste</h5>
+                    <h6>Si vous avez des questions, n'hésitez pas à <a href="#">nous contacter.</a></h6>
+                    <br>
+                </div>
+                <br>
+                <div data-th-if="${orderList == null && param.status != null}" class="alert alert-warning col-sm-9">
+                    Aucune commande n'a été trouvé avec ce statut.
+                </div>
+                <table class="table table-hover table-responsive"
+                       data-th-if="${orderList != null}">
+                    <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Date de commande</th>
+                        <th class="text-right">Montant</th>
+                        <th class="text-center">Etat</th>
+                        <th class="text-center">Facture</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-th-each="order : ${orderList}">
+                        <td data-th-text="'#' + ${order.id}"></td>
+                        <td data-th-text="'Le ' + ${#temporals.format(order.orderDate, 'dd / MM / yyyy à HH:mm')}"></td>
+                        <td data-th-text="${order.total} + ' € TTC'" class="text-right"></td>
+                        <td data-th-text="${order.status}" class="text-center"></td>
+                        <td class="text-center">
+                            <a data-th-href="'/shop/account/invoice/' + ${order.id}">
+                                <button type="button" class="btn btn-warning">
+                                    <span class="glyphicon glyphicon-file"></span>
+                                    PDF
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

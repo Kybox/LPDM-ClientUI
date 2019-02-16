@@ -53,7 +53,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <a href="#">
+                                <a data-th-href="@{/shop/account/invoices}">
                                     <span data-th-if="${accountContent == 'invoices'}"
                                           class="glyphicon glyphicon-chevron-right">
                                     </span>
@@ -83,7 +83,9 @@
         <div data-th-if="${accountContent == 'orders_history'}"
              data-th-insert="/shop/fragments/account/account_orders_history :: orders_history">
         </div>
-
+        <div data-th-if="${accountContent == 'invoices'}"
+             data-th-insert="/shop/fragments/account/account_invoices :: invoices">
+        </div>
     </div>
 </div>
 </body>

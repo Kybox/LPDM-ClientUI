@@ -1,6 +1,8 @@
 package com.lpdm.msuser.services.shop.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.*;
 import com.lpdm.msuser.model.paypal.TransactionInfo;
 import com.lpdm.msuser.model.product.Product;
@@ -13,14 +15,20 @@ import com.lpdm.msuser.utils.CartUtils;
 import com.lpdm.msuser.utils.CookieUtils;
 import com.lpdm.msuser.utils.OrderUtils;
 import feign.FeignException;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.lpdm.msuser.utils.shop.ValueType.COOKIE_CART;
@@ -192,6 +200,46 @@ public class OrderServiceImpl implements OrderService {
         catch (FeignException e) { log.warn(e.getMessage()); }
 
         return orderList;
+    }
+
+    @Override
+    public List<Order> findAllWithInvoice(User user) {
+
+        List<Order> orderList = new ArrayList<>();
+
+        if(user != null){
+
+            for(Status status : Status.values()){
+                if(status.getId() >= Status.PAID.getId() && status.getId() != Status.CANCELLED.getId()) {
+                    try {
+                        List<Order> tempOrderList = findAllByCustomerAndStatus(user.getId(), status.getId());
+                        if (tempOrderList != null && !tempOrderList.isEmpty()) orderList.addAll(tempOrderList);
+                    }
+                    catch (FeignException e) { log.warn(e.getMessage()); }
+                }
+            }
+        }
+
+        if(orderList.isEmpty()) orderList = null;
+
+        return orderList;
+    }
+
+    @Override
+    public void findInvoiceByOrder(int id, HttpServletResponse response) {
+
+        /*
+        response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+        try{
+
+            InputStream inputStream = orderProxy.downloadInvoice(id);
+            IOUtils.copy(inputStream, response.getOutputStream());
+            response.flushBuffer();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
     }
 
 }

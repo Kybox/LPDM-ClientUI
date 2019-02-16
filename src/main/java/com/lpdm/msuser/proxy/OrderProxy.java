@@ -1,5 +1,7 @@
 package com.lpdm.msuser.proxy;
 
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfStream;
 import com.lpdm.msuser.model.admin.OrderStats;
 import com.lpdm.msuser.model.admin.SearchDates;
 import com.lpdm.msuser.model.order.*;
@@ -7,11 +9,16 @@ import com.lpdm.msuser.model.paypal.TransactionInfo;
 import feign.FeignException;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 @Component
@@ -143,4 +150,8 @@ public interface OrderProxy {
     @DeleteMapping(value = "${lpdm.order.name}/admin/delivery/delete",
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     boolean deleteDeliveryMethod(@RequestBody Delivery delivery);
+
+    @GetMapping(value = "${lpdm.order.name}/{id}/invoice",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    ByteArrayOutputStream downloadInvoice(@PathVariable int id);
 }

@@ -1,10 +1,17 @@
 package com.lpdm.msuser.controllers.shop;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfStream;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.parser.PdfContentReaderTool;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.location.City;
 import com.lpdm.msuser.model.order.Order;
 import com.lpdm.msuser.model.order.Status;
 import com.lpdm.msuser.model.shop.LoginForm;
+import com.lpdm.msuser.proxy.OrderProxy;
 import com.lpdm.msuser.security.cookie.CookieAppender;
 import com.lpdm.msuser.security.cookie.JwtCookieRemover;
 import com.lpdm.msuser.security.jwt.auth.JwtGenerator;
@@ -21,13 +28,20 @@ import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +56,8 @@ public class AccountController {
     private final SecurityService securityService;
     private final LocationService locationService;
     private final OrderService orderService;
+    @Autowired
+    private OrderProxy orderProxy;
 
     @Autowired
     public AccountController(AuthService authService,
@@ -197,5 +213,23 @@ public class AccountController {
                 .addObject("accountContent", "orders_history")
                 .addObject("statusList", Status.values())
                 .addObject("orderList", orderList);
+    }
+
+    @GetMapping(value = "/shop/account/invoices")
+    public ModelAndView orderInvoices(HttpServletRequest request) throws IOException {
+
+        User user = securityService.getAuthenticatedUser(request);
+        List<Order> orderList = orderService.findAllWithInvoice(user);
+
+        return CustomModel.getFor("/shop/fragments/account/account", request, true)
+                .addObject("accountContent", "invoices")
+                .addObject("statusList", Status.values())
+                .addObject("orderList", orderList);
+    }
+
+    @GetMapping(value = "/shop/account/invoice/{id}")
+    public ModelAndView downloadInvoice (@PathVariable int id) {
+
+        return new ModelAndView("redirect:https://order.lpdm.kybox.fr/orders/" + id + "/invoice");
     }
 }
