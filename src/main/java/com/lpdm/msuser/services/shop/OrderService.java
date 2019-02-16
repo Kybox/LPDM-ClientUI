@@ -36,4 +36,6 @@ public interface OrderService {
     String getTransactionDetails(TransactionInfo transactionInfo);
 
     List<Order> findAllByCustomerSorted(int customer, String sort);
+
+    List<Order> findAllByCustomerAndStatus(int customer, int status);
 }

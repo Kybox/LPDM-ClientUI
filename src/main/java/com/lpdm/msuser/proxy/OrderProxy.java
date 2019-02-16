@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component
 @FeignClient(name = "zuul-server", url = "https://zuul.lpdm.kybox.fr")
-@RibbonClient(name = "ms-order")
+@RibbonClient(name = "${lpdm.order.name}")
 public interface OrderProxy {
 
     @GetMapping(value = "/ms-order/orders/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -26,8 +26,15 @@ public interface OrderProxy {
     Order saveOrder(@Valid @RequestBody Order order);
 
     // Find all orders by customer id
-    @GetMapping(value = "${lpdm.order.name}/orders/all/customer/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "${lpdm.order.name}/orders/all/customer/{id}",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     List<Order> findAllByUserId(@PathVariable("id") int id);
+
+    // Find all orders by customer id and status id
+    @GetMapping(value = "${lpdm.order.name}/orders/all/customer/{customer}/status/{status}",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    List<Order> findAllByCustomerAndStatus(@PathVariable("customer") int customer,
+                                           @PathVariable("status") int status);
 
     // Find last order by customer and status
     @GetMapping(value = "${lpdm.order.name}/orders/last/customer/{customer}/status/{status}",

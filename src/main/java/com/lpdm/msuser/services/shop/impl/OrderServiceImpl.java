@@ -180,4 +180,18 @@ public class OrderServiceImpl implements OrderService {
         return orderList;
     }
 
+    @Override
+    public List<Order> findAllByCustomerAndStatus(int customer, int status) {
+
+        List<Order> orderList = null;
+
+        try {
+            orderList = orderProxy.findAllByCustomerAndStatus(customer, status);
+            orderList.forEach(o -> o.setTotal((Math.round(o.getTotal() * 100D) / 100D)));
+        }
+        catch (FeignException e) { log.warn(e.getMessage()); }
+
+        return orderList;
+    }
+
 }

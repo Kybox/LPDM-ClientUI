@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <div data-th-fragment="orders_history">
+    <script data-th-src="@{/js/shop/account/orders_history.js}" charset="UTF-8"></script>
     <div class="col-sm-9">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -16,13 +17,20 @@
                 <div class="col-sm-3 pull-right">
                     <div class="form-group">
                         <label for="status_select">Sélectionner un statut</label>
-                        <select class="form-control" id="status_select">
+                        <select class="form-control" id="status_select" style="cursor: pointer;">
+                            <option disabled selected style="cursor: pointer;">Cliquer ici</option>
                             <option data-th-each="status : ${statusList}"
-                                    data-th-text="${status}"></option>
+                                    data-th-value="${status.id}"
+                                    data-th-text="${status}"
+                                    style="cursor: pointer;">
+                            </option>
                         </select>
                     </div>
                 </div>
                 <br>
+                <div data-th-if="${orderList == null && param.status != null}" class="alert alert-warning col-sm-9">
+                    Aucune commande n'a été trouvé avec ce statut.
+                </div>
                 <table class="table table-hover table-responsive"
                        data-th-if="${orderList != null}">
                     <thead>

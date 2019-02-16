@@ -28,6 +28,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -177,16 +178,24 @@ public class AccountController {
     }
 
     @GetMapping(value = "/shop/account/orders")
-    public ModelAndView userOrders(HttpServletRequest request) throws IOException {
+    public ModelAndView userOrders(@RequestParam(value = "status", required = false) Integer status,
+                                   HttpServletRequest request) throws IOException {
 
         User user = securityService.getAuthenticatedUser(request);
 
         log.info("user = " + user);
+        List<Order> orderList = null;
 
-        List<Order> orderList = orderService.findAllByCustomerSorted(user.getId(), "desc");
+        if(status != null && user != null){
+            boolean statusFound = Arrays.stream(Status.values()).anyMatch(s -> s.getId() == status);
+            if(statusFound)
+                orderList = orderService.findAllByCustomerAndStatus(user.getId(), status);
+
+        }
 
         return CustomModel.getFor("/shop/fragments/account/account", request, true)
                 .addObject("accountContent", "orders_history")
-                .addObject("statusList", Status.values());
+                .addObject("statusList", Status.values())
+                .addObject("orderList", orderList);
     }
 }
