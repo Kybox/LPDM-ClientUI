@@ -47,8 +47,10 @@ public class BeanConfig {
 
         List<RequestMatcher> requestMatcherList = new ArrayList<>();
         requestMatcherList.add(new AntPathRequestMatcher("/shop/account/**"));
-        requestMatcherList.add(new AntPathRequestMatcher("/admin/**"));
         requestMatcherList.add(new AntPathRequestMatcher("/shop/order/**"));
+        requestMatcherList.add(new AntPathRequestMatcher("/admin"));
+        requestMatcherList.add(new AntPathRequestMatcher("/admin/auth/**"));
+        requestMatcherList.add(new AntPathRequestMatcher("/admin/products/**"));
         return new OrRequestMatcher(requestMatcherList);
     }
 
