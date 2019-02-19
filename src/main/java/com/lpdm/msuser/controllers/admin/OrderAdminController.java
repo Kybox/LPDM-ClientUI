@@ -96,6 +96,7 @@ public class OrderAdminController {
                     break;
 
                 case SEARCH_ORDER_BY_USER_NAME:
+                    result = adminService.findAllOrdersByUserLastName(keyword);
                     selectedTab = "customer";
                     break;
 

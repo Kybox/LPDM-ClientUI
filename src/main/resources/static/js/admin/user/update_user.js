@@ -46,7 +46,6 @@ $(document).ready(function() {
     // Checbox control
     $(":input[type='checkbox']").on("change", function () {
         if(!checkAllCheckBoxes()) $(this).prop("checked", true);
-        console.log($(this).attr("id") + " : " + $(this).prop("checked"));
     });
 
     // Inputs control
@@ -75,7 +74,7 @@ $(document).ready(function() {
     modalResult.on('hidden.bs.modal', function () {
         if(result){
             $(":button").prop("disabled", true);
-            window.location.href = "/admin/store/";
+            window.location.href = "/admin/auth/update";
         }
     });
 });
@@ -91,7 +90,6 @@ function checkInputsOnLoad(id){
 
             }
         });
-        //if(!checkAllInputs()) btnUpdate.prop("disabled", true);
     }
     else{
         $(':input[id^="user_"]').each(function () {
@@ -110,7 +108,6 @@ function checkInputsOnLoad(id){
 
 function checkAllInputs(id) {
 
-    console.log("Check all inputs = " + id);
     let checkup = true;
 
     if(id == null){
@@ -126,7 +123,6 @@ function checkAllInputs(id) {
     else{
         $('[id^="check_"]').each(function(){
             if($(this).attr("id").match(id)){
-                console.log("input = " + $(this).attr("id"));
                 if($(this).attr("class") === "btn btn-danger") {
                     checkup = false;
                     return false;
@@ -163,7 +159,6 @@ function updateUser(){
     });
 
     let active = $("#user_status_" + userId).val() === "1";
-    console.log($("#user_status_" + userId).val());
 
     let jsonObj = {};
     jsonObj.id = userId;
@@ -176,10 +171,13 @@ function updateUser(){
         .format("YYYY-MM-DD");
     jsonObj.registrationDate = moment.utc(
         $("#user_registrationDate_" + userId).val(), "DD/MM/YYYY h:mm:ss").format();
+
+    // Registration date not define
+    if(jsonObj.registrationDate === "Invalid date")
+        jsonObj.registrationDate = null;
+
     jsonObj.addressId = $("#user_address_" + userId).val();
     jsonObj.active = active;
-
-    console.log("AppUser : " + JSON.stringify(jsonObj));
 
     $.ajax({
         url: "/admin/auth/update/user",
@@ -188,12 +186,10 @@ function updateUser(){
         contentType: "application/json",
         dataType : "json",
         success: function (data) {
-            console.log("Success msg : " + data);
             result = true;
             showUpdateResult(result);
         },
         error: function (data) {
-            console.log("Error msg : " + data);
             result = false;
             showUpdateResult(result);
         }

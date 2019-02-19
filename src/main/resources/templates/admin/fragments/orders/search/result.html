@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <div data-th-fragment="search_result(result)">
     <div data-th-if="${result instanceof T(java.util.Map)}">
         <div data-th-if="${#maps.size(result)} > 1">
@@ -12,8 +12,8 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li data-th-each="order,loop : ${result}">
-                            <a href="#" data-th-id="'ordermenu_' + ${order.id}">
-                                <span data-th-text="'ID ' + ${order.id} + ' - Montant : ' + ${order.total} + ' €'"></span>
+                            <a href="#" data-th-id="'ordermenu_' + ${order.key.id}">
+                                <span data-th-text="'ID ' + ${order.key.id} + ' - Montant : ' + ${order.key.total} + ' €'"></span>
                             </a>
                         </li>
                     </ul>
@@ -29,11 +29,12 @@
                         </div>
                         <div class="col-sm-5 pull-right">
                             <div class="alert alert-info">
-                                Identifiant : <span data-th-text="${order.key.customer.id}"></span><br>
-                                Nom <span data-th-text="${order.key.customer.firstName}"></span><br>
-                                Address :<br>
+                                # <span data-th-text="${order.key.customer.id}"></span><br>
+                                <span data-th-text="${order.key.customer.firstName} + ' ' + ${order.key.customer.name}"></span><br>
+                                Address : <span data-th-if="${order.key.customer.address != null}"
+                                                data-th-text="${order.key.customer.address.streetNumber} + ' ' + ${order.key.customer.address.streetName} + ' ' + ${order.key.customer.address.city.zipCode} + ' ' + ${order.key.customer.address.city.name}"></span><br>
                                 Email : <span data-th-text="${order.key.customer.email}"></span><br>
-                                Tel :
+                                Tel : <span data-th-if="${order.key.customer.tel != null}" data-th-text="${order.key.customer.tel}"></span>
                             </div>
                         </div>
                     </div>
@@ -74,7 +75,7 @@
                             Paiement
                         </label>
                         <input type="text" id="orderPayment" class="form-control"
-                               data-th-value="${order.key.payment.label}"
+                               data-th-value="${order.key.payment != null ? order.key.payment.label : 'non communiqué'}"
                                disabled>
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="submit" disabled>
@@ -89,7 +90,7 @@
                             Mode de livraison
                         </label>
                         <input type="text" id="orderDelivery" class="form-control"
-                               data-th-value="${order.key.delivery.method}"
+                               data-th-value="${order.key.delivery != null ? order.key.delivery.method : 'non communiqué'}"
                                disabled>
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="submit" disabled>
@@ -99,7 +100,7 @@
                     </div>
                 </li>
                 <li class="list-group-item text-center" style="height: 56px; border: none;"
-                    data-th-if="${order.key.status != 'CART' AND order.key.status != 'VALIDATE'}">
+                    data-th-if="${order.key.status.id > 2 && order.key.status.id != 7}">
                     <button class="btn btn-warning" type="submit">
                         Afficher la facture
                         <span class="glyphicon glyphicon-list-alt" style="padding-left: 6px;"></span>

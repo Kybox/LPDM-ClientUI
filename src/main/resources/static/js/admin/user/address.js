@@ -54,7 +54,6 @@ function checkAllInputs(id) {
     let checkup = true;
     $('[id^="check_"]').each(function(){
         if($(this).attr("id").match(id)){
-            console.log("id = " + $(this).attr("id"));
             if($(this).attr("class") === "btn btn-danger") {
                 checkup = false;
                 return false;
@@ -68,25 +67,19 @@ function checkAllInputs(id) {
 
 function loadCities(zipCode){
 
-    console.log("load cities for " + zipCode);
-
     $.ajax({
         url: "/admin/auth/search/address/cities",
         type: "post",
         data: "zipCode=" + zipCode,
         success: function (data) {
-            console.log("Success msg : " + data);
             displayCities(data);
         },
         error: function (data) {
-            console.log("Error msg : " + data);
         }
     });
 }
 
 function displayCities(data) {
-
-    console.log("display cities");
 
     selectCity.find("option").remove();
     selectCity.append("<option value='0' selected disabled>Sélectionner une ville</option>");
@@ -99,7 +92,6 @@ function displayCities(data) {
 
     selectCity.on("change", function () {
         cityId = this.value;
-        console.log("selected value = " + cityId);
     });
 }
 
@@ -114,8 +106,6 @@ function updateAddress(id) {
     jsonObj.complement = $("#address" + userId + "_complement").val();
     jsonObj.city = jsonCity;
 
-    console.log("Json : " + JSON.stringify(jsonObj));
-
     $.ajax({
         url: "/admin/auth/add/address?user=" + id,
         type: "post",
@@ -123,11 +113,9 @@ function updateAddress(id) {
         contentType: "application/json",
         dataType : "json",
         success: function (data) {
-            console.log("Success msg : " + JSON.stringify(data));
             showUpdateResult(true);
         },
         error: function (data) {
-            console.log("Error msg : " + data);
             showUpdateResult(false);
         }
     });

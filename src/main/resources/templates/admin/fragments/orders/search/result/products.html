@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
-<div data-th-fragment="products(order, total)">
+<div data-th-fragment="products">
     <div class="panel-group">
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" href="#collapse1">Produits commandés</a>
-                    <span class="badge" data-th-text="${#lists.size(order.orderedProducts)}"></span>
+                    <span class="badge" data-th-text="${#lists.size(order.key.orderedProducts)}"></span>
                 </h4>
             </div>
             <div id="collapse1" class="panel-collapse collapse in" aria-expanded="true">
@@ -20,16 +20,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr data-th-each="orderedProduct : ${order.orderedProducts}">
-                        <td data-th-text="${orderedProduct.product.userName}"></td>
+                    <tr data-th-each="orderedProduct : ${order.key.orderedProducts}">
+                        <td data-th-text="${orderedProduct.product.name}"></td>
                         <td data-th-text="${orderedProduct.product.price}" class="text-center"></td>
                         <td data-th-text="${orderedProduct.quantity}" class="text-center"></td>
-                        <td data-th-text="${orderedProduct.product.tva}+' %'" class="text-center"> <span> %</span></td>
+                        <td data-th-text="${orderedProduct.product.tax}+' %'" class="text-center"> <span> %</span></td>
                     </tr>
                     </tbody>
                 </table>
                 <div class="panel-footer text-right">
-                    Total de la commande : <span data-th-text="${total}"></span> euros TTC
+                    Total de la commande : <span data-th-text="${order.key.total}"></span> euros TTC
                 </div>
             </div>
         </div>

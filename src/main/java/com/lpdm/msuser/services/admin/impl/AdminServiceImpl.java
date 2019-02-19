@@ -114,8 +114,10 @@ public class AdminServiceImpl implements AdminService {
         List<Order> orderList = orderProxy.findAllByUserId(id);
         Map<Order, List<String>> resultMap = new HashMap<>();
 
-        for(Order order : orderList)
+        for(Order order : orderList) {
+            order.setTotal(Math.round(order.getTotal() * 100D) / 100D);
             resultMap.put(order, calculateSubTotal(order));
+        }
 
         return resultMap;
     }

@@ -94,8 +94,6 @@ function addNewUser() {
     jsonObj.active = status.val() === 1;
     jsonObj.appRole = roles;
 
-    console.log("AppUser : " + JSON.stringify(jsonObj));
-
     $.ajax({
         url: "/admin/auth/add",
         type: "post",
@@ -103,12 +101,10 @@ function addNewUser() {
         contentType: "application/json",
         dataType : "json",
         success: function (data) {
-            console.log("Success msg : " + data);
             result = true;
             showUpdateResult(result);
         },
         error: function (data) {
-            console.log("Error msg : " + data);
             result = false;
             showUpdateResult(result);
         }

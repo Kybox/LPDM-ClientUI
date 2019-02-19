@@ -124,6 +124,7 @@ public class AuthAdminController {
 
         int searchValue = searchForm.getSearchValue();
         String keyword = searchForm.getKeyword();
+        List<Address> addressList = null;
         Object result = null;
         try{
             switch (searchValue){
@@ -140,27 +141,26 @@ public class AuthAdminController {
                     result = adminService.findUserByLastName(keyword);
                     break;
             }
+
+            List<User> userList = new ArrayList<>((List<User>) result);
+            if(result instanceof ArrayList) {
+                addressList = new ArrayList<>();
+
+                for(User user : userList){
+
+                    try{
+                        addressList.add(adminService.findAddressById(user.getAddressId()));
+                    }
+                    catch (FeignException e){
+                        log.warn(e.getMessage());
+                        addressList.add(null);
+                    }
+                }
+            }
         }
         catch (FeignException e ){
             log.warn(e.getMessage());
             result = e.status();
-        }
-
-        List<User> userList = new ArrayList<>((List<User>) result);
-        List<Address> addressList = null;
-        if(result instanceof ArrayList) {
-            addressList = new ArrayList<>();
-
-            for(User user : userList){
-
-                try{
-                    addressList.add(adminService.findAddressById(user.getAddressId()));
-                }
-                catch (FeignException e){
-                    log.warn(e.getMessage());
-                    addressList.add(null);
-                }
-            }
         }
 
         return new ModelAndView(AUTH_FRAGMENT_PATH)
