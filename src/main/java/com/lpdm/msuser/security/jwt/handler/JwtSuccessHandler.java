@@ -25,5 +25,6 @@ public class JwtSuccessHandler implements AuthenticationSuccessHandler {
 
 
         log.info("Authentication success");
+        //response.sendRedirect("/shop/account");
     }
 }

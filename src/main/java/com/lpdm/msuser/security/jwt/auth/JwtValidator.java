@@ -58,6 +58,8 @@ public class JwtValidator {
 
             jwtUser.setRoleList(roleList);
 
+            jwtUser.getRoleList().forEach(r -> log.info("Role : " + r));
+
         }
         catch (Exception e) {
 

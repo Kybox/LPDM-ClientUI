@@ -11,6 +11,7 @@ import com.lpdm.msuser.security.cookie.CookieAppender;
 import com.lpdm.msuser.security.cookie.JwtCookieRemover;
 import com.lpdm.msuser.security.jwt.auth.JwtGenerator;
 import com.lpdm.msuser.security.jwt.auth.JwtUserBuilder;
+import com.lpdm.msuser.security.jwt.auth.JwtValidator;
 import com.lpdm.msuser.security.jwt.model.JwtUser;
 import com.lpdm.msuser.services.shop.AuthService;
 import com.lpdm.msuser.services.shop.LocationService;
@@ -43,6 +44,8 @@ public class AccountController {
     private final SecurityService securityService;
     private final LocationService locationService;
     private final OrderService orderService;
+    @Autowired
+    private JwtValidator jwtValidator;
 
     @Autowired
     public AccountController(AuthService authService,
@@ -84,12 +87,8 @@ public class AccountController {
 
         User user = null;
         String loginError = null;
-        try{
-            user = authService.loginUser(loginForm);
-        }
-        catch (FeignException e){
-            loginError = e.getLocalizedMessage();
-        }
+        try{ user = authService.loginUser(loginForm); }
+        catch (FeignException e){ loginError = e.getLocalizedMessage(); }
 
         log.info("User : " + user);
 
@@ -99,8 +98,9 @@ public class AccountController {
 
             log.info("-> Redirect account");
 
-            JwtUser jwtUser = JwtUserBuilder.build(user);
-            CookieAppender.addToken(jwtGenerator.generate(jwtUser), response);
+            String token = jwtGenerator.generate(JwtUserBuilder.build(user));
+            jwtValidator.validate(token);
+            CookieAppender.addToken(token, response);
 
             modelAndView = CustomModel.getFor("redirect:/shop/account", request, true);
         }

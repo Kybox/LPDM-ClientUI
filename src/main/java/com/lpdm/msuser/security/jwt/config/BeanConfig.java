@@ -7,6 +7,7 @@ import com.lpdm.msuser.security.jwt.filter.JwtAuthTokenFilter;
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,7 +55,7 @@ public class BeanConfig {
     @Bean
     public JwtAuthTokenFilter authenticationTokenFilter() {
 
-        JwtAuthTokenFilter filter = new JwtAuthTokenFilter(jwtAuthConfig(), customRequestMatch());
+        JwtAuthTokenFilter filter = new JwtAuthTokenFilter(customRequestMatch());
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(new JwtSuccessHandler());
         return filter;

@@ -54,8 +54,11 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
             throw new RuntimeException("Your token is not valid, do not play this game");
 
         // Get the roles from the jwtUser to the security authorities
+
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         jwtUser.getRoleList().forEach(r -> grantedAuthorities.add(new SimpleGrantedAuthority(r)));
+
+        grantedAuthorities.forEach(a -> log.info("Authority -> " + a.getAuthority()));
 
         // Return the custom UserDetails implemented class
         return new JwtUserDetails(

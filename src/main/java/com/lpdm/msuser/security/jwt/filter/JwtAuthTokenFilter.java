@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -19,6 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.lpdm.msuser.utils.shop.ValueType.USER_ACCOUNT_LOCKED;
 
@@ -30,14 +35,12 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
     @Autowired
     private JwtAuthConfig jwtConfig;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    //@Autowired
+    //private AuthenticationManager authenticationManager;
 
-    public JwtAuthTokenFilter(JwtAuthConfig jwtConfig, RequestMatcher requestMatcher) {
+    public JwtAuthTokenFilter(RequestMatcher requestMatcher) {
 
         super(requestMatcher);
-
-        this.jwtConfig = jwtConfig;
     }
 
     @Override
@@ -89,12 +92,14 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
             return null;
         }
 
+        log.info("Build Token");
+
         // Remove the prefix from the token
         String token = jwtCookie.replace(jwtConfig.getPrefix() + " ", "");
 
         JwtAuthToken jwtAuthToken = new JwtAuthToken(token);
 
-        return authenticationManager.authenticate(jwtAuthToken);
+        return getAuthenticationManager().authenticate(jwtAuthToken);
     }
 
     @Override
@@ -108,6 +113,7 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
         super.successfulAuthentication(request, response, chain, auth);
 
         log.info("Successful Authentication method");
+        log.info("Authorities: " + Arrays.toString(auth.getAuthorities().toArray()));
 
         chain.doFilter(request, response);
     }
