@@ -1,8 +1,7 @@
 package com.lpdm.msuser.security.jwt.config;
 
-import com.lpdm.msuser.security.jwt.auth.JwtAuthProvider;
-import com.lpdm.msuser.security.jwt.handler.JwtAuthEntryPoint;
 import com.lpdm.msuser.security.jwt.filter.JwtAuthTokenFilter;
+import com.lpdm.msuser.security.jwt.handler.JwtAuthEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

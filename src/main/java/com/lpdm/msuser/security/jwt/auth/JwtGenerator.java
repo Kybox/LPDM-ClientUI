@@ -5,8 +5,6 @@ import com.lpdm.msuser.security.jwt.model.JwtUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +15,6 @@ import static com.lpdm.msuser.utils.global.ValueType.ROLE_LIST;
 
 @Component
 public class JwtGenerator {
-
-    private Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final JwtAuthConfig jwtConfig;
 

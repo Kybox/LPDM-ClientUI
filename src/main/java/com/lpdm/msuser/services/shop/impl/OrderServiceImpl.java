@@ -1,7 +1,6 @@
 package com.lpdm.msuser.services.shop.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.itextpdf.text.pdf.PdfDocument;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.*;
 import com.lpdm.msuser.model.paypal.TransactionInfo;
@@ -15,19 +14,14 @@ import com.lpdm.msuser.utils.CartUtils;
 import com.lpdm.msuser.utils.CookieUtils;
 import com.lpdm.msuser.utils.OrderUtils;
 import feign.FeignException;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 

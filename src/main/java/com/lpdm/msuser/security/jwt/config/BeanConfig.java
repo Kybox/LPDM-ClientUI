@@ -1,13 +1,12 @@
 package com.lpdm.msuser.security.jwt.config;
 
 import com.lpdm.msuser.security.jwt.auth.JwtAuthProvider;
-import com.lpdm.msuser.security.jwt.handler.JwtSuccessHandler;
 import com.lpdm.msuser.security.jwt.auth.JwtValidator;
 import com.lpdm.msuser.security.jwt.filter.JwtAuthTokenFilter;
+import com.lpdm.msuser.security.jwt.handler.JwtSuccessHandler;
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -40,11 +40,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductsPageable findProductPageable(int page, int size) {
 
-        ProductsPageable s = productProxy.getProductPageable(page, size);
-
-        log.info("ProductPageable = " + s);
-
-        return s;
+        return productProxy.getProductPageable(page, size);
     }
 
     @Override

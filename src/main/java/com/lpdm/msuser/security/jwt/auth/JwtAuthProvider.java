@@ -42,8 +42,6 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
             throws AuthenticationException {
 
-        log.info("Method : retrieveUser");
-
         JwtAuthToken jwtAuthToken = (JwtAuthToken) userPassAuthToken;
         String token = jwtAuthToken.getToken();
 
@@ -57,8 +55,6 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         jwtUser.getRoleList().forEach(r -> grantedAuthorities.add(new SimpleGrantedAuthority(r)));
-
-        grantedAuthorities.forEach(a -> log.info("Authority -> " + a.getAuthority()));
 
         // Return the custom UserDetails implemented class
         return new JwtUserDetails(

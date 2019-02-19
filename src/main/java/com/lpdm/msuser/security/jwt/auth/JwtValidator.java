@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,9 +56,6 @@ public class JwtValidator {
                     .collect(Collectors.toList());
 
             jwtUser.setRoleList(roleList);
-
-            jwtUser.getRoleList().forEach(r -> log.info("Role : " + r));
-
         }
         catch (Exception e) {
 

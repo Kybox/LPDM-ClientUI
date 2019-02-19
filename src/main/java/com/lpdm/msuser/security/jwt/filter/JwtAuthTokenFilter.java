@@ -6,11 +6,8 @@ import com.lpdm.msuser.security.jwt.model.JwtAuthToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -21,9 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static com.lpdm.msuser.utils.shop.ValueType.USER_ACCOUNT_LOCKED;
 
@@ -34,9 +29,6 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     @Autowired
     private JwtAuthConfig jwtConfig;
-
-    //@Autowired
-    //private AuthenticationManager authenticationManager;
 
     public JwtAuthTokenFilter(RequestMatcher requestMatcher) {
 
@@ -78,21 +70,15 @@ public class JwtAuthTokenFilter extends AbstractAuthenticationProcessingFilter {
         }
 
         if(jwtCookie == null || !jwtCookie.startsWith(jwtConfig.getPrefix())) {
-            log.warn("JWT Token is missing !");
-            log.info("PathInfo" + request.getPathInfo());
-            log.info("PathTranslated" + request.getPathTranslated());
-            log.info("RequestURL" + request.getRequestURL().toString());
 
+            log.warn("JWT Token is missing !");
             String urlRequest = request.getRequestURL().toString();
             String param = urlRequest.substring(urlRequest.lastIndexOf("/") + 1);
-            log.info("Param = " + param);
 
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.sendRedirect("/shop/login?page=" + param);
             return null;
         }
-
-        log.info("Build Token");
 
         // Remove the prefix from the token
         String token = jwtCookie.replace(jwtConfig.getPrefix() + " ", "");

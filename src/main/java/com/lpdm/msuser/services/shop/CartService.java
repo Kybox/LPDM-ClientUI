@@ -1,8 +1,6 @@
 package com.lpdm.msuser.services.shop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.lpdm.msuser.model.order.Order;
-import com.lpdm.msuser.model.order.OrderedProduct;
 import com.lpdm.msuser.model.shop.Cart;
 import com.lpdm.msuser.model.shop.CookieProduct;
 

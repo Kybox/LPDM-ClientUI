@@ -1,12 +1,9 @@
 package com.lpdm.msuser.services.shop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.itextpdf.text.pdf.PdfDocument;
 import com.lpdm.msuser.model.auth.User;
 import com.lpdm.msuser.model.order.*;
 import com.lpdm.msuser.model.paypal.TransactionInfo;
-import com.lpdm.msuser.model.shop.Cart;
-import org.springframework.core.io.InputStreamResource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -25,6 +25,5 @@ public class JwtSuccessHandler implements AuthenticationSuccessHandler {
 
 
         log.info("Authentication success");
-        log.info("Status : " + response.getStatus());
     }
 }
