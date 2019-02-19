@@ -48,19 +48,5 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class);
-        /*
-        http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/admin/**", "/producer/**", "/shop/account/**", "/shop/order/**")
-                .authenticated()
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthEntryPoint)
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class);
-        http.headers().cacheControl();
-        */
     }
 }
