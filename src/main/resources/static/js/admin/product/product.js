@@ -155,7 +155,6 @@ function updateProduct(id, deactivate){
     else picture = currentPictureInput.val();
     let categorySelect = $("#categoryList_" + id + " option:selected");
     let categoryValue = categorySelect.val();
-    categoryValue ++;
     let categoryText = categorySelect.text();
 
     let jsonCategory = {};

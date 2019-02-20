@@ -53,7 +53,11 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findProductsByCategory(int category) {
 
         List<Product> productList = productProxy.findProductsByCategory(category);
-        log.info("product list : " + productList);
+
+        productList.forEach(product -> {
+            double tax = product.getPrice() * (product.getTax() / 100);
+            product.setPriceWithTax(Math.round((product.getPrice() + tax) * 100D) / 100D);
+        });
 
         return productList;
     }
@@ -77,7 +81,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product findProductById(int id) {
 
-        return productProxy.findProductById(id);
+        Product product =  productProxy.findProductById(id);
+        double tax = product.getPrice() * (product.getTax() / 100);
+        product.setPriceWithTax(Math.round((product.getPrice() + tax) * 100D) / 100D);
+
+        return product;
     }
 
     @Override

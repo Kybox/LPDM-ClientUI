@@ -17,6 +17,7 @@ public class Product {
     private String picture;
     private Integer producerID;
     private User producer;
+    private double priceWithTax;
 
     public Product() {
     }
@@ -113,6 +114,14 @@ public class Product {
         this.producer = producer;
     }
 
+    public double getPriceWithTax() {
+        return priceWithTax;
+    }
+
+    public void setPriceWithTax(double priceWithTax) {
+        this.priceWithTax = priceWithTax;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -127,6 +136,7 @@ public class Product {
                 ", picture='" + picture + '\'' +
                 ", producerID=" + producerID +
                 ", producer=" + producer +
+                ", priceWithTax=" + priceWithTax +
                 '}';
     }
 }

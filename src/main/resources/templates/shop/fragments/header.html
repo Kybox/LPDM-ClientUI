@@ -63,7 +63,12 @@
                                                 </span>
                                             </span>
                                             <span class="item-right">
-                                                <button class="btn btn-danger pull-right">x</button>
+                                                <button type="button"
+                                                        class="btn btn-danger pull-right"
+                                                        data-th-id="'remove_' + ${orderedProduct.product.id}"
+                                                        style="width: 30px; height: 30px; padding: 0;">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </button>
                                             </span>
                                         </span>
                                     </li>

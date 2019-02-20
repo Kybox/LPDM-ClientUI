@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
     $(".dropdown").hover(
         function() {
             $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown("400");
@@ -9,6 +10,10 @@ $(document).ready(function(){
             $(this).toggleClass('open');
         }
     );
+
+    $(":button[id^='remove_']").on("click", function () {
+        console.log($(this).attr("id"));
+    });
 });
 
 function updateCart(order){
@@ -40,7 +45,8 @@ function updateCart(order){
         let spanProductQuantity = $("<span/>").html("x " + product.quantity);
 
         let spanItemRight = $("<span/>").attr("class", "item-right");
-        let btn = "<button class='btn btn-xs btn-danger pull-right'>x</button>";
+        //let btn = "<button class='btn btn-xs btn-danger pull-right'>x</button>";
+        let btn = "<button type='button' class='btn btn-danger pull-right' id='remove_"+ product.id + "' style='width: 30px; height: 30px; padding: 0;'><span class='glyphicon glyphicon-remove'></span></button>";
 
         spanItemRight.append(btn);
 
@@ -68,4 +74,8 @@ function updateCart(order){
     label_content += "<span class='caret'></span>";
 
     cart_label.html(label_content);
+
+    $(":button[id^='remove_']").on("click", function () {
+        console.log($(this).attr("id"));
+    });
 }

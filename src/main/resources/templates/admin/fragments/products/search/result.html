@@ -53,7 +53,7 @@
                                 </label>
                                 <select class="form-control" data-th-id="'categoryList_' + ${product.id}">
                                     <option data-th-each="cat,status : ${categories}"
-                                            data-th-value="${status.index}"
+                                            data-th-value="${cat.id}"
                                             data-th-text="${cat.name}"
                                             data-th-selected="${cat.name == product.category.name}">
                                     </option>

@@ -17,7 +17,7 @@
             </div>
             <div class="col-sm-8">
                 <div class="col-sm-5">
-                    <h5><b data-th-text="${selectedProduct.name}"></b></h5>
+                    <h4><b data-th-text="${selectedProduct.name}"></b></h4>
                     <span data-th-text="${selectedProduct.label}"></span>
                     <hr>
                     <span class="info" data-th-text="'Quantité en stock : ' + ${stockQuantity}"></span>
@@ -26,7 +26,7 @@
                     <div class="text-right">
                         <span data-th-text="'Prix HT : ' + ${selectedProduct.price} + ' €'"></span><br>
                         <span data-th-text="'T.V.A. : ' + ${selectedProduct.tax} + ' %'"></span><br>
-                        <span data-th-text="'Prix TTC : ' + ${selectedProduct.price + (selectedProduct.price * (selectedProduct.tax / 100))} + ' €'"></span>
+                        <b><span data-th-text="'Prix TTC : ' + ${selectedProduct.priceWithTax} + ' €'"></span></b>
                     </div>
                     <hr>
                     <label for="product_quantity">Quantité</label>
