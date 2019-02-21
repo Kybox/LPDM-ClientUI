@@ -12,7 +12,8 @@ $(document).ready(function(){
     );
 
     $(":button[id^='remove_']").on("click", function () {
-        console.log($(this).attr("id"));
+        //$(this).closest("li").remove();
+        deleteProductFromCart(extractProductId($(this).attr("id")));
     });
 });
 
@@ -76,6 +77,30 @@ function updateCart(order){
     cart_label.html(label_content);
 
     $(":button[id^='remove_']").on("click", function () {
-        console.log($(this).attr("id"));
+        //$(this).closest("li").remove();
+        deleteProductFromCart(extractProductId($(this).attr("id")));
+    });
+}
+
+function extractProductId(button){
+
+    return button.substr(button.lastIndexOf("_") + 1);
+}
+
+function deleteProductFromCart(id){
+
+    console.log("id = " + id);
+
+    $.ajax({
+        url: "/shop/cart/remove",
+        type: "post",
+        data: "product=" + id,
+        success: function (data) {
+            updateCart(data);
+            console.log("Success msg : " + data);
+        },
+        error: function (data) {
+            console.log("Error msg : " + data);
+        }
     });
 }

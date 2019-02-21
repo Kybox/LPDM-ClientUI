@@ -48,11 +48,9 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
         // Check if the JWT is valide (with the secret signing key) and get the user data
         JwtUser jwtUser = jwtValidator.validate(token);
 
-        if(jwtUser == null)
-            throw new RuntimeException("Your token is not valid, do not play this game");
+        if(jwtUser == null) return null;
 
         // Get the roles from the jwtUser to the security authorities
-
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         jwtUser.getRoleList().forEach(r -> grantedAuthorities.add(new SimpleGrantedAuthority(r)));
 

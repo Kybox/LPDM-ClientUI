@@ -127,4 +127,12 @@ public class CartController {
 
         return new ModelAndView("redirect:/shop/account");
     }
+
+    @PostMapping(value = "/shop/cart/remove")
+    public Cart removeProductFromCart(@ModelAttribute("product") int id,
+                                      HttpServletRequest request,
+                                      HttpServletResponse response) throws IOException {
+
+        return cartService.deleteProductFromCart(id, request, response);
+    }
 }

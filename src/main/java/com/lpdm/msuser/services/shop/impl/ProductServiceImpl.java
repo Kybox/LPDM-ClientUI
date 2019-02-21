@@ -93,10 +93,9 @@ public class ProductServiceImpl implements ProductService {
 
         int quantity = 0;
 
-        for(Stock stock : product.getListStock()){
-
+        for(Stock stock : product.getListStock())
             quantity += stock.getQuantity();
-        }
+
         return quantity;
     }
 }

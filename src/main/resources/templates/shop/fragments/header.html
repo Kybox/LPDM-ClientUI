@@ -50,7 +50,8 @@
                                 <ul id="cart_list"
                                     class="dropdown-menu dropdown-cart"
                                     role="menu">
-                                    <li data-th-each="orderedProduct : ${cookieOrder?.orderedProducts}">
+                                    <li data-th-each="orderedProduct : ${cookieOrder?.orderedProducts}"
+                                        data-th-id="'product_' + ${orderedProduct.product.id}">
                                         <span class="item">
                                             <span class="item-left">
                                                 <img data-th-src="${orderedProduct.product.picture}"
