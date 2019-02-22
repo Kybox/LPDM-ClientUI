@@ -152,7 +152,7 @@ public class OrderController {
         String redirectUrl = paypalUrl.getRedirectUrl();
 
         ModelAndView modelAndView;
-        if(redirectUrl == null) modelAndView = new ModelAndView("/orders/paypalcancel");
+        if(redirectUrl == null) modelAndView = new ModelAndView("redirect:/shop/order/process/error");
         else modelAndView = new ModelAndView( "redirect:" + paypalUrl.getRedirectUrl());
 
         return modelAndView;

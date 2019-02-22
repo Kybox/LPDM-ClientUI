@@ -16,7 +16,7 @@
         <!-- LOOP MICROSERVICE -->
         <div data-th-each="ms,status : ${data}">
             <div class="input-group">
-                <label class="input-group-addon" data-th-for="${ms.userName}">Microservice</label>
+                <label class="input-group-addon" data-th-for="${ms.name}">Microservice</label>
                 <span data-th-id="${ms.name}" class="form-control" data-th-text="${ms.name}"></span>
             </div>
             <ul class="list-group">
